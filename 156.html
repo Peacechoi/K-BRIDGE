@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>👑 K-BRIDGE</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:-apple-system,'Segoe UI',Roboto,'Noto Sans',sans-serif;background:#fff;color:#111;overflow-x:hidden;}
+button,a{cursor:pointer;font-family:inherit;text-decoration:none;color:inherit;}
+
+#prog{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#1a6b3c,#52b788);width:0%;z-index:9999;}
+
+/* ══ GNB ══ */
+.gnb{position:fixed;top:3px;left:0;right:0;z-index:900;background:#fff;border-bottom:1px solid #e0e0e0;height:72px;display:flex;align-items:center;padding:0 24px;gap:6px;}
+.gnb-logo{display:flex;align-items:center;cursor:pointer;transition:opacity .2s;margin-right:20px;flex-shrink:0;}
+.gnb-logo:hover{opacity:.75;}
+.gnb-logo-crown{width:32px;height:26px;flex-shrink:0;margin-right:-6px;margin-bottom:14px;transform:rotate(-8deg);position:relative;z-index:1;}
+.gnb-logo-text{display:flex;flex-direction:column;}
+.gnb-logo-main{font-size:22px;font-weight:900;color:#1a6b3c;letter-spacing:.3px;line-height:1.1;white-space:nowrap;}
+.gnb-logo-sub{font-size:9px;color:#bbb;letter-spacing:.3px;white-space:nowrap;}
+.gnb-nav{display:flex;align-items:center;height:64px;flex:1;min-width:0;}
+.gnb-item{position:static;height:64px;display:flex;align-items:center;flex-shrink:1;min-width:0;}
+.gnb-item > a{display:flex;align-items:center;justify-content:center;height:64px;min-width:0;padding:0 10px;font-size:13px;font-weight:700;color:#444;transition:color .2s;white-space:nowrap;box-sizing:border-box;position:relative;}
+.gnb-item > a::after{content:'';position:absolute;left:10px;right:10px;bottom:14px;height:3px;background:#1a6b3c;border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.gnb-item:hover > a,.gnb-item > a.active{color:#1a6b3c;}
+.gnb-item:hover > a::after,.gnb-item > a.active::after{transform:scaleX(1);}
+.mega{display:none;position:fixed;top:71px;left:0;right:0;background:#fff;border-top:3px solid #1a6b3c;border-bottom:1px solid #e0e0e0;box-shadow:0 8px 32px rgba(0,0,0,.1);z-index:800;padding:22px 40px;overflow-x:auto;}
+.gnb-item:hover .mega{display:flex;}
+.mega-col{display:flex;align-items:center;gap:0;flex-wrap:wrap;}
+.mega-col a{display:flex;align-items:center;font-size:14px;font-weight:600;color:#555;padding:6px 16px;transition:all .2s;position:relative;white-space:nowrap;}
+.mega-col a:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:1px;height:16px;background:#e0e0e0;}
+.mega-col a:hover{color:#1a6b3c;}
+
+.gnb-search{display:flex;align-items:center;background:#f4faf6;border-radius:20px;margin-right:6px;flex-shrink:0;}
+.gnb-search-btn{background:transparent;border:none;padding:8px 10px;font-size:14px;color:#888;transition:color .2s;}
+.gnb-search-btn:hover{color:#1a6b3c;}
+
+.gnb-login{background:transparent;color:#444;border:1.5px solid #e0e0e0;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;transition:all .2s;margin-right:6px;flex-shrink:0;white-space:nowrap;}
+.gnb-login:hover{border-color:#1a6b3c;color:#1a6b3c;}
+.gnb-user{display:flex;align-items:center;gap:8px;margin-right:8px;flex-shrink:0;}
+.gnb-user-name{font-size:12px;font-weight:700;color:#1a6b3c;white-space:nowrap;}
+.gnb-logout{background:transparent;border:1.5px solid #e0e0e0;color:#888;padding:6px 12px;border-radius:18px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.gnb-logout:hover{border-color:#ef4444;color:#ef4444;}
+
+/* ══ MY PAGE ══ */
+.my-welcome{display:flex;gap:20px;padding:48px 7vw;flex-wrap:wrap;}
+.my-card{border:2px solid #ef4444;border-radius:20px;padding:32px;min-width:260px;flex:0 0 auto;text-align:center;}
+.my-badge{display:inline-block;border:1.5px solid #b45309;color:#b45309;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:16px;}
+.my-greet{font-size:22px;font-weight:800;color:#111;line-height:1.4;margin-bottom:14px;}
+.my-donorno{font-size:13px;color:#999;}
+.my-cta-box{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;min-width:280px;text-align:center;}
+.my-cta-msg{font-size:18px;font-weight:800;color:#111;line-height:1.7;}
+.my-change-link{font-size:14px;color:#666;display:flex;align-items:center;gap:6px;cursor:pointer;transition:color .2s;}
+.my-change-link:hover{color:#1a6b3c;}
+
+/* ══ JOIN PAGE ══ */
+.join-hero{padding:64px 7vw;text-align:center;}
+.join-types{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:960px;margin:0 auto;padding:0 7vw 40px;}
+.join-card{background:#fff;border:2px solid #e5e5e5;border-radius:18px;padding:32px 24px;cursor:pointer;transition:all .25s;text-align:center;}
+.join-card:hover{border-color:#95d5b2;transform:translateY(-4px);}
+.join-card.selected{border-color:#1a6b3c;background:#f4faf6;box-shadow:0 8px 24px rgba(26,107,60,.12);}
+.join-card-ico{font-size:40px;margin-bottom:14px;}
+.join-card-title{font-size:16px;font-weight:800;margin-bottom:8px;}
+.join-card-desc{font-size:12px;color:#888;line-height:1.7;}
+.join-form-wrap{max-width:460px;margin:0 auto;padding:0 24px 80px;display:none;}
+.join-form-wrap.show{display:block;}
+
+.lang-switch{display:flex;align-items:center;gap:2px;margin-right:8px;background:#f4faf6;border-radius:20px;padding:3px;flex-shrink:0;}
+.lang-btn{padding:6px 9px;border-radius:18px;border:none;background:transparent;color:#888;font-size:11px;font-weight:700;transition:all .2s;white-space:nowrap;}
+.lang-btn:hover{color:#1a6b3c;}
+.lang-btn.on{background:#1a6b3c;color:#fff;}
+
+.gnb-right{margin-left:auto;flex-shrink:0;display:flex;align-items:center;}
+.gnb-cta{background:#1a6b3c;color:#fff;border:none;padding:11px 24px;border-radius:24px;font-size:14px;font-weight:800;transition:all .2s;flex-shrink:1;min-width:0;white-space:nowrap;box-shadow:0 3px 12px rgba(26,107,60,.3);}
+.gnb-cta:hover{background:#145230;transform:translateY(-1px);}
+
+/* ══ SEARCH OVERLAY ══ */
+.search-overlay{display:none;position:fixed;inset:0;z-index:9500;background:rgba(10,20,14,.7);backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;padding-top:14vh;}
+.search-overlay.show{display:flex;}
+.search-box{width:90%;max-width:640px;}
+.search-box-inner{display:flex;align-items:center;background:#fff;border-radius:16px;padding:6px 8px 6px 22px;box-shadow:0 20px 60px rgba(0,0,0,.4);}
+.search-box-inner input{flex:1;border:none;outline:none;font-size:20px;padding:14px 10px;color:#111;}
+.search-box-inner button{background:#1a6b3c;color:#fff;border:none;padding:12px 22px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;}
+.search-box-inner button:hover{background:#145230;}
+.search-close{position:absolute;top:24px;right:28px;color:#fff;font-size:28px;cursor:pointer;opacity:.7;transition:opacity .2s;}
+.search-close:hover{opacity:1;}
+.search-hint{color:rgba(255,255,255,.5);font-size:13px;text-align:center;margin-top:16px;}
+
+.fab{position:fixed;bottom:28px;right:28px;z-index:800;}
+.fab-btn{background:#1a6b3c;color:#fff;border:none;padding:14px 24px;border-radius:28px;font-size:13px;font-weight:800;box-shadow:0 6px 28px rgba(26,107,60,.45);transition:all .2s;}
+.fab-btn:hover{background:#0f3d22;transform:translateY(-2px);}
+
+.page{display:none;}
+.page.active{display:block;}
+.page-wrap{margin-top:75px;}
+
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9000;align-items:center;justify-content:center;}
+.modal-bg.show{display:flex;}
+.modal-box{background:#fff;border-radius:20px;padding:40px;max-width:400px;width:90%;text-align:center;animation:mpop .3s ease;}
+@keyframes mpop{from{transform:scale(.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.modal-ico{font-size:52px;margin-bottom:12px;}
+.modal-box h3{font-size:20px;font-weight:800;color:#1a6b3c;margin-bottom:10px;}
+.modal-box p{font-size:14px;color:#666;line-height:1.7;margin-bottom:20px;}
+.modal-ok{background:#1a6b3c;color:#fff;border:none;padding:11px 28px;border-radius:20px;font-size:14px;font-weight:700;}
+
+.ew{font-size:10px;font-weight:700;color:#1a6b3c;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.ew-w{color:#52b788;}
+.h1{font-size:clamp(36px,6vw,64px);font-weight:900;line-height:1.1;}
+.h2{font-size:clamp(22px,3.5vw,36px);font-weight:800;line-height:1.2;margin-bottom:12px;}
+.h2-w{color:#fff;}
+.lead{font-size:15px;color:#666;line-height:1.9;}
+.lead-w{color:rgba(255,255,255,.65);}
+.center{text-align:center;}
+.pad{padding:72px 7vw;}
+.pad-sm{padding:48px 7vw;}
+.sec-green{background:linear-gradient(135deg,#0a2416,#1a6b3c);}
+.sec-black{background:#111;}
+.sec-white{background:#fff;}
+.sec-gray{background:#f7f7f5;}
+.divider{width:44px;height:3px;background:#1a6b3c;margin:14px 0 20px;}
+
+.btn-white{background:#fff;color:#1a6b3c;border:none;padding:13px 32px;border-radius:26px;font-size:14px;font-weight:700;box-shadow:0 3px 16px rgba(0,0,0,.15);transition:all .2s;}
+.btn-white:hover{transform:translateY(-1px);}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5);padding:13px 32px;border-radius:26px;font-size:14px;font-weight:600;transition:all .2s;}
+.btn-outline:hover{background:rgba(255,255,255,.1);}
+
+/* ══ HERO CAROUSEL ══ */
+.hero-carousel{position:relative;height:88vh;min-height:520px;overflow:hidden;background:#0a2416;}
+.hc-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.hc-slide{min-width:100%;height:100%;position:relative;display:flex;align-items:center;overflow:hidden;}
+.hc-photo{position:absolute;top:0;right:0;width:60%;height:100%;background-size:cover;background-position:center;}
+.hc-photo::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,36,22,1) 0%,rgba(10,36,22,.7) 25%,rgba(10,36,22,.15) 55%,transparent 75%);}
+.hc-photo-empty{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:rgba(255,255,255,.35);}
+.hc-addphoto{position:absolute;bottom:60px;right:20px;z-index:5;background:rgba(0,0,0,.5);color:#fff;border:1.5px dashed rgba(255,255,255,.5);padding:9px 18px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;backdrop-filter:blur(4px);}
+.hc-addphoto:hover{background:rgba(0,0,0,.7);border-color:#fff;}
+.hc-text{position:relative;z-index:2;padding:0 7vw;max-width:640px;}
+.hc-eyebrow{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:14px;}
+.hc-title{font-size:clamp(30px,4.5vw,52px);font-weight:900;color:#f9c5d1;line-height:1.25;margin-bottom:16px;outline:none;cursor:text;border-radius:8px;padding:4px 6px;margin-left:-6px;transition:background .2s;}
+.hc-title:hover,.hc-title:focus{background:rgba(255,255,255,.06);}
+.hc-desc{font-size:15px;color:rgba(255,255,255,.7);line-height:1.8;max-width:480px;outline:none;cursor:text;border-radius:8px;padding:4px 6px;margin-left:-6px;transition:background .2s;}
+.hc-desc:hover,.hc-desc:focus{background:rgba(255,255,255,.06);}
+.hc-editnote{font-size:10px;color:rgba(255,255,255,.25);margin-top:14px;letter-spacing:.5px;}
+.hc-cta{display:flex;gap:12px;margin-top:26px;flex-wrap:wrap;}
+
+.hc-controls{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;z-index:10;}
+.hc-segs{display:flex;gap:5px;}
+.hc-seg{width:36px;height:3px;background:rgba(255,255,255,.28);border-radius:2px;overflow:hidden;position:relative;cursor:pointer;}
+.hc-seg-fill{position:absolute;left:0;top:0;height:100%;background:#fff;width:0%;}
+.hc-ctrl-btn{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.hc-ctrl-btn:hover{background:rgba(255,255,255,.28);}
+
+.statbar{background:#111;position:relative;}
+.statbar::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#3b82f6,#1a6b3c,#f59e0b,#ef4444);}
+.statbar-in{display:grid;grid-template-columns:repeat(4,1fr);}
+.sitem{padding:34px 16px;text-align:center;border-right:1px solid rgba(255,255,255,.07);}
+.sitem:last-child{border:none;}
+.snum{font-size:34px;font-weight:900;color:#fff;letter-spacing:-1px;}
+.slbl{font-size:11px;color:rgba(255,255,255,.4);margin-top:5px;letter-spacing:.3px;}
+
+/* ══ QUICK DONATE WIDGET (sc.or.kr style) ══ */
+.qd-sec{background:#f7faf8;padding:48px 7vw;}
+.qd-box{max-width:520px;margin:0 auto;background:#fff;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.08);padding:32px;text-align:center;}
+.qd-msg{font-size:15px;color:#333;font-weight:600;line-height:1.7;margin-bottom:22px;}
+.qd-tabs{display:flex;border:1.5px solid #d8e8dc;border-radius:26px;overflow:hidden;margin-bottom:20px;}
+.qd-tab{flex:1;padding:11px;background:#fff;color:#1a6b3c;border:none;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.qd-tab.on{background:#1a6b3c;color:#fff;}
+.qd-amts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.qd-amt{padding:12px 4px;background:#f4faf6;border:1.5px solid #d8f3dc;border-radius:10px;font-size:13px;font-weight:700;color:#1a6b3c;cursor:pointer;transition:all .2s;}
+.qd-amt:hover,.qd-amt.on{background:#1a6b3c;color:#fff;border-color:#1a6b3c;}
+.qd-custom{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:11px 14px;font-size:14px;margin-bottom:16px;outline:none;text-align:center;}
+.qd-submit{width:100%;background:#1a6b3c;color:#fff;border:none;padding:15px;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;transition:background .2s;margin-bottom:20px;}
+.qd-submit:hover{background:#145230;}
+.qd-contact{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;font-size:12px;color:#888;border-top:1px solid #f0f0f0;padding-top:18px;}
+.qd-contact strong{color:#1a6b3c;display:block;font-size:13px;margin-bottom:2px;}
+
+/* ══ TRUST BADGES ══ */
+.trust-sec{padding:56px 7vw;background:#fff;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;}
+.trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;max-width:1000px;margin:0 auto;}
+.trust-item{text-align:center;}
+.trust-ico{font-size:36px;margin-bottom:12px;}
+.trust-txt{font-size:12px;color:#666;line-height:1.7;}
+
+/* ══ NEWSLETTER ══ */
+.news-sec{background:#0f3d22;padding:56px 7vw;text-align:center;}
+.news-title{font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;}
+.news-sub{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:24px;}
+.news-form{display:flex;gap:10px;max-width:520px;margin:0 auto;flex-wrap:wrap;}
+.news-form input{flex:1;min-width:140px;border:none;border-radius:10px;padding:13px 16px;font-size:13px;outline:none;}
+.news-form button{background:#fff;color:#0f3d22;border:none;padding:13px 24px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.news-form button:hover{background:#d8f3dc;}
+.news-consent{font-size:11px;color:rgba(255,255,255,.35);margin-top:14px;}
+
+/* ══ PCT FOOTER BAR ══ */
+.pct-sec{background:#111;padding:40px 7vw;display:flex;align-items:center;justify-content:center;gap:40px;flex-wrap:wrap;text-align:center;}
+.pct-num{font-size:44px;font-weight:900;color:#52b788;}
+.pct-lbl{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;max-width:200px;}
+.pct-breakdown{display:flex;gap:24px;flex-wrap:wrap;}
+.pct-bd-item{text-align:center;}
+.pct-bd-num{font-size:18px;font-weight:800;color:#fff;}
+.pct-bd-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;}
+
+.bq{padding:64px 7vw;text-align:center;}
+.bq-text{font-size:clamp(20px,4vw,44px);font-weight:800;line-height:1.3;max-width:720px;margin:0 auto;}
+.bq-text em{color:#1a6b3c;font-style:normal;}
+.bq-bar{width:40px;height:3px;background:#1a6b3c;margin:20px auto 12px;}
+.bq-src{font-size:11px;color:#bbb;letter-spacing:2px;text-transform:uppercase;}
+.bq-dark .bq-text{color:#fff;}
+.bq-dark .bq-text em{color:#52b788;}
+.bq-dark .bq-src{color:rgba(255,255,255,.2);}
+
+.srow{display:flex;min-height:auto;}
+.shalf-text{flex:1;width:100%;padding:64px 7vw;display:flex;flex-direction:column;justify-content:center;}
+
+.prob-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:0 auto;}
+.pc{background:#f8f8f8;border-radius:14px;padding:24px 20px;position:relative;overflow:hidden;transition:all .25s;}
+.pc:hover{background:#eef7f0;transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.06);}
+.pc-n{position:absolute;top:8px;right:14px;font-size:52px;font-weight:900;color:rgba(0,0,0,.04);line-height:1;}
+.pc-ico{font-size:32px;margin-bottom:10px;}
+.pc-t{font-size:15px;font-weight:800;margin-bottom:5px;}
+.pc-d{font-size:12px;color:#888;line-height:1.6;}
+
+.sol-g{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;max-width:1100px;margin:0 auto;}
+.sg{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:14px;overflow:hidden;transition:all .3s;}
+.sg:hover{background:rgba(255,255,255,.18);transform:translateY(-6px);box-shadow:0 10px 28px rgba(0,0,0,.2);}
+.sg-bar{height:4px;}
+.sg-b{padding:20px 14px;text-align:center;}
+.sg-ico{font-size:32px;margin-bottom:8px;}
+.sg-t{font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;}
+.sg-d{font-size:10px;color:rgba(255,255,255,.55);line-height:1.5;}
+
+.how-g{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;max-width:1100px;margin:0 auto;position:relative;}
+.how-g::before{content:'';position:absolute;top:24px;left:12%;right:12%;height:2px;background:rgba(255,255,255,.1);z-index:0;}
+.hs{display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:24px 16px;position:relative;z-index:1;transition:all .25s;}
+.hs:hover{background:rgba(255,255,255,.08);transform:translateY(-4px);}
+.hs-n{width:48px;height:48px;border-radius:50%;background:#1a6b3c;color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;flex-shrink:0;box-shadow:0 0 0 6px #111;}
+.hs-t{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px;}
+.hs-d{font-size:11px;color:rgba(255,255,255,.45);line-height:1.6;}
+
+.rev-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:0 auto;}
+.rg{border-radius:14px;padding:22px 18px;background:#f9f9f9;border-top:4px solid;transition:all .25s;}
+.rg:hover{transform:translateY(-5px);box-shadow:0 8px 24px rgba(0,0,0,.08);}
+.rg.b{border-color:#3b82f6;}.rg.r{border-color:#ef4444;}.rg.g{border-color:#1a6b3c;}.rg.y{border-color:#f59e0b;}
+.rg-ico{font-size:30px;margin-bottom:10px;}
+.rg-t{font-size:14px;font-weight:800;margin-bottom:5px;}
+.rg-d{font-size:12px;color:#777;line-height:1.7;}
+
+.vis-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:1100px;margin:0 auto;}
+.vg{background:#fff;border-radius:14px;padding:20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;box-shadow:0 2px 14px rgba(0,0,0,.05);transition:all .25s;}
+.vg:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.09);}
+.vg-ico{font-size:28px;}
+.vg-t{font-size:13px;font-weight:700;}
+.vg-d{font-size:11px;color:#777;line-height:1.6;}
+
+.road-g{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:1100px;margin:0 auto;}
+.roc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;transition:all .25s;}
+.roc:hover{transform:translateY(-4px);background:rgba(255,255,255,.07);}
+.roc-h{padding:11px 18px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px;}
+.roc-h.b{background:#3b82f6;}.roc-h.g{background:#1a6b3c;}.roc-h.o{background:#f59e0b;}
+.roc-body{padding:20px 18px;}
+.roc-ph{font-size:18px;font-weight:800;margin-bottom:12px;}
+.roc-ph.b{color:#60a5fa;}.roc-ph.g{color:#52b788;}.roc-ph.o{color:#fbbf24;}
+.roc-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.roc-list li{font-size:12px;color:rgba(255,255,255,.55);padding-left:14px;position:relative;line-height:1.6;}
+.roc-list li::before{content:'•';position:absolute;left:0;color:#1a6b3c;}
+
+.part-g{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:900px;margin:0 auto;}
+.pg-h{font-size:13px;font-weight:700;color:#1a6b3c;margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid #d8f3dc;}
+.pg-l{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.pg-l li{font-size:13px;color:#444;padding-left:18px;position:relative;line-height:1.7;}
+.pg-l li::before{content:'✓';position:absolute;left:0;color:#1a6b3c;font-weight:700;}
+.pg-logos{background:#f4faf6;border-radius:10px;padding:14px 18px;text-align:center;font-size:12px;color:#666;border:1px solid #d8f3dc;grid-column:1/-1;margin-top:6px;}
+
+.tslider-wrap{padding:56px 7vw;}
+.tslider{position:relative;overflow:hidden;max-width:660px;margin:24px auto 0;}
+.tslides{display:flex;transition:transform .5s cubic-bezier(.4,0,.2,1);}
+.tslide{min-width:100%;padding:28px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;text-align:center;}
+.tslide-q{font-size:clamp(13px,1.8vw,19px);color:#fff;font-weight:700;line-height:1.55;margin-bottom:10px;}
+.tslide-a{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1px;}
+.tdots{display:flex;gap:6px;justify-content:center;margin-top:16px;}
+.tdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);cursor:pointer;transition:background .2s;}
+.tdot.on{background:#1a6b3c;}
+
+.share-sec{padding:28px 7vw;background:#fff;border-top:1px solid #f0f0f0;}
+.share-inner{display:flex;align-items:center;gap:9px;flex-wrap:wrap;}
+.share-lbl{font-size:13px;color:#888;font-weight:600;}
+.shbtn{padding:7px 15px;border-radius:18px;border:none;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;}
+.shbtn:hover{transform:translateY(-1px);}
+.sh-f{background:#1877F2;color:#fff;}
+.sh-t{background:#111;color:#fff;}
+.sh-c{background:#eee;color:#333;}
+.sh-w{background:#25D366;color:#fff;}
+
+.final-cta{background:linear-gradient(160deg,#0a2416,#1a6b3c);padding:80px 7vw;text-align:center;}
+.final-cta h2{font-size:clamp(24px,4.5vw,46px);font-weight:900;color:#fff;margin-bottom:12px;}
+.final-cta p{font-size:14px;color:rgba(255,255,255,.6);line-height:1.9;max-width:460px;margin:0 auto 28px;}
+.cta-contacts{list-style:none;display:flex;flex-direction:column;gap:7px;align-items:center;margin-bottom:28px;}
+.cta-contacts li{font-size:13px;color:rgba(255,255,255,.7);}
+.cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cta-verse{margin-top:40px;font-size:11px;color:rgba(255,255,255,.18);font-style:italic;}
+
+.sub-hero{padding:72px 7vw;position:relative;overflow:hidden;}
+
+.donate-tabs,.biz-tabs,.camp-tabs,.about-tabs,.review-tabs{display:flex;border-bottom:1px solid #e8e8e8;background:#fff;padding:0 7vw;position:sticky;top:75px;z-index:10;flex-wrap:wrap;}
+.dt,.bt,.ct,.at,.rt{padding:16px 22px;font-size:14px;font-weight:600;color:#888;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;margin-bottom:-1px;white-space:nowrap;}
+.dt:hover,.dt.on,.bt:hover,.bt.on,.ct:hover,.ct.on,.at:hover,.at.on,.rt:hover,.rt.on{color:#1a6b3c;border-bottom-color:#1a6b3c;}
+.dtab-content,.btab-content,.ctab-content,.atab-content,.rtab-content{display:none;padding:56px 7vw;}
+.dtab-content.show,.btab-content.show,.ctab-content.show,.atab-content.show,.rtab-content.show{display:block;}
+
+.impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:48px;}
+.impact-card{background:#fff;border-radius:12px;padding:20px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.impact-ico{font-size:28px;margin-bottom:7px;}
+.impact-amt{font-size:16px;font-weight:800;color:#1a6b3c;margin-bottom:4px;}
+.impact-desc{font-size:11px;color:#888;line-height:1.6;}
+
+.fw{max-width:560px;margin:0 auto;}
+.fp-section{margin-bottom:24px;}
+.fp-stitle{font-size:12px;font-weight:700;color:#1a6b3c;letter-spacing:1px;text-transform:uppercase;margin-bottom:11px;padding-bottom:7px;border-bottom:2px solid #d8f3dc;}
+.fp-tabs{display:flex;border:1.5px solid #d8e8dc;border-radius:24px;overflow:hidden;margin-bottom:16px;}
+.fp-tab{flex:1;padding:10px;background:#fff;color:#1a6b3c;border:none;font-size:13px;font-weight:700;transition:all .2s;}
+.fp-tab.on{background:#1a6b3c;color:#fff;}
+.fp-amt-g{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:11px;}
+.fp-ab{padding:10px 4px;background:#f4faf6;border:1.5px solid #d8f3dc;border-radius:9px;font-size:12px;font-weight:700;color:#1a6b3c;cursor:pointer;text-align:center;transition:all .2s;}
+.fp-ab:hover,.fp-ab.on{background:#1a6b3c;color:#fff;border-color:#1a6b3c;}
+.fp-custom{width:100%;border:1.5px solid #e0e0e0;border-radius:9px;padding:9px 11px;font-size:13px;margin-bottom:11px;outline:none;display:none;}
+.fp-field{margin-bottom:11px;}
+.fp-field label{font-size:11px;color:#aaa;font-weight:600;display:block;margin-bottom:4px;}
+.fp-field input{width:100%;border:1.5px solid #e8e8e8;border-radius:9px;padding:9px 12px;font-size:13px;outline:none;transition:border .2s;}
+.fp-field input:focus{border-color:#1a6b3c;}
+.fp-chk{display:flex;align-items:flex-start;gap:6px;margin-bottom:8px;}
+.fp-chk input{margin-top:2px;accent-color:#1a6b3c;flex-shrink:0;}
+.fp-chk label{font-size:11px;color:#999;line-height:1.65;}
+.fp-chk label a{color:#1a6b3c;}
+.fp-submit{width:100%;background:#1a6b3c;color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:800;margin-top:8px;transition:background .2s;}
+.fp-submit:hover{background:#145230;}
+.fp-note{margin-top:14px;background:#f4faf6;border-radius:9px;padding:12px;font-size:11px;color:#aaa;text-align:center;line-height:1.8;}
+
+.child-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.child-card{border-radius:16px;overflow:hidden;box-shadow:0 3px 18px rgba(0,0,0,.07);transition:all .3s;}
+.child-card:hover{transform:translateY(-4px);}
+.child-img{height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.child-body{padding:18px;background:#fff;}
+.child-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:8px;display:inline-block;margin-bottom:6px;}
+.child-name{font-size:15px;font-weight:800;margin-bottom:5px;}
+.child-desc{font-size:12px;color:#777;line-height:1.75;}
+.child-benefit{margin-top:12px;padding-top:10px;border-top:1px solid #f0f0f0;font-size:11px;font-weight:600;}
+
+.biz-detail-item{display:flex;gap:40px;align-items:center;margin-bottom:56px;padding-bottom:56px;border-bottom:1px solid #f0f0f0;}
+.biz-detail-item.rev{flex-direction:row-reverse;}
+.biz-detail-item:last-child{border:none;margin-bottom:0;padding-bottom:0;}
+.biz-detail-img{flex:1;min-height:240px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:600;}
+.biz-detail-text{flex:1;}
+.biz-num{font-size:56px;font-weight:900;color:#f0f0f0;line-height:1;margin-bottom:-6px;}
+.biz-title{font-size:22px;font-weight:800;margin-bottom:10px;}
+.biz-desc{font-size:14px;color:#666;line-height:1.9;}
+.biz-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;}
+.biz-card2{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,.06);transition:all .3s;}
+.biz-card2:hover{transform:translateY(-4px);}
+.biz-card2-img{height:160px;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.biz-card2-body{padding:18px;}
+.biz-card2-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:7px;display:inline-block;margin-bottom:6px;}
+.biz-card2-title{font-size:14px;font-weight:800;margin-bottom:5px;}
+.biz-card2-desc{font-size:12px;color:#777;line-height:1.7;}
+.photo-section{margin-top:40px;padding-top:32px;border-top:1px solid #f0f0f0;}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px;}
+.photo-box{border-radius:10px;height:160px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:10px;font-weight:600;}
+.photo-add-banner{margin-top:12px;background:#f4faf6;border-radius:10px;padding:12px 18px;display:flex;align-items:center;gap:10px;border:1px dashed #95d5b2;}
+
+.camp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.cc{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.07);transition:all .3s;}
+.cc:hover{transform:translateY(-4px);}
+.cc-img{height:180px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+.cc-badge{position:absolute;top:12px;left:12px;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:700;color:#fff;}
+.cc-body{padding:18px;}
+.cc-title{font-size:14px;font-weight:800;margin-bottom:6px;}
+.cc-desc{font-size:12px;color:#777;line-height:1.7;margin-bottom:12px;}
+.cc-prog{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-bottom:6px;}
+.cc-bar{height:100%;background:#1a6b3c;border-radius:3px;transition:width 1s;}
+.cc-meta{display:flex;justify-content:space-between;font-size:10px;color:#aaa;}
+.cc-meta strong{color:#1a6b3c;}
+
+.about-values{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px;}
+.av{background:#fff;border-radius:12px;padding:22px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.av-ico{font-size:32px;margin-bottom:10px;}
+.av-t{font-size:14px;font-weight:700;margin-bottom:5px;}
+.av-d{font-size:12px;color:#777;line-height:1.7;}
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px;}
+.tc{background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;}
+.tc-img{height:140px;display:flex;align-items:center;justify-content:center;font-size:44px;}
+.tc-body{padding:15px;}
+.tc-name{font-size:14px;font-weight:800;margin-bottom:3px;}
+.tc-role{font-size:11px;color:#1a6b3c;font-weight:600;margin-bottom:5px;}
+.tc-desc{font-size:11px;color:#888;line-height:1.6;}
+.history-list{margin-top:24px;display:flex;flex-direction:column;gap:0;}
+.hl-item{display:flex;gap:20px;padding:18px 0;border-bottom:1px solid #f0f0f0;}
+.hl-item:last-child{border:none;}
+.hl-year{font-size:18px;font-weight:800;color:#1a6b3c;min-width:64px;}
+.hl-content h4{font-size:14px;font-weight:700;margin-bottom:3px;}
+.hl-content p{font-size:12px;color:#777;line-height:1.6;}
+
+.rv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.rv{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.rv-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.rv-ava{width:40px;height:40px;border-radius:50%;background:#d8f3dc;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.rv-name{font-size:13px;font-weight:700;}
+.rv-info{font-size:10px;color:#aaa;margin-top:1px;}
+.rv-stars{color:#f59e0b;font-size:13px;margin-bottom:8px;}
+.rv-text{font-size:12px;color:#555;line-height:1.8;}
+.rv-tag{margin-top:10px;font-size:10px;font-weight:700;color:#1a6b3c;background:#d8f3dc;padding:2px 9px;border-radius:7px;display:inline-block;}
+
+.notice-list{display:flex;flex-direction:column;gap:0;}
+.ni{padding:18px 0;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;gap:16px;cursor:pointer;}
+.ni:last-child{border:none;}
+.ni-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:7px;flex-shrink:0;}
+.ni-title{font-size:14px;font-weight:600;flex:1;}
+.ni-date{font-size:11px;color:#bbb;flex-shrink:0;}
+
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.gallery-item{border-radius:10px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;font-size:10px;font-weight:600;cursor:pointer;transition:all .2s;}
+.gallery-item:hover{transform:scale(1.03);}
+
+.qa-list{display:flex;flex-direction:column;gap:10px;}
+.qa-item{border:1px solid #e8e8e8;border-radius:10px;overflow:hidden;}
+.qa-q{padding:15px 18px;font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:background .2s;}
+.qa-q:hover{background:#f9fafb;}
+.qa-q.open{color:#1a6b3c;background:#f4faf6;}
+.qa-icon{font-size:16px;font-weight:700;color:#1a6b3c;transition:transform .3s;}
+.qa-q.open .qa-icon{transform:rotate(45deg);}
+.qa-a{padding:0 18px;max-height:0;overflow:hidden;transition:all .3s;font-size:13px;color:#666;line-height:1.8;}
+.qa-a.open{padding:14px 18px;max-height:220px;}
+
+.rw-field{margin-bottom:12px;}
+.rw-field label{font-size:11px;color:#aaa;font-weight:600;display:block;margin-bottom:4px;}
+.rw-field input,.rw-field textarea{width:100%;border:1.5px solid #e8e8e8;border-radius:9px;padding:9px 12px;font-size:13px;outline:none;transition:border .2s;resize:vertical;}
+.rw-field input:focus,.rw-field textarea:focus{border-color:#1a6b3c;}
+.rw-stars{display:flex;gap:5px;font-size:26px;cursor:pointer;margin-bottom:12px;}
+.rw-star{transition:transform .1s;user-select:none;}
+.rw-star:hover{transform:scale(1.15);}
+.rw-submit{background:#1a6b3c;color:#fff;border:none;padding:11px 28px;border-radius:10px;font-size:13px;font-weight:700;transition:background .2s;}
+
+/* ══ LOGIN PAGE ══ */
+.login-wrap{max-width:440px;margin:0 auto;padding:64px 24px 80px;}
+.login-title{font-size:26px;font-weight:900;color:#1a6b3c;text-align:center;margin-bottom:8px;}
+.login-sub{font-size:14px;color:#999;text-align:center;margin-bottom:32px;}
+.login-field{width:100%;border:1.5px solid #e5e5e5;border-radius:12px;padding:16px 18px;font-size:15px;margin-bottom:14px;outline:none;transition:border .2s;}
+.login-field:focus{border-color:#1a6b3c;}
+.login-remember{display:flex;align-items:center;gap:8px;margin-bottom:22px;}
+.login-remember input{width:16px;height:16px;accent-color:#1a6b3c;}
+.login-remember label{font-size:13px;color:#666;}
+.login-submit{width:100%;background:#1a6b3c;color:#fff;border:none;padding:17px;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;transition:background .2s;letter-spacing:.5px;}
+.login-submit:hover{background:#145230;}
+.login-links{display:flex;justify-content:center;gap:14px;margin:20px 0;font-size:13px;color:#888;}
+.login-links a{color:#888;transition:color .2s;}
+.login-links a:hover{color:#1a6b3c;}
+.login-links span{color:#ddd;}
+.login-phone{width:100%;border:1.5px solid #e5e5e5;border-radius:12px;padding:15px;font-size:14px;font-weight:600;color:#555;text-align:center;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px;}
+.login-phone:hover{border-color:#1a6b3c;color:#1a6b3c;}
+.login-divider{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:#eee;}
+.login-divider span{font-size:12px;color:#aaa;}
+.sns-btn{width:100%;border:1.5px solid #e5e5e5;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;background:#fff;}
+.sns-btn:hover{background:#f9f9f9;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+.sns-google{color:#444;}
+.sns-wechat{color:#fff;background:#07C160;border-color:#07C160;}
+.sns-wechat:hover{background:#06ad55;}
+
+footer{background:#111;padding:24px 7vw;text-align:center;}
+footer p{font-size:11px;color:rgba(255,255,255,.22);line-height:2.2;}
+footer a{color:#52b788;}
+
+@media(max-width:900px){
+  .gnb-nav{display:none;}
+  .statbar-in,.impact-grid,.about-values,.team-grid{grid-template-columns:1fr 1fr;}
+  .grid-2,.grid-3,.grid-4,.prob-g,.sol-g,.rev-g,.vis-g,.part-g,.child-grid,.biz-card-grid,.camp-grid,.rv-grid,.gallery-grid,.how-g,.road-g{grid-template-columns:1fr 1fr;}
+  .biz-detail-item,.biz-detail-item.rev{flex-direction:column;}
+  .fab{bottom:14px;right:12px;}
+}
+</style>
+</head>
+<body>
+<div id="prog"></div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal-box">
+    <div class="modal-ico">🤝</div>
+    <h3 data-i18n="modalTitle">Submitted!</h3>
+    <p data-i18n="modalDesc">The K-BRIDGE team will contact you soon.</p>
+    <button class="modal-ok" onclick="document.getElementById('modal').classList.remove('show')" data-i18n="modalOk">OK</button>
+  </div>
+</div>
+
+<nav class="gnb">
+  <div class="gnb-logo" onclick="goPage('home')">
+    <svg class="gnb-logo-crown" viewBox="0 0 100 76" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 68 L4 30 L26 46 L50 14 L74 46 L96 30 L92 68 Z" fill="#f0b429" stroke="#c9860a" stroke-width="2"/>
+      <path d="M4 68 L96 68 L96 74 L4 74 Z" fill="#e0a020" stroke="#c9860a" stroke-width="2"/>
+      <circle cx="50" cy="20" r="6" fill="#e63946"/>
+      <circle cx="24" cy="38" r="5" fill="#2a9d8f"/>
+      <circle cx="76" cy="38" r="5" fill="#7b5ea7"/>
+    </svg>
+    <div class="gnb-logo-text">
+      <span class="gnb-logo-main">K-BRIDGE</span>
+      <span class="gnb-logo-sub" data-i18n="tagline">Connecting Malaysian refugees to opportunity · 2026</span>
+    </div>
+  </div>
+
+  <div class="gnb-nav">
+    <div class="gnb-item">
+      <a href="#" onclick="goPage('donate');return false;" id="nav-donate"><span data-i18n="navDonate">Donate</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('donate');donateTab('regular');return false;" data-i18n="subDonateRegular">Monthly Donation</a>
+          <a href="#" onclick="goPage('donate');donateTab('onetime');return false;" data-i18n="subDonateOnetime">One-Time Donation</a>
+          <a href="#" onclick="goPage('donate');donateTab('goods');return false;" data-i18n="subDonateGoods">In-Kind Donation</a>
+          <a href="#" onclick="goPage('donate');donateTab('major');return false;" data-i18n="subDonateMajor">Major Gift</a>
+          <a href="#" onclick="goPage('donate');donateTab('ultra');return false;" data-i18n="subDonateUltra">Ultra Major Gift</a>
+        </div>
+      </div>
+    </div>
+    <div class="gnb-item">
+      <a href="#" onclick="goPage('biz');return false;" id="nav-biz"><span data-i18n="navBiz">Programs</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('biz');bizTab('domestic');return false;" data-i18n="subBizDomestic">Local Programs</a>
+          <a href="#" onclick="goPage('biz');bizTab('overseas');return false;" data-i18n="subBizOverseas">Overseas Programs</a>
+        </div>
+      </div>
+    </div>
+    <div class="gnb-item">
+      <a href="#" onclick="goPage('campaign');return false;" id="nav-campaign"><span data-i18n="navCampaign">Campaigns</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('campaign');return false;" data-i18n="navCampaign">Campaigns</a>
+        </div>
+      </div>
+    </div>
+    <div class="gnb-item">
+      <a href="#" onclick="goPage('about');return false;" id="nav-about"><span data-i18n="navAbout">About Us</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('about');aboutTab('greeting');return false;" data-i18n="subAboutGreeting">Greeting</a>
+          <a href="#" onclick="goPage('about');aboutTab('intro');return false;" data-i18n="subAboutIntro">About Us</a>
+        </div>
+      </div>
+    </div>
+    <div class="gnb-item">
+      <a href="#" onclick="goPage('review');return false;" id="nav-review"><span data-i18n="navReview">Community</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('review');reviewTab('notice');return false;" data-i18n="subRevNotice">Notices</a>
+          <a href="#" onclick="goPage('review');reviewTab('story');return false;" data-i18n="subRevStory">Stories</a>
+          <a href="#" onclick="goPage('review');reviewTab('gallery');return false;" data-i18n="subRevGallery">Gallery &amp; Video</a>
+          <a href="#" onclick="goPage('review');reviewTab('qa');return false;" data-i18n="subRevQa">Q&amp;A</a>
+          <a href="#" onclick="goPage('review');reviewTab('faq');return false;" data-i18n="subRevFaq">FAQ</a>
+        </div>
+      </div>
+    </div>
+    <div class="gnb-item" id="nav-my-item" style="display:none;">
+      <a href="#" onclick="goPage('my');return false;" id="nav-my"><span data-i18n="navMy">MY홈</span></a>
+      <div class="mega">
+        <div class="mega-col">
+          <a href="#" onclick="goPage('my');myTab('donation');myDonSub('regular');return false;" data-i18n="myDonation">My Donations</a>
+          <a href="#" onclick="goPage('my');myTab('info');return false;" data-i18n="myInfo">My Info</a>
+          <a href="#" onclick="goPage('my');myTab('receipt');myRecSub('receipt');return false;" data-i18n="myReceiptCat">Tax Receipt</a>
+          <a href="#" onclick="goPage('my');myTab('materials');return false;" data-i18n="myMaterials">Donor Resources</a>
+          <a href="#" onclick="goPage('my');myTab('faq');myFaqSub('faq');return false;" data-i18n="myFaqCat">FAQ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gnb-right">
+    <div class="gnb-search">
+      <button class="gnb-search-btn" onclick="toggleSearch()">🔍</button>
+    </div>
+    <div class="gnb-user" id="gnbUserBox" style="display:none;">
+      <span class="gnb-user-name" id="gnbUserName"></span>
+      <button class="gnb-logout" onclick="doLogout()" data-i18n="logoutBtn">Log Out</button>
+    </div>
+    <button class="gnb-login" id="gnbLoginBtn" onclick="goPage('login')" data-i18n="loginBtn">Log In</button>
+    <div class="lang-switch">
+      <button class="lang-btn on" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-zh" onclick="setLang('zh')">中文</button>
+      <button class="lang-btn" id="lang-ms" onclick="setLang('ms')">BM</button>
+    </div>
+    <button class="gnb-cta" onclick="goPage('donate')" data-i18n="navDonate">Donate</button>
+  </div>
+</nav>
+
+<div class="search-overlay" id="searchOverlay">
+  <span class="search-close" onclick="toggleSearch()">✕</span>
+  <div class="search-box">
+    <div class="search-box-inner">
+      <input type="text" id="searchInput" placeholder="Search K-BRIDGE..." data-i18n-ph="searchPh" onkeydown="if(event.key==='Enter')doSearch()">
+      <button onclick="doSearch()" data-i18n="searchGo">Go</button>
+    </div>
+    <div class="search-hint" data-i18n="searchHint">Try: donate, programs, campaigns, about, community</div>
+  </div>
+</div>
+
+<div class="fab"><button class="fab-btn" onclick="goPage('donate')" data-i18n="fabBtn">🤝 Donate / Partner</button></div>
+
+<!-- ════════════ LOGIN ════════════ -->
+<div id="page-login" class="page page-wrap">
+  <div class="login-wrap">
+    <div class="login-title" data-i18n="loginBtn">Log In</div>
+    <div class="login-sub" data-i18n="loginSub">Log in to your K-BRIDGE account</div>
+    <input class="login-field" type="text" id="loginIdInput" placeholder="ID" data-i18n-ph="idPh">
+    <input class="login-field" type="password" id="loginPwInput" placeholder="Password" data-i18n-ph="pwPh">
+    <div class="login-remember">
+      <input type="checkbox" id="rememberId">
+      <label for="rememberId" data-i18n="rememberId">Remember ID</label>
+    </div>
+    <button class="login-submit" onclick="doLoginMain()" data-i18n="loginBtn">Log In</button>
+    <div class="login-links">
+      <a href="#" onclick="goPage('join');return false;" data-i18n="joinMembership">Join the Membership</a><span>|</span>
+      <a href="#" onclick="return false;" data-i18n="findId">Find ID</a><span>|</span>
+      <a href="#" onclick="return false;" data-i18n="changePw">Change Password</a>
+    </div>
+    <div class="login-phone" onclick="doPhoneLogin()">📱 <span data-i18n="phoneLoginBtn">Login with your Phone Number</span></div>
+    <div class="login-divider"><span data-i18n="orContinue">or continue with</span></div>
+    <button class="sns-btn sns-google" id="snsGoogle" onclick="doGoogleLogin()">
+      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.4 29.3 35 24 35c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 5.1 29.5 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21 21-9.4 21-21c0-1.4-.1-2.7-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 7.1 29.5 5 24 5c-7.7 0-14.4 4.3-17.7 10.7z"/><path fill="#4CAF50" d="M24 45c5.4 0 10.3-1.8 14.1-4.9l-6.5-5.5C29.5 36.6 26.9 37.5 24 37.5c-5.3 0-9.7-3.4-11.3-8.1l-6.6 5.1C9.5 40.6 16.2 45 24 45z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.2-4.2 5.6l6.5 5.5c-.5.4 6.9-5 6.9-15.6 0-1.4-.1-2.7-.4-3.5z"/></svg>
+      <span data-i18n="googleLogin">Continue with Google</span>
+    </button>
+    <button class="sns-btn sns-wechat" id="snsWechat" onclick="doWechatLogin()">
+      💬 <span data-i18n="wechatLogin">Continue with WeChat</span>
+    </button>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ JOIN THE MEMBERSHIP ════════════ -->
+<div id="page-join" class="page page-wrap">
+  <div class="join-hero sec-green">
+    <div class="ew ew-w" data-i18n="joinMembership">Join the Membership</div>
+    <h1 class="h1" style="color:#fff;" data-i18n="joinTitle">Choose Your Sponsorship Type</h1>
+    <p style="color:rgba(255,255,255,.7);font-size:15px;margin-top:10px;" data-i18n="joinSub">Select the option that fits you to get started</p>
+  </div>
+  <div class="join-types">
+    <div class="join-card" id="join-under14" onclick="selectJoinType('under14')">
+      <div class="join-card-ico">🧒</div>
+      <div class="join-card-title" data-i18n="joinUnder14Title">Sponsorship for Under 14</div>
+      <p class="join-card-desc" data-i18n="joinUnder14Desc">Register a child under 14 to receive sponsorship, verified by a parent or guardian.</p>
+    </div>
+    <div class="join-card" id="join-adult" onclick="selectJoinType('adult')">
+      <div class="join-card-ico">🙋</div>
+      <div class="join-card-title" data-i18n="joinAdultTitle">Individual Sponsor (14+)</div>
+      <p class="join-card-desc" data-i18n="joinAdultDesc">For individuals aged 14 and above who want to donate personally.</p>
+    </div>
+    <div class="join-card" id="join-business" onclick="selectJoinType('business')">
+      <div class="join-card-ico">🏢</div>
+      <div class="join-card-title" data-i18n="joinBusinessTitle">Business Sponsor (14+)</div>
+      <p class="join-card-desc" data-i18n="joinBusinessDesc">For companies and organizations that want to donate on behalf of a business.</p>
+    </div>
+  </div>
+  <div class="join-form-wrap" id="joinFormWrap">
+    <div class="fp-section"><div class="fp-stitle" data-i18n="applicantInfo">Your Information</div>
+      <div class="fp-field"><label data-i18n="nameLbl">Name *</label><input type="text" id="join-name" placeholder="John Doe"></div>
+      <div class="fp-field" id="join-guardian-field" style="display:none;"><label data-i18n="guardianNameLbl">Guardian's Name *</label><input type="text" id="join-guardian" placeholder="Guardian name"></div>
+      <div class="fp-field" id="join-org-field" style="display:none;"><label data-i18n="orgNameLbl">Company / Organization Name *</label><input type="text" id="join-org" placeholder="Company name"></div>
+      <div class="fp-field"><label data-i18n="emailLbl">Email *</label><input type="email" id="join-email" placeholder="example@email.com"></div>
+      <div class="fp-field"><label data-i18n="phoneLbl">Phone</label><input type="tel" id="join-phone" placeholder="+60 12-345-6789" data-i18n-ph="phonePh"></div>
+      <div class="fp-field"><label data-i18n="idPh">ID</label><input type="text" id="join-id" placeholder="ID"></div>
+      <div class="fp-field"><label data-i18n="pwPh">Password</label><input type="password" id="join-pw" placeholder="Password"></div>
+    </div>
+    <button class="fp-submit" onclick="submitJoin()" data-i18n="joinSubmit">Create Account</button>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ MY PAGE ════════════ -->
+<div id="page-my" class="page page-wrap">
+  <div class="my-welcome sec-white">
+    <div class="my-card">
+      <div class="my-badge" id="myBadge" data-i18n="personalBadge">Individual</div>
+      <div class="my-greet" id="myGreet"><span data-i18n="helloGreeting">Hello,</span><br><span id="myUserNameDisplay">Guest</span>!</div>
+      <div class="my-donorno"><span data-i18n="donorNoLabel">Donor No.</span> | <span id="myDonorNo">-</span></div>
+    </div>
+    <div class="my-cta-box">
+      <div class="my-cta-msg" data-i18n="welcomeCta">A small act saves a refugee family's future — become a K-BRIDGE donor today!</div>
+      <div class="my-change-link" onclick="goPage('login')"><span data-i18n="changeInfoLink">Change Personal Info</span> ›</div>
+    </div>
+  </div>
+
+  <div class="about-tabs">
+    <div class="at on" id="my-t-donation" onclick="myTab('donation')" data-i18n="myDonation">My Donations</div>
+    <div class="at" id="my-t-info" onclick="myTab('info')" data-i18n="myInfo">My Info</div>
+    <div class="at" id="my-t-receipt" onclick="myTab('receipt')" data-i18n="myReceiptCat">Tax Receipt</div>
+    <div class="at" id="my-t-materials" onclick="myTab('materials')" data-i18n="myMaterials">Donor Resources</div>
+    <div class="at" id="my-t-faq" onclick="myTab('faq')" data-i18n="myFaqCat">FAQ</div>
+  </div>
+
+  <div class="atab-content show" id="my-c-donation">
+    <div class="donate-tabs" style="position:static;">
+      <div class="dt on" id="my-don-regular" onclick="myDonSub('regular')" data-i18n="myRegular">Monthly Donations</div>
+      <div class="dt" id="my-don-onetime" onclick="myDonSub('onetime')" data-i18n="myOneTime">One-Time Donations</div>
+    </div>
+    <div style="padding:32px 7vw;" id="my-don-regular-c">
+      <p class="lead" data-i18n="myNoRecordsRegular">No monthly donations yet. Start supporting a refugee family today!</p>
+    </div>
+    <div style="padding:32px 7vw;display:none;" id="my-don-onetime-c">
+      <p class="lead" data-i18n="myNoRecordsOnetime">No one-time donations yet.</p>
+    </div>
+  </div>
+
+  <div class="atab-content" id="my-c-info">
+    <div style="padding:0 7vw;max-width:560px;">
+      <div class="fp-field"><label data-i18n="nameLbl2">Name</label><input type="text" id="myinfo-name" placeholder="—"></div>
+      <div class="fp-field"><label data-i18n="emailLbl">Email *</label><input type="email" id="myinfo-email" placeholder="—"></div>
+      <div class="fp-field"><label data-i18n="phoneLbl">Phone</label><input type="tel" id="myinfo-phone" placeholder="—"></div>
+      <button class="fp-submit" onclick="alert(loggedInMsg())" data-i18n="saveChanges">Save Changes</button>
+    </div>
+  </div>
+
+  <div class="atab-content" id="my-c-receipt">
+    <div class="donate-tabs" style="position:static;">
+      <div class="dt on" id="my-rec-receipt" onclick="myRecSub('receipt')" data-i18n="myReceipt">Tax Receipt</div>
+      <div class="dt" id="my-rec-confirm" onclick="myRecSub('confirm')" data-i18n="myConfirm">Donation Confirmation</div>
+      <div class="dt" id="my-rec-history" onclick="myRecSub('history')" data-i18n="myHistory">Donation History</div>
+    </div>
+    <div style="padding:32px 7vw;">
+      <p class="lead" data-i18n="myReceiptDesc">Your tax receipts and donation records will appear here once you've made a donation.</p>
+    </div>
+  </div>
+
+  <div class="atab-content" id="my-c-materials">
+    <div style="padding:32px 7vw;">
+      <p class="lead" data-i18n="myMaterialsDesc">Downloadable donor resources, brochures, and impact reports will be available here.</p>
+    </div>
+  </div>
+
+  <div class="atab-content" id="my-c-faq">
+    <div class="donate-tabs" style="position:static;">
+      <div class="dt on" id="my-faq-faq" onclick="myFaqSub('faq')" data-i18n="myFaqLink">FAQ</div>
+      <div class="dt" id="my-faq-11" onclick="myFaqSub('inquiry')" data-i18n="my1to1">1:1 Inquiry</div>
+    </div>
+    <div style="padding:32px 7vw;">
+      <p class="lead" data-i18n="myFaqDesc">Frequently asked questions and 1:1 inquiry support for donors.</p>
+    </div>
+  </div>
+
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ HOME ════════════ -->
+<div id="page-home" class="page active page-wrap">
+
+  <section class="hero-carousel" id="heroCarousel"></section>
+
+  <div class="statbar"><div class="statbar-in">
+    <div class="sitem"><div class="snum" data-cnt="18" data-suf="0K+">0</div><div class="slbl" data-i18n="stat1">Refugees in Malaysia</div></div>
+    <div class="sitem"><div class="snum" data-cnt="3" data-suf="">0</div><div class="slbl" data-i18n="stat2">Supported Languages</div></div>
+    <div class="sitem"><div class="snum" data-cnt="500" data-suf="P">0</div><div class="slbl" data-i18n="stat3">Free Points for New Users</div></div>
+    <div class="sitem"><div class="snum" data-cnt="50" data-suf="RM">0</div><div class="slbl" data-i18n="stat4">Point Value Equivalent</div></div>
+  </div></div>
+
+  <div class="bq sec-white pad"><div class="bq-text" data-i18n="quote1"><span>Refugees are not beneficiaries.</span><br><em>They are members of our team.</em></div><div class="bq-bar"></div><div class="bq-src">— K-BRIDGE VISION 2026</div></div>
+
+  <div class="srow">
+    <div class="shalf-text" style="background:#fff;">
+      <div class="ew center" style="text-align:center;" data-i18n="tagProblem">PROBLEM</div><h2 class="h2 center" style="text-align:center;" data-i18n="probTitle">Current Situation &amp; Challenges</h2>
+      <p class="lead center" style="text-align:center;margin-bottom:24px;" data-i18n="probDesc">Four realities that 180,000+ refugees in Malaysia face every day</p>
+      <div class="prob-g">
+        <div class="pc"><div class="pc-n">01</div><div class="pc-ico">🚫</div><div class="pc-t" data-i18n="prob1t">No Legal Work</div><p class="pc-d" data-i18n="prob1d">180K+ barred from legal employment</p></div>
+        <div class="pc"><div class="pc-n">02</div><div class="pc-ico">🏚️</div><div class="pc-t" data-i18n="prob2t">Unsafe Housing</div><p class="pc-d" data-i18n="prob2d">Unverified landlords, excessive rent</p></div>
+        <div class="pc"><div class="pc-n">03</div><div class="pc-ico">💬</div><div class="pc-t" data-i18n="prob3t">Language Barrier</div><p class="pc-d" data-i18n="prob3d">Multiple languages, broken communication</p></div>
+        <div class="pc"><div class="pc-n">04</div><div class="pc-ico">🚗</div><div class="pc-t" data-i18n="prob4t">No Transportation</div><p class="pc-d" data-i18n="prob4d">No affordable way to get around</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bq bq-dark sec-black pad"><div class="bq-text" data-i18n="quote2"><em>One app.</em> Every need. Every language.</div><div class="bq-bar" style="background:#52b788;"></div></div>
+
+  <div class="srow" style="background:linear-gradient(135deg,#0f3d22,#1a6b3c);">
+    <div class="shalf-text">
+      <div class="ew ew-w center" style="text-align:center;" data-i18n="tagSolution">SOLUTION</div><h2 class="h2 h2-w center" style="text-align:center;" data-i18n="solTitle">The Solution: K-BRIDGE App</h2>
+      <p class="lead lead-w center" style="text-align:center;margin-bottom:24px;font-style:italic;" data-i18n="solSub">One app. Every need. Every language.</p>
+      <div class="sol-g">
+        <div class="sg"><div class="sg-bar" style="background:#3b82f6;"></div><div class="sg-b"><div class="sg-ico">💼</div><div class="sg-t" data-i18n="tagJobs2">Jobs</div><p class="sg-d" data-i18n="sol1d">Safe access to informal/legal jobs</p></div></div>
+        <div class="sg"><div class="sg-bar" style="background:#7c3aed;"></div><div class="sg-b"><div class="sg-ico">🏠</div><div class="sg-t" data-i18n="tagHousing2">Housing</div><p class="sg-d" data-i18n="sol2d">Verified landlords, safe housing</p></div></div>
+        <div class="sg"><div class="sg-bar" style="background:#f59e0b;"></div><div class="sg-b"><div class="sg-ico">🛍️</div><div class="sg-t" data-i18n="tagMarket2">Market</div><p class="sg-d" data-i18n="sol3d">Community goods marketplace</p></div></div>
+        <div class="sg"><div class="sg-bar" style="background:#ef4444;"></div><div class="sg-b"><div class="sg-ico">🚗</div><div class="sg-t" data-i18n="tagCarpool2">Carpool</div><p class="sg-d" data-i18n="sol4d">Affordable, safe carpooling</p></div></div>
+        <div class="sg"><div class="sg-bar" style="background:rgba(255,255,255,.3);"></div><div class="sg-b"><div class="sg-ico">💬</div><div class="sg-t" data-i18n="tagCommunity2">Community</div><p class="sg-d" data-i18n="sol5d">Info sharing platform</p></div></div>
+        <div class="sg"><div class="sg-bar" style="background:#52b788;"></div><div class="sg-b"><div class="sg-ico">🌐</div><div class="sg-t" data-i18n="tagLang2">3 Languages</div><p class="sg-d" data-i18n="sol6d">Full multilingual support</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="srow sec-black">
+    <div class="shalf-text">
+      <div class="ew ew-w center" style="text-align:center;" data-i18n="tagHow">HOW IT WORKS</div><h2 class="h2 h2-w center" style="text-align:center;margin-bottom:28px;" data-i18n="howTitle">How K-BRIDGE Works</h2>
+      <div class="how-g">
+        <div class="hs"><div class="hs-n">1</div><div class="hs-t" data-i18n="how1t">Download &amp; Sign Up</div><p class="hs-d" data-i18n="how1d">Join with an NGO partner invite code</p></div>
+        <div class="hs"><div class="hs-n">2</div><div class="hs-t" data-i18n="how2t">Get 500 Points</div><p class="hs-d" data-i18n="how2d">New members get ~RM 50 worth</p></div>
+        <div class="hs"><div class="hs-n">3</div><div class="hs-t" data-i18n="how3t">Search What You Need</div><p class="hs-d" data-i18n="how3d">Jobs, housing, market, carpool in your language</p></div>
+        <div class="hs"><div class="hs-n">4</div><div class="hs-t" data-i18n="how4t">Deal &amp; Connect</div><p class="hs-d" data-i18n="how4d">Pay with points / Touch 'n Go / cash</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bq bq-dark sec-black pad"><div class="bq-text" data-i18n="quote3">Technology serves humanity.<br><em>Built on faith, sustained by community.</em></div><div class="bq-bar" style="background:#52b788;"></div></div>
+
+  <div class="srow sec-white">
+    <div class="shalf-text">
+      <div class="ew center" style="text-align:center;" data-i18n="tagBiz">BUSINESS MODEL</div><h2 class="h2 center" style="text-align:center;" data-i18n="revTitle">Revenue &amp; Sustainability</h2>
+      <div class="rev-g" style="margin-top:20px;">
+        <div class="rg b"><div class="rg-ico">📢</div><div class="rg-t" data-i18n="rev1t">Advertising</div><p class="rg-d" data-i18n="rev1d">RM 200–500/mo</p></div>
+        <div class="rg r"><div class="rg-ico">🙏</div><div class="rg-t" data-i18n="rev2t">Donations</div><p class="rg-d" data-i18n="rev2d">PayPal / TnG / FPX</p></div>
+        <div class="rg g"><div class="rg-ico">🤝</div><div class="rg-t" data-i18n="rev3t">NGO Partnerships</div><p class="rg-d" data-i18n="rev3d">Sponsored invite codes</p></div>
+        <div class="rg y"><div class="rg-ico">💼</div><div class="rg-t" data-i18n="rev4t">Premium Listings</div><p class="rg-d" data-i18n="rev4d">RM 50–200/listing</p></div>
+      </div>
+    </div>
+  </div>
+  <div class="srow sec-gray">
+    <div class="shalf-text">
+      <div class="ew center" style="text-align:center;" data-i18n="tagVision">VISION</div><h2 class="h2 center" style="text-align:center;" data-i18n="visTitle">👑 Vision: Refugee IT Team</h2>
+      <p class="lead center" style="text-align:center;font-style:italic;margin-bottom:24px;" data-i18n="visSub">Refugees are not beneficiaries — they are members of our team.</p>
+      <div class="vis-g">
+        <div class="vg"><div class="vg-ico">💻</div><div class="vg-t" data-i18n="vis1t">App Developers</div><p class="vg-d" data-i18n="vis1d">Flutter &amp; web dev</p></div>
+        <div class="vg"><div class="vg-ico">📣</div><div class="vg-t" data-i18n="vis2t">Community Managers</div><p class="vg-d" data-i18n="vis2d">Community management</p></div>
+        <div class="vg"><div class="vg-ico">🌐</div><div class="vg-t" data-i18n="vis3t">Translators</div><p class="vg-d" data-i18n="vis3d">3-language translation</p></div>
+        <div class="vg"><div class="vg-ico">📊</div><div class="vg-t" data-i18n="vis4t">Data Analysts</div><p class="vg-d" data-i18n="vis4d">Impact measurement</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="srow sec-black">
+    <div class="shalf-text">
+      <div class="ew ew-w center" style="text-align:center;" data-i18n="tagRoad">ROADMAP</div><h2 class="h2 h2-w center" style="text-align:center;" data-i18n="roadTitle">Launch Roadmap</h2>
+      <div class="road-g" style="margin-top:24px;">
+        <div class="roc"><div class="roc-h b" data-i18n="road1h">Phase 1 · Months 1–2</div><div class="roc-body"><div class="roc-ph b" data-i18n="road1p">Foundation</div><ul class="roc-list"><li data-i18n="road1a">NGO partnership agreements</li><li data-i18n="road1b">Distribute invite codes</li><li data-i18n="road1c">KL beta 50–100 users</li></ul></div></div>
+        <div class="roc"><div class="roc-h g" data-i18n="road2h">Phase 2 · Months 3–4</div><div class="roc-body"><div class="roc-ph g" data-i18n="road2p">Growth</div><ul class="roc-list"><li data-i18n="road2a">Launch market &amp; carpool</li><li data-i18n="road2b">500+ active users</li><li data-i18n="road2c">Build refugee IT team</li></ul></div></div>
+        <div class="roc"><div class="roc-h o" data-i18n="road3h">Phase 3 · Months 5–6</div><div class="roc-body"><div class="roc-ph o" data-i18n="road3p">Expansion</div><ul class="roc-list"><li data-i18n="road3a">10,000+ users</li><li data-i18n="road3b">Launch donation campaigns</li><li data-i18n="road3c">Expand to Penang &amp; JB</li></ul></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="srow sec-white">
+    <div class="shalf-text">
+      <div class="ew center" style="text-align:center;" data-i18n="tagPartner">PARTNERSHIP</div><h2 class="h2 center" style="text-align:center;" data-i18n="partTitle">Partnership Proposal</h2>
+      <div class="part-g" style="margin-top:24px;">
+        <div><div class="pg-h" data-i18n="partNeedTitle">What We Need</div><ul class="pg-l"><li data-i18n="partN1">Distribute invite codes to beneficiaries</li><li data-i18n="partN2">Verify employers &amp; landlords</li><li data-i18n="partN3">Share safety information</li><li data-i18n="partN4">Co-branding</li><li data-i18n="partN5">Cash top-up for points</li></ul></div>
+        <div><div class="pg-h" data-i18n="partGetTitle">What You Get</div><ul class="pg-l"><li data-i18n="partG1">Real-time refugee needs data</li><li data-i18n="partG2">Digital distribution platform</li><li data-i18n="partG3">Monthly impact reports</li><li data-i18n="partG4">10,000+ brand exposure</li><li data-i18n="partG5">Refugee-run tech team</li></ul></div>
+        <div class="pg-logos">UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-white pad-sm" style="border-top:1px solid #f0f0f0;">
+    <div class="center" style="margin-bottom:36px;"><div class="ew center" data-i18n="tagChildren">OUR CHILDREN</div><h2 class="h2 center" data-i18n="childTitle">Children of K-BRIDGE</h2></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto;">
+      <div style="border-radius:16px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.07);transition:all .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'"><div style="height:180px;background:linear-gradient(135deg,#d8f3dc,#95d5b2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><div style="font-size:48px;">👧</div><div style="font-size:10px;color:#1a6b3c;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div style="padding:16px;background:#fff;"><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><span style="background:#d8f3dc;color:#1a6b3c;font-size:9px;font-weight:700;padding:2px 8px;border-radius:7px;" data-i18n="ethn1">Burmese</span><span style="font-size:10px;color:#bbb;">Kuala Lumpur</span></div><div style="font-size:14px;font-weight:800;margin-bottom:5px;" data-i18n="childNameAge">Child name / age</div><p style="font-size:11px;color:#777;line-height:1.7;" data-i18n="childDescPh">Add this child's story here.</p><div style="margin-top:10px;padding-top:9px;border-top:1px solid #f5f5f5;font-size:10px;color:#1a6b3c;font-weight:600;" data-i18n="benefit1">💼 Job connection beneficiary</div></div></div>
+      <div style="border-radius:16px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.07);transition:all .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'"><div style="height:180px;background:linear-gradient(135deg,#dde4ff,#a5b4fc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><div style="font-size:48px;">👦</div><div style="font-size:10px;color:#4361ee;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div style="padding:16px;background:#fff;"><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><span style="background:#dde4ff;color:#4361ee;font-size:9px;font-weight:700;padding:2px 8px;border-radius:7px;" data-i18n="ethn2">Rohingya</span><span style="font-size:10px;color:#bbb;">Petaling Jaya</span></div><div style="font-size:14px;font-weight:800;margin-bottom:5px;" data-i18n="childNameAge">Child name / age</div><p style="font-size:11px;color:#777;line-height:1.7;" data-i18n="childDescPh">Add this child's story here.</p><div style="margin-top:10px;padding-top:9px;border-top:1px solid #f5f5f5;font-size:10px;color:#4361ee;font-weight:600;" data-i18n="benefit2">💬 Community connection beneficiary</div></div></div>
+      <div style="border-radius:16px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.07);transition:all .3s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'"><div style="height:180px;background:linear-gradient(135deg,#fff0d4,#fcd34d);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"><div style="font-size:48px;">👧</div><div style="font-size:10px;color:#b45309;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div style="padding:16px;background:#fff;"><div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><span style="background:#fff0d4;color:#b45309;font-size:9px;font-weight:700;padding:2px 8px;border-radius:7px;" data-i18n="ethn3">Somali</span><span style="font-size:10px;color:#bbb;">Ampang</span></div><div style="font-size:14px;font-weight:800;margin-bottom:5px;" data-i18n="childNameAge">Child name / age</div><p style="font-size:11px;color:#777;line-height:1.7;" data-i18n="childDescPh">Add this child's story here.</p><div style="margin-top:10px;padding-top:9px;border-top:1px solid #f5f5f5;font-size:10px;color:#b45309;font-weight:600;" data-i18n="benefit3">🏠 Housing connection beneficiary</div></div></div>
+    </div>
+    <div style="margin-top:18px;background:#f4faf6;border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:10px;border:1px dashed #95d5b2;max-width:1100px;margin-left:auto;margin-right:auto;"><div style="font-size:22px;">📸</div><div style="font-size:12px;color:#888;" data-i18n="photoBanner">Send us real photos, names, and descriptions and we'll update this right away!</div></div>
+  </div>
+
+  <div class="tslider-wrap sec-black">
+    <div class="center"><div class="ew ew-w center" data-i18n="tagVoices">VOICES</div><h2 class="h2 h2-w center" data-i18n="voicesTitle">Their Stories</h2></div>
+    <div class="tslider"><div class="tslides" id="tsl">
+      <div class="tslide"><div class="tslide-q" data-i18n="voice1">"I want to work but the law stops me."</div><div class="tslide-a" data-i18n="voice1a">— Ahmad, 32 · Kuala Lumpur</div></div>
+      <div class="tslide"><div class="tslide-q" data-i18n="voice2">"My landlord suddenly doubled the rent."</div><div class="tslide-a" data-i18n="voice2a">— Maria, 27 · Petaling Jaya</div></div>
+      <div class="tslide"><div class="tslide-q" data-i18n="voice3">"A safe carpool service would let me take my kids to the hospital."</div><div class="tslide-a" data-i18n="voice3a">— Fatima, 41 · Ampang</div></div>
+      <div class="tslide"><div class="tslide-q" data-i18n="voice4">"An app in 3 languages would connect all of us."</div><div class="tslide-a" data-i18n="voice4a">— Daniel, 25 · Setia Wangsa</div></div>
+    </div><div class="tdots" id="tdd"></div></div>
+  </div>
+
+  <div class="share-sec"><div class="share-inner"><span class="share-lbl" data-i18n="shareLbl">Share</span><button class="shbtn sh-w" onclick="shareIt('whatsapp')">💬 WhatsApp</button><button class="shbtn sh-f" onclick="shareIt('facebook')">f Facebook</button><button class="shbtn sh-t" onclick="shareIt('twitter')">𝕏 Twitter</button><button class="shbtn sh-c" onclick="shareIt('copy')" data-i18n="copyLink">🔗 Copy Link</button></div></div>
+
+  <section class="final-cta">
+    <h2 data-i18n="ctaTitle">Let's Build This Together</h2>
+    <p data-i18n="ctaDesc">K-BRIDGE is more than an app — it's a movement.<br>Refugees helping refugees. Technology serving humanity.</p>
+    <ul class="cta-contacts"><li>📧 kbridge@email.com</li><li>📱 WhatsApp: +60 12-XXX-XXXX</li><li>🌐 kbridge.netlify.app</li></ul>
+    <div class="cta-btns"><button class="btn-white" onclick="goPage('donate')" data-i18n="ctaBtn1">Contact for Donation</button><button class="btn-outline" onclick="goPage('donate')" data-i18n="ctaBtn2">Apply for Partnership</button></div>
+    <p class="cta-verse" data-i18n="verse">"For I was a stranger and you welcomed me" — Matthew 25:35</p>
+  </section>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a> · <a href="#">kbridge.netlify.app</a></p></footer>
+</div>
+
+<!-- ════════════ DONATE ════════════ -->
+<div id="page-donate" class="page page-wrap">
+  <div class="sub-hero sec-green pad">
+    <div class="ew ew-w" data-i18n="tagDonate">DONATE</div>
+    <h1 class="h1" style="color:#fff;margin-bottom:10px;" data-i18n="donateH1">Donate</h1>
+    <p style="color:rgba(255,255,255,.7);font-size:15px;max-width:480px;line-height:1.8;" data-i18n="donateSub">Join K-BRIDGE and change the future of Malaysian refugees</p>
+  </div>
+  <div class="donate-tabs">
+    <div class="dt on" id="dt-info" onclick="donateTab('info')" data-i18n="subDonateInfo">Donation Info</div>
+    <div class="dt" id="dt-child" onclick="donateTab('child')" data-i18n="subDonateChild">Sponsor a Child</div>
+  </div>
+  <div class="dtab-content show" id="dtc-info">
+    <div class="impact-grid">
+      <div class="impact-card"><div class="impact-ico">☕</div><div class="impact-amt" data-amt="0">$8</div><div class="impact-desc" data-i18n="impact1">100 points for a refugee family</div></div>
+      <div class="impact-card"><div class="impact-ico">🍚</div><div class="impact-amt" data-amt="2">$23</div><div class="impact-desc" data-i18n="impact2">A month of carpool support</div></div>
+      <div class="impact-card"><div class="impact-ico">📚</div><div class="impact-amt" data-amt="3">$38</div><div class="impact-desc" data-i18n="impact3">One app dev training session</div></div>
+      <div class="impact-card" style="background:#d8f3dc;border:1px solid #b7e4c7;"><div class="impact-ico">🌱</div><div class="impact-amt" data-amt="4">$75</div><div class="impact-desc" style="color:#1a6b3c;font-weight:600;" data-i18n="impact4">Full app onboarding for 1 refugee</div></div>
+    </div>
+    <div class="fw">
+      <h2 class="h2 center" style="margin-bottom:6px;" data-i18n="formTitle">Make a Donation</h2>
+      <p class="lead center" style="margin-bottom:32px;" data-i18n="formDesc">Your generosity changes a refugee family's tomorrow.</p>
+      <div class="fp-section"><div class="fp-stitle" data-i18n="donateTypeTitle">Donation Type</div><div class="fp-tabs"><button class="fp-tab on" id="fp-t1" onclick="fpTab(1)" data-i18n="monthly">Monthly</button><button class="fp-tab" id="fp-t2" onclick="fpTab(2)" data-i18n="oneTime">One-Time</button></div></div>
+      <div class="fp-section"><div class="fp-stitle" data-i18n="amountTitle">Amount</div>
+        <div class="fp-amt-g">
+          <div class="fp-ab" data-amt="0" onclick="fpAmt(this)">$8</div>
+          <div class="fp-ab on" data-amt="1" onclick="fpAmt(this)">$15</div>
+          <div class="fp-ab" data-amt="2" onclick="fpAmt(this)">$23</div>
+          <div class="fp-ab" data-amt="3" onclick="fpAmt(this)">$38</div>
+          <div class="fp-ab" data-amt="4" onclick="fpAmt(this)">$75</div>
+          <div class="fp-ab" data-amt="direct" onclick="fpAmt(this)" data-i18n="custom">Custom</div>
+        </div>
+        <input class="fp-custom" id="fp-custom" type="number" placeholder="Enter custom amount">
+      </div>
+      <div class="fp-section"><div class="fp-stitle" data-i18n="applicantInfo">Your Information</div>
+        <div class="fp-field"><label data-i18n="nameLbl">Name *</label><input type="text" id="fp-name" placeholder="John Doe"></div>
+        <div class="fp-field"><label data-i18n="emailLbl">Email *</label><input type="email" id="fp-email" placeholder="example@email.com"></div>
+        <div class="fp-field"><label data-i18n="phoneLbl">Phone</label><input type="tel" id="fp-tel" placeholder="+60 12-345-6789" data-i18n-ph="phonePh"></div>
+      </div>
+      <div class="fp-section"><div class="fp-stitle" data-i18n="consentTitle">Consent</div>
+        <div class="fp-chk"><input type="checkbox" id="fp-ck1"><label for="fp-ck1" data-i18n="consent1">[Required] I agree to the collection of personal information <a href="#" data-i18n="viewLink">View</a></label></div>
+        <div class="fp-chk"><input type="checkbox" id="fp-ck2"><label for="fp-ck2" data-i18n="consent2">[Optional] I'd like to receive the email newsletter</label></div>
+      </div>
+      <button class="fp-submit" onclick="fpSubmit()" data-i18n="submitDonate">Donate Now</button>
+      <div class="fp-note" data-i18n="donateNote">Donations fund K-BRIDGE app development and refugee support in Malaysia.</div>
+    </div>
+  </div>
+  <div class="dtab-content" id="dtc-child">
+    <div class="ew" data-i18n="tagChildren">OUR CHILDREN</div><h2 class="h2" data-i18n="sponsorTitle">Meet the Children</h2>
+    <p class="lead" style="margin-bottom:32px;" data-i18n="sponsorDesc">Their stories inspired K-BRIDGE.</p>
+    <div class="child-grid">
+      <div class="child-card"><div class="child-img" style="background:linear-gradient(135deg,#d8f3dc,#95d5b2);"><div style="font-size:52px;">👧</div><div style="font-size:11px;color:#1a6b3c;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div class="child-body"><span class="child-tag" style="background:#d8f3dc;color:#1a6b3c;" data-i18n="ethnLoc1">Burmese · Kuala Lumpur</span><div class="child-name" data-i18n="childNameAge">Child name / age</div><p class="child-desc" data-i18n="childDescPh2">Add this child's story here.</p><div class="child-benefit" style="color:#1a6b3c;" data-i18n="benefit1">💼 Job connection beneficiary</div></div></div>
+      <div class="child-card"><div class="child-img" style="background:linear-gradient(135deg,#dde4ff,#a5b4fc);"><div style="font-size:52px;">👦</div><div style="font-size:11px;color:#4361ee;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div class="child-body"><span class="child-tag" style="background:#dde4ff;color:#4361ee;" data-i18n="ethnLoc2">Rohingya · Petaling Jaya</span><div class="child-name" data-i18n="childNameAge">Child name / age</div><p class="child-desc" data-i18n="childDescPh3">Add this child's story.</p><div class="child-benefit" style="color:#4361ee;" data-i18n="benefit2">💬 Community connection beneficiary</div></div></div>
+      <div class="child-card"><div class="child-img" style="background:linear-gradient(135deg,#fff0d4,#fcd34d);"><div style="font-size:52px;">👧</div><div style="font-size:11px;color:#b45309;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div><div class="child-body"><span class="child-tag" style="background:#fff0d4;color:#b45309;" data-i18n="ethnLoc3">Somali · Ampang</span><div class="child-name" data-i18n="childNameAge">Child name / age</div><p class="child-desc" data-i18n="childDescPh4">Add this child's story.</p><div class="child-benefit" style="color:#b45309;" data-i18n="benefit3">🏠 Housing connection beneficiary</div></div></div>
+    </div>
+    <div style="margin-top:18px;background:#f4faf6;border-radius:10px;padding:14px 20px;display:flex;align-items:center;gap:10px;border:1px dashed #95d5b2;"><div style="font-size:22px;">📸</div><div style="font-size:12px;color:#888;" data-i18n="photoBanner">Send us real photos and we'll update this right away!</div></div>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ PROGRAMS ════════════ -->
+<div id="page-biz" class="page page-wrap">
+  <div class="sub-hero sec-black pad">
+    <div class="ew ew-w" data-i18n="tagBiz2">MAIN PROGRAMS</div>
+    <h1 class="h1" style="color:#fff;margin-bottom:10px;" data-i18n="bizH1">Programs</h1>
+    <p style="color:rgba(255,255,255,.55);font-size:15px;" data-i18n="bizSub">K-BRIDGE's core programs</p>
+  </div>
+  <div class="biz-tabs">
+    <div class="bt on" id="bt-domestic" onclick="bizTab('domestic')" data-i18n="subBizDomestic">Local Programs</div>
+    <div class="bt" id="bt-overseas" onclick="bizTab('overseas')" data-i18n="subBizOverseas">Overseas Programs</div>
+  </div>
+  <div class="btab-content show" id="btc-domestic">
+    <div class="ew" data-i18n="subBizDomestic">LOCAL</div><h2 class="h2" data-i18n="domTitle">Local Programs</h2>
+    <p class="lead" style="margin-bottom:36px;" data-i18n="domDesc">Centered in Kuala Lumpur, connecting refugee communities.</p>
+    <div class="biz-detail-item">
+      <div class="biz-detail-img" style="background:linear-gradient(135deg,#d8f3dc,#52b788);color:#1a6b3c;"><div style="font-size:60px;">💼</div><div style="font-size:12px;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div>
+      <div class="biz-detail-text"><div class="biz-num">01</div><div class="biz-title" data-i18n="dom1Title">Job Connection Program</div><div class="divider"></div><p class="biz-desc" data-i18n="dom1Desc">180,000+ refugees are barred from formal work. K-BRIDGE partners with trusted NGOs to safely connect people to jobs.</p></div>
+    </div>
+    <div class="biz-detail-item rev">
+      <div class="biz-detail-img" style="background:linear-gradient(135deg,#dde4ff,#818cf8);color:#4361ee;"><div style="font-size:60px;">🏠</div><div style="font-size:12px;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div>
+      <div class="biz-detail-text"><div class="biz-num">02</div><div class="biz-title" data-i18n="dom2Title">Safe Housing Connection</div><div class="divider"></div><p class="biz-desc" data-i18n="dom2Desc">Solving overcharging by unverified landlords through a verification system.</p></div>
+    </div>
+    <div class="biz-detail-item">
+      <div class="biz-detail-img" style="background:linear-gradient(135deg,#fff0d4,#fcd34d);color:#b45309;"><div style="font-size:60px;">🚗</div><div style="font-size:12px;font-weight:600;" data-i18n="addPhoto">Add photo here</div></div>
+      <div class="biz-detail-text"><div class="biz-num">03</div><div class="biz-title" data-i18n="dom3Title">Community Carpool Service</div><div class="divider"></div><p class="biz-desc" data-i18n="dom3Desc">Affordable, safe carpooling with no bank account required.</p></div>
+    </div>
+    <div class="photo-section">
+      <div class="ew" data-i18n="tagGallery">GALLERY</div><h3 style="font-size:18px;font-weight:700;margin-bottom:4px;" data-i18n="domGalTitle">Local Program Photos</h3>
+      <div class="photo-grid">
+        <div class="photo-box" style="background:linear-gradient(135deg,#d8f3dc,#95d5b2);color:#1a6b3c;"><div style="font-size:32px;">📸</div><span data-i18n="addPhotoShort">Add Photo</span></div>
+        <div class="photo-box" style="background:linear-gradient(135deg,#dde4ff,#a5b4fc);color:#4361ee;"><div style="font-size:32px;">📸</div><span data-i18n="addPhotoShort">Add Photo</span></div>
+        <div class="photo-box" style="background:linear-gradient(135deg,#fff0d4,#fcd34d);color:#b45309;"><div style="font-size:32px;">📸</div><span data-i18n="addPhotoShort">Add Photo</span></div>
+      </div>
+      <div class="photo-add-banner"><div style="font-size:20px;">📷</div><div style="font-size:12px;color:#888;" data-i18n="photoBanner">Send us real photos and we'll update this right away!</div></div>
+    </div>
+  </div>
+  <div class="btab-content" id="btc-overseas">
+    <div class="ew" data-i18n="subBizOverseas">OVERSEAS</div><h2 class="h2" data-i18n="ovTitle">Overseas Programs</h2>
+    <p class="lead" style="margin-bottom:36px;" data-i18n="ovDesc">Expanding K-BRIDGE across Southeast Asia.</p>
+    <div class="biz-card-grid">
+      <div class="biz-card2"><div class="biz-card2-img" style="background:linear-gradient(135deg,#d8f3dc,#52b788);">🇲🇾</div><div class="biz-card2-body"><span class="biz-card2-tag" style="background:#d8f3dc;color:#1a6b3c;">Malaysia</span><div class="biz-card2-title" data-i18n="ov1Title">KL Hub Operations</div><p class="biz-card2-desc" data-i18n="ov1Desc">Operating from Kuala Lumpur.</p></div></div>
+      <div class="biz-card2"><div class="biz-card2-img" style="background:linear-gradient(135deg,#dde4ff,#818cf8);">🌏</div><div class="biz-card2-body"><span class="biz-card2-tag" style="background:#dde4ff;color:#4361ee;" data-i18n="upcoming">Upcoming</span><div class="biz-card2-title" data-i18n="ov2Title">Penang &amp; Johor Bahru</div><p class="biz-card2-desc" data-i18n="ov2Desc">Expansion planned for late 2026.</p></div></div>
+      <div class="biz-card2"><div class="biz-card2-img" style="background:linear-gradient(135deg,#fff0d4,#fcd34d);">🌍</div><div class="biz-card2-body"><span class="biz-card2-tag" style="background:#fffbeb;color:#b45309;" data-i18n="longTerm">Long-term</span><div class="biz-card2-title" data-i18n="ov3Title">SE Asia Network</div><p class="biz-card2-desc" data-i18n="ov3Desc">Roadmap for Thailand and Indonesia.</p></div></div>
+    </div>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ CAMPAIGNS ════════════ -->
+<div id="page-campaign" class="page page-wrap">
+  <div class="sub-hero sec-green pad">
+    <div class="ew ew-w" data-i18n="navCampaign">CAMPAIGNS</div>
+    <h1 class="h1" style="color:#fff;margin-bottom:10px;" data-i18n="campH1">Campaigns</h1>
+    <p style="color:rgba(255,255,255,.7);font-size:15px;" data-i18n="campSub">K-BRIDGE's ongoing fundraising campaigns</p>
+  </div>
+  <div class="camp-tabs">
+    <div class="ct on" id="ct-ongoing" onclick="campTab('ongoing')" data-i18n="subCampOngoing">Ongoing Campaigns</div>
+    <div class="ct" id="ct-ended" onclick="campTab('ended')" data-i18n="subCampEnded">Ended Campaigns</div>
+  </div>
+  <div class="ctab-content show" id="ctc-ongoing">
+    <div class="camp-grid" style="margin-top:24px;">
+      <div class="cc"><div class="cc-img" style="background:linear-gradient(135deg,#d8f3dc,#52b788);"><span class="cc-badge" style="background:#1a6b3c;" data-i18n="ongoingBadge">Ongoing</span>🌱</div><div class="cc-body"><div class="cc-title" data-i18n="camp1t">2026 Summer Job Connection Campaign</div><p class="cc-desc" data-i18n="camp1d">Connecting 500 refugees to job opportunities.</p><div class="cc-prog"><div class="cc-bar" style="width:68%;"></div></div><div class="cc-meta"><span data-i18n="progress">Progress <strong>68%</strong></span><span>14 days left</span></div></div></div>
+      <div class="cc"><div class="cc-img" style="background:linear-gradient(135deg,#dde4ff,#818cf8);"><span class="cc-badge" style="background:#4361ee;" data-i18n="ongoingBadge">Ongoing</span>🏠</div><div class="cc-body"><div class="cc-title" data-i18n="camp2t">Safe Housing 1000 Households Project</div><p class="cc-desc" data-i18n="camp2d">Providing verified housing info.</p><div class="cc-prog"><div class="cc-bar" style="width:42%;"></div></div><div class="cc-meta"><span data-i18n="progress">Progress <strong>42%</strong></span><span>30 days left</span></div></div></div>
+      <div class="cc"><div class="cc-img" style="background:linear-gradient(135deg,#fce7f3,#f9a8d4);"><span class="cc-badge" style="background:#db2777;" data-i18n="ongoingBadge">Ongoing</span>💬</div><div class="cc-body"><div class="cc-title" data-i18n="camp3t">3-Language Translation Campaign</div><p class="cc-desc" data-i18n="camp3d">Translating all app content.</p><div class="cc-prog"><div class="cc-bar" style="width:55%;"></div></div><div class="cc-meta"><span data-i18n="progress">Progress <strong>55%</strong></span><span>45 days left</span></div></div></div>
+    </div>
+  </div>
+  <div class="ctab-content" id="ctc-ended">
+    <div class="camp-grid" style="margin-top:24px;">
+      <div class="cc"><div class="cc-img" style="background:linear-gradient(135deg,#e5e7eb,#9ca3af);"><span class="cc-badge" style="background:#6b7280;" data-i18n="endedBadge">Ended</span>🚗</div><div class="cc-body"><div class="cc-title" data-i18n="camp4t">Carpool Service Beta Launch</div><p class="cc-desc" data-i18n="camp4d">Completed a beta test.</p><div class="cc-prog"><div class="cc-bar" style="width:100%;background:#6b7280;"></div></div><div class="cc-meta"><span data-i18n="progress">Progress <strong style="color:#6b7280;">100%</strong></span><span data-i18n="completed">Completed</span></div></div></div>
+    </div>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ ABOUT ════════════ -->
+<div id="page-about" class="page page-wrap">
+  <div class="sub-hero sec-black pad">
+    <div class="ew ew-w" data-i18n="navAbout">ABOUT US</div>
+    <h1 class="h1" style="color:#fff;margin-bottom:10px;" data-i18n="aboutH1">About Us</h1>
+    <p style="color:rgba(255,255,255,.5);font-size:15px;" data-i18n="aboutSub">K-BRIDGE connects Malaysian refugees through technology.</p>
+  </div>
+  <div class="about-tabs">
+    <div class="at on" id="at-greeting" onclick="aboutTab('greeting')" data-i18n="subAboutGreeting">Greeting</div>
+    <div class="at" id="at-intro" onclick="aboutTab('intro')" data-i18n="subAboutIntro">About Us</div>
+  </div>
+  <div class="atab-content show" id="atc-greeting">
+    <div style="max-width:720px;">
+      <p class="lead" style="margin-bottom:20px;" data-i18n="greetOpen">Hello, I'm the founder of K-BRIDGE.</p>
+      <p style="font-size:15px;color:#555;line-height:2;margin-bottom:16px;" data-i18n="greetP1">K-BRIDGE began to break down the barriers faced by refugees in Malaysia — using technology.</p>
+      <p style="font-size:15px;color:#555;line-height:2;margin-bottom:16px;" data-i18n="greetP2">We don't see refugees as beneficiaries. They are members of our team.</p>
+    </div>
+  </div>
+  <div class="atab-content" id="atc-intro">
+    <div class="about-values">
+      <div class="av"><div class="av-ico">🤝</div><div class="av-t" data-i18n="val1t">Trust</div><p class="av-d" data-i18n="val1d">A safe platform built on invite codes.</p></div>
+      <div class="av"><div class="av-ico">🌐</div><div class="av-t" data-i18n="val2t">Inclusion</div><p class="av-d" data-i18n="val2d">3 languages so no refugee is left out.</p></div>
+      <div class="av"><div class="av-ico">👑</div><div class="av-t" data-i18n="val3t">Self-Reliance</div><p class="av-d" data-i18n="val3d">Refugees run the app as team members.</p></div>
+      <div class="av"><div class="av-ico">💚</div><div class="av-t" data-i18n="val4t">Sustainability</div><p class="av-d" data-i18n="val4d">A sustainable model through community.</p></div>
+    </div>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<!-- ════════════ COMMUNITY ════════════ -->
+<div id="page-review" class="page page-wrap">
+  <div class="sub-hero sec-green pad">
+    <div class="ew ew-w" data-i18n="navReview">COMMUNITY</div>
+    <h1 class="h1" style="color:#fff;margin-bottom:10px;" data-i18n="revH1">Community</h1>
+    <p style="color:rgba(255,255,255,.7);font-size:15px;" data-i18n="revSub">Connect with the K-BRIDGE community</p>
+  </div>
+  <div class="review-tabs">
+    <div class="rt on" id="rt-notice" onclick="reviewTab('notice')" data-i18n="subNewsNotice">Notice / News</div>
+    <div class="rt" id="rt-report" onclick="reviewTab('report')" data-i18n="subNewsReport">Donation Report</div>
+    <div class="rt" id="rt-materials" onclick="reviewTab('materials')" data-i18n="subNewsMaterials">Resources</div>
+  </div>
+  <div class="rtab-content show" id="rtc-notice">
+    <div class="notice-list" style="margin-top:24px;">
+      <div class="ni"><span class="ni-badge" style="background:#d8f3dc;color:#1a6b3c;" data-i18n="badgeNotice">Notice</span><span class="ni-title" data-i18n="notice1">2026 Summer Campaign Info</span><span class="ni-date">2026.06.01</span></div>
+      <div class="ni"><span class="ni-badge" style="background:#dde4ff;color:#4361ee;" data-i18n="badgeUpdate">Update</span><span class="ni-title" data-i18n="notice2">App v2.1 Update Notes</span><span class="ni-date">2026.05.15</span></div>
+    </div>
+  </div>
+  <div class="rtab-content" id="rtc-report">
+    <div class="rv-grid" style="margin-top:24px;">
+      <div class="rv"><div class="rv-top"><div class="rv-ava">👨</div><div><div class="rv-name">Ahmad R.</div><div class="rv-info" data-i18n="rvi1">32 · Kuala Lumpur</div></div></div><div class="rv-stars">★★★★★</div><p class="rv-text" data-i18n="rvt1">"Thanks to K-BRIDGE, I found safe job info."</p><span class="rv-tag" data-i18n="rvtag1">💼 Job Connection</span></div>
+    </div>
+    <div style="padding:0 7vw;margin-top:32px;"><p class="lead" data-i18n="myReceiptDesc">Your tax receipts and donation records will appear here once you've made a donation.</p></div>
+  </div>
+  <div class="rtab-content" id="rtc-materials">
+    <div class="gallery-grid">
+      <div class="gallery-item" style="background:linear-gradient(135deg,#d8f3dc,#95d5b2);color:#1a6b3c;"><div style="font-size:28px;">📸</div><span data-i18n="addPhotoShort">Add Photo</span></div>
+      <div class="gallery-item" style="background:linear-gradient(135deg,#dde4ff,#a5b4fc);color:#4361ee;"><div style="font-size:28px;">📸</div><span data-i18n="addPhotoShort">Add Photo</span></div>
+    </div>
+    <div style="padding:0 7vw;margin-top:32px;"><p class="lead" data-i18n="myMaterialsDesc">Downloadable donor resources, brochures, and impact reports will be available here.</p></div>
+  </div>
+  <footer><p>👑 K-BRIDGE · © 2026 · <a href="mailto:kbridge@email.com">kbridge@email.com</a></p></footer>
+</div>
+
+<script>
+window.onerror = function(msg, url, line, col, error){
+  console.warn("Global error caught:", msg, "line", line);
+  return true;
+};
+
+var currentLang = "en";
+var hcIdx = 0;
+var hcHover = false;
+var hcManualPause = false;
+var hcInView = true;
+var hcProgress = 0;
+var hcTransitioning = false;
+var HC_DURATION = 5500;
+var HC_TICK = 50;
+var rememberedId = "";
+var starVal = 0;
+var currentUser = { loggedIn:false, name:"", type:"adult", donorNo:"" };
+var pendingJoinType = "";
+
+var HC_SLIDES = [
+  {img:"", en:{title:"Give a child a safer tomorrow", desc:"Every day, K-BRIDGE connects refugee families to jobs, housing, and community support they can trust."},
+   zh:{title:"给孩子一个更安全的明天", desc:"K-BRIDGE 每天都在帮助难民家庭连接到值得信赖的工作、住房和社区支持。"},
+   ms:{title:"Berikan kanak-kanak masa depan yang lebih selamat", desc:"Setiap hari, K-BRIDGE menghubungkan keluarga pelarian dengan pekerjaan, perumahan, dan sokongan komuniti."}},
+  {img:"", en:{title:"One app. Every language.", desc:"English, Chinese, and Malay — so no refugee is left without information they can understand."},
+   zh:{title:"一个应用。所有语言。", desc:"英语、中文、马来语——让每一位难民都能获得他们理解的信息。"},
+   ms:{title:"Satu aplikasi. Semua bahasa.", desc:"Bahasa Inggeris, Cina, dan Melayu — supaya tiada pelarian yang tertinggal."}},
+  {img:"", en:{title:"Refugees are our team, not our cause", desc:"Refugees build the app, translate it, and run the community."},
+   zh:{title:"难民是我们的团队，而非我们的施助对象", desc:"难民亲自开发应用、翻译内容并运营社区。"},
+   ms:{title:"Pelarian ialah pasukan kami", desc:"Pelarian membina aplikasi, menterjemahkannya, dan menjalankan komuniti."}}
+];
+
+var CURRENCY = {
+  en:{sym:"$",vals:["8","15","23","38","75"],ph:"Enter custom amount ($)"},
+  zh:{sym:"¥",vals:["58","108","168","278","548"],ph:"输入自定义金额 (¥)"},
+  ms:{sym:"RM",vals:["30","60","90","150","300"],ph:"Masukkan jumlah kustom (RM)"}
+};
+
+var I18N = {
+en:{
+ tagline:"Connecting Malaysian refugees to opportunity · 2026",
+ navDonate:"Donate", navBiz:"Programs", navCampaign:"Campaigns", navAbout:"About Us", navReview:"Community",
+ navMy:"My Page",
+ subDonateInfo:"Donation Info", subDonateChild:"Sponsor a Child",
+ subBizDomestic:"Local Programs", subBizOverseas:"Overseas Programs",
+ subCampOngoing:"Ongoing Campaigns", subCampEnded:"Ended Campaigns",
+ subAboutGreeting:"Greeting", subAboutIntro:"About Us",
+ subRevNotice:"Notices", subRevStory:"Stories", subRevGallery:"Gallery & Video", subRevQa:"Q&A", subRevFaq:"FAQ",
+ fabBtn:"🤝 Donate / Partner", loginBtn:"Log In", logoutBtn:"Log Out",
+ loginSub:"Log in to your K-BRIDGE account", idPh:"ID", pwPh:"Password", rememberId:"Remember ID",
+ signup:"Sign Up", joinMembership:"Join the Membership", findId:"Find ID", changePw:"Change Password",
+ phoneLoginBtn:"Login with your Phone Number",
+ orContinue:"or continue with", googleLogin:"Continue with Google", wechatLogin:"Continue with WeChat",
+ phonePh:"+1 555-123-4567",
+ searchPh:"Search K-BRIDGE...", searchGo:"Go", searchHint:"Try: donate, programs, campaigns, about, community",
+ joinTitle:"Choose Your Sponsorship Type", joinSub:"Select the option that fits you to get started",
+ joinUnder14Title:"Sponsorship for Under 14", joinUnder14Desc:"Register a child under 14 to receive sponsorship, verified by a parent or guardian.",
+ joinAdultTitle:"Individual Sponsor (14+)", joinAdultDesc:"For individuals aged 14 and above who want to donate personally.",
+ joinBusinessTitle:"Business Sponsor (14+)", joinBusinessDesc:"For companies and organizations that want to donate on behalf of a business.",
+ guardianNameLbl:"Guardian's Name *", orgNameLbl:"Company / Organization Name *", joinSubmit:"Create Account",
+ helloGreeting:"Hello,", personalBadge:"Individual", businessBadge:"Business", under14Badge:"Under 14",
+ donorNoLabel:"Donor No.", welcomeCta:"A small act saves a refugee family's future — become a K-BRIDGE donor today!",
+ changeInfoLink:"Change Personal Info", saveChanges:"Save Changes",
+ myDonation:"My Donations", myInfo:"My Info", myReceiptCat:"Tax Receipt", myMaterials:"Donor Resources", myFaqCat:"FAQ",
+ myRegular:"Monthly Donations", myOneTime:"One-Time Donations",
+ myNoRecordsRegular:"No monthly donations yet. Start supporting a refugee family today!",
+ myNoRecordsOnetime:"No one-time donations yet.",
+ myReceipt:"Tax Receipt", myConfirm:"Donation Confirmation", myHistory:"Donation History",
+ myReceiptDesc:"Your tax receipts and donation records will appear here once you've made a donation.",
+ myMaterialsDesc:"Downloadable donor resources, brochures, and impact reports will be available here.",
+ myFaqLink:"FAQ", my1to1:"1:1 Inquiry", myFaqDesc:"Frequently asked questions and 1:1 inquiry support for donors.",
+ heroSub:"Connecting Malaysian refugees to opportunity",
+ heroBtn1:"View Programs", heroBtn2:"Donate",
+ stat1:"Refugees in Malaysia", stat2:"Supported Languages", stat3:"Free Points for New Users", stat4:"Point Value Equivalent",
+ quote1:"<span>Refugees are not beneficiaries.</span><br><em>They are members of our team.</em>",
+ tagProblem:"PROBLEM", probTitle:"Current Situation & Challenges", probDesc:"Four realities that 180,000+ refugees in Malaysia face every day",
+ prob1t:"No Legal Work", prob1d:"180K+ barred from legal employment",
+ prob2t:"Unsafe Housing", prob2d:"Unverified landlords, excessive rent",
+ prob3t:"Language Barrier", prob3d:"Multiple languages, broken communication",
+ prob4t:"No Transportation", prob4d:"No affordable way to get around",
+ quote2:"<em>One app.</em> Every need. Every language.",
+ tagSolution:"SOLUTION", solTitle:"The Solution: K-BRIDGE App", solSub:"One app. Every need. Every language.",
+ tagJobs2:"Jobs", tagHousing2:"Housing", tagMarket2:"Market", tagCarpool2:"Carpool", tagCommunity2:"Community", tagLang2:"3 Languages",
+ sol1d:"Safe access to informal/legal jobs", sol2d:"Verified landlords, safe housing", sol3d:"Community goods marketplace",
+ sol4d:"Affordable, safe carpooling", sol5d:"Info sharing platform", sol6d:"Full multilingual support",
+ tagHow:"HOW IT WORKS", howTitle:"How K-BRIDGE Works",
+ how1t:"Download & Sign Up", how1d:"Join with an NGO partner invite code",
+ how2t:"Get 500 Points", how2d:"New members get ~RM 50 worth",
+ how3t:"Search What You Need", how3d:"Jobs, housing, market, carpool in your language",
+ how4t:"Deal & Connect", how4d:"Pay with points / Touch 'n Go / cash",
+ quote3:"Technology serves humanity.<br><em>Built on faith, sustained by community.</em>",
+ tagBiz:"BUSINESS MODEL", revTitle:"Revenue & Sustainability",
+ rev1t:"Advertising", rev1d:"RM 200–500/mo", rev2t:"Donations", rev2d:"PayPal / TnG / FPX",
+ rev3t:"NGO Partnerships", rev3d:"Sponsored invite codes", rev4t:"Premium Listings", rev4d:"RM 50–200/listing",
+ tagVision:"VISION", visTitle:"👑 Vision: Refugee IT Team", visSub:"Refugees are not beneficiaries — they are members of our team.",
+ vis1t:"App Developers", vis1d:"Flutter & web dev", vis2t:"Community Managers", vis2d:"Community management",
+ vis3t:"Translators", vis3d:"3-language translation", vis4t:"Data Analysts", vis4d:"Impact measurement",
+ tagRoad:"ROADMAP", roadTitle:"Launch Roadmap",
+ road1h:"Phase 1 · Months 1–2", road1p:"Foundation", road1a:"NGO partnership agreements", road1b:"Distribute invite codes", road1c:"KL beta 50–100 users",
+ road2h:"Phase 2 · Months 3–4", road2p:"Growth", road2a:"Launch market & carpool", road2b:"500+ active users", road2c:"Build refugee IT team",
+ road3h:"Phase 3 · Months 5–6", road3p:"Expansion", road3a:"10,000+ users", road3b:"Launch donation campaigns", road3c:"Expand to Penang & JB",
+ tagPartner:"PARTNERSHIP", partTitle:"Partnership Proposal",
+ partNeedTitle:"What We Need", partN1:"Distribute invite codes to beneficiaries", partN2:"Verify employers & landlords",
+ partN3:"Share safety information", partN4:"Co-branding", partN5:"Cash top-up for points",
+ partGetTitle:"What You Get", partG1:"Real-time refugee needs data", partG2:"Digital distribution platform",
+ partG3:"Monthly impact reports", partG4:"10,000+ brand exposure", partG5:"Refugee-run tech team",
+ tagChildren:"OUR CHILDREN", childTitle:"Children of K-BRIDGE",
+ addPhoto:"Add photo here", ethn1:"Burmese", ethn2:"Rohingya", ethn3:"Somali",
+ childNameAge:"Child name / age", childDescPh:"Add this child's story here.",
+ benefit1:"💼 Job connection beneficiary", benefit2:"💬 Community connection beneficiary", benefit3:"🏠 Housing connection beneficiary",
+ photoBanner:"Send us real photos and we'll update this right away!",
+ tagVoices:"VOICES", voicesTitle:"Their Stories",
+ voice1:'"I want to work but the law stops me."', voice1a:"— Ahmad, 32 · Kuala Lumpur",
+ voice2:'"My landlord suddenly doubled the rent."', voice2a:"— Maria, 27 · Petaling Jaya",
+ voice3:'"A safe carpool service would let me take my kids to the hospital."', voice3a:"— Fatima, 41 · Ampang",
+ voice4:'"An app in 3 languages would connect all of us."', voice4a:"— Daniel, 25 · Setia Wangsa",
+ shareLbl:"Share", copyLink:"🔗 Copy Link",
+ ctaTitle:"Let's Build This Together",
+ ctaDesc:"K-BRIDGE is more than an app — it's a movement.<br>Refugees helping refugees. Technology serving humanity.",
+ ctaBtn1:"Contact for Donation", ctaBtn2:"Apply for Partnership",
+ verse:'"For I was a stranger and you welcomed me" — Matthew 25:35',
+ modalTitle:"Submitted!", modalDesc:"The K-BRIDGE team will contact you soon.", modalOk:"OK",
+ tagDonate:"DONATE", donateH1:"Donate", donateSub:"Join K-BRIDGE and change the future of Malaysian refugees",
+ impact1:"100 points for a refugee family", impact2:"A month of carpool support", impact3:"One app dev training session", impact4:"Full app onboarding for 1 refugee",
+ formTitle:"Make a Donation", formDesc:"Your generosity changes a refugee family's tomorrow.",
+ donateTypeTitle:"Donation Type", monthly:"Monthly", oneTime:"One-Time",
+ amountTitle:"Amount", custom:"Custom",
+ applicantInfo:"Your Information", nameLbl:"Name *", emailLbl:"Email *", phoneLbl:"Phone",
+ consentTitle:"Consent", consent1:"[Required] I agree to the collection of personal information", viewLink:"View",
+ consent2:"[Optional] I'd like to receive the email newsletter",
+ submitDonate:"Donate Now", donateNote:"Donations fund K-BRIDGE app development and refugee support in Malaysia.",
+ sponsorTitle:"Meet the Children", sponsorDesc:"Their stories inspired K-BRIDGE.",
+ ethnLoc1:"Burmese · Kuala Lumpur", ethnLoc2:"Rohingya · Petaling Jaya", ethnLoc3:"Somali · Ampang",
+ childDescPh2:"Add this child's story here.", childDescPh3:"Add this child's story.", childDescPh4:"Add this child's story.",
+ tagBiz2:"MAIN PROGRAMS", bizH1:"Programs", bizSub:"K-BRIDGE's core programs",
+ domTitle:"Local Programs", domDesc:"Centered in Kuala Lumpur, connecting refugee communities.",
+ dom1Title:"Job Connection Program", dom1Desc:"180,000+ refugees are barred from formal work. K-BRIDGE partners with trusted NGOs.",
+ dom2Title:"Safe Housing Connection", dom2Desc:"Solving overcharging by unverified landlords.",
+ dom3Title:"Community Carpool Service", dom3Desc:"Affordable, safe carpooling, no bank account required.",
+ tagGallery:"GALLERY", domGalTitle:"Local Program Photos", addPhotoShort:"Add Photo",
+ ovTitle:"Overseas Programs", ovDesc:"Expanding K-BRIDGE across Southeast Asia.",
+ upcoming:"Upcoming", longTerm:"Long-term",
+ ov1Title:"KL Hub Operations", ov1Desc:"Operating from Kuala Lumpur.",
+ ov2Title:"Penang & Johor Bahru", ov2Desc:"Expansion planned for late 2026.",
+ ov3Title:"SE Asia Network", ov3Desc:"Roadmap for Thailand and Indonesia.",
+ campH1:"Campaigns", campSub:"K-BRIDGE's ongoing fundraising campaigns",
+ ongoingBadge:"Ongoing", endedBadge:"Ended", progress:"Progress", completed:"Completed",
+ camp1t:"2026 Summer Job Connection Campaign", camp1d:"Connecting 500 refugees to job opportunities.",
+ camp2t:"Safe Housing 1000 Households Project", camp2d:"Providing verified housing info.",
+ camp3t:"3-Language Translation Campaign", camp3d:"Translating all app content.",
+ camp4t:"Carpool Service Beta Launch", camp4d:"Completed a beta test.",
+ aboutH1:"About Us", aboutSub:"K-BRIDGE connects Malaysian refugees through technology.",
+ greetOpen:"Hello, I'm the founder of K-BRIDGE.",
+ greetP1:"K-BRIDGE began to break down the barriers faced by refugees in Malaysia — using technology.",
+ greetP2:"We don't see refugees as beneficiaries. They are members of our team.",
+ val1t:"Trust", val1d:"A safe platform built on invite codes.",
+ val2t:"Inclusion", val2d:"3 languages so no refugee is left out.",
+ val3t:"Self-Reliance", val3d:"Refugees run the app as team members.",
+ val4t:"Sustainability", val4d:"A sustainable model through community.",
+ revH1:"Community", revSub:"Connect with the K-BRIDGE community",
+ badgeNotice:"Notice", badgeUpdate:"Update",
+ notice1:"2026 Summer Campaign Info", notice2:"App v2.1 Update Notes",
+ rvi1:"32 · Kuala Lumpur", rvt1:'"Thanks to K-BRIDGE, I found safe job info."', rvtag1:"💼 Job Connection",
+ writeReviewTitle:"Write a Review", nameLbl2:"Name", locLbl:"Location", ratingLbl:"Rating",
+ reviewContentLbl:"Review", submitReviewBtn:"Submit Review",
+ qa1q:"How do I download the app?", qa1a:"Available via invite code through NGO partners.",
+ faq1q:"What is K-BRIDGE?", faq1a:"A nonprofit app connecting Malaysian refugees to jobs, housing, and community."
+},
+zh:{
+ tagline:"连接马来西亚难民与机会 · 2026",
+ navDonate:"捐赠", navBiz:"主要项目", navCampaign:"活动", navAbout:"关于我们", navReview:"社区互动",
+ navMy:"我的主页",
+ subDonateInfo:"捐赠说明", subDonateChild:"资助儿童",
+ subBizDomestic:"国内项目", subBizOverseas:"海外项目",
+ subCampOngoing:"进行中的活动", subCampEnded:"已结束的活动",
+ subAboutGreeting:"致辞", subAboutIntro:"机构介绍",
+ subRevNotice:"公告", subRevStory:"故事分享", subRevGallery:"图库与视频", subRevQa:"问答", subRevFaq:"常见问题",
+ fabBtn:"🤝 捐赠 / 合作", loginBtn:"登录", logoutBtn:"退出登录",
+ loginSub:"登录您的 K-BRIDGE 账户", idPh:"账号", pwPh:"密码", rememberId:"记住账号",
+ signup:"注册", joinMembership:"加入会员", findId:"找回账号", changePw:"修改密码",
+ phoneLoginBtn:"使用您的手机号登录",
+ orContinue:"或使用以下方式登录", googleLogin:"使用 Google 登录", wechatLogin:"使用微信登录",
+ phonePh:"+86 138-0000-0000",
+ searchPh:"搜索 K-BRIDGE...", searchGo:"搜索", searchHint:"试试：捐赠、项目、活动、关于我们、社区",
+ joinTitle:"请选择您的赞助类型", joinSub:"选择适合您的选项即可开始",
+ joinUnder14Title:"14岁以下儿童资助", joinUnder14Desc:"为14岁以下儿童注册资助，需由父母或监护人验证。",
+ joinAdultTitle:"个人赞助者（14岁以上）", joinAdultDesc:"适用于14岁以上想以个人身份捐赠的用户。",
+ joinBusinessTitle:"企业赞助者（14岁以上）", joinBusinessDesc:"适用于希望以企业名义捐赠的公司或机构。",
+ guardianNameLbl:"监护人姓名 *", orgNameLbl:"公司/机构名称 *", joinSubmit:"创建账户",
+ helloGreeting:"您好，", personalBadge:"个人", businessBadge:"企业", under14Badge:"14岁以下",
+ donorNoLabel:"捐赠者编号", welcomeCta:"一个小小的行动，拯救难民家庭的未来——现在就成为K-BRIDGE的捐赠者！",
+ changeInfoLink:"修改个人信息", saveChanges:"保存更改",
+ myDonation:"我的捐赠记录", myInfo:"我的会员信息", myReceiptCat:"捐赠收据", myMaterials:"捐赠者资料室", myFaqCat:"常见问题",
+ myRegular:"定期捐赠", myOneTime:"一次性捐赠",
+ myNoRecordsRegular:"暂无定期捐赠记录。立即开始支持难民家庭吧！",
+ myNoRecordsOnetime:"暂无一次性捐赠记录。",
+ myReceipt:"捐赠收据", myConfirm:"捐赠确认书", myHistory:"捐赠记录",
+ myReceiptDesc:"捐赠后，您的收据和捐赠记录将显示在此处。",
+ myMaterialsDesc:"可下载的捐赠者资料、宣传册和影响力报告将在此提供。",
+ myFaqLink:"常见问题", my1to1:"1:1咨询", myFaqDesc:"为捐赠者提供常见问题解答及1:1咨询服务。",
+ heroSub:"连接马来西亚难民与机会",
+ heroBtn1:"查看项目", heroBtn2:"立即捐赠",
+ stat1:"马来西亚难民人数", stat2:"支持语言数", stat3:"新用户免费积分", stat4:"积分等值金额",
+ quote1:"<span>难民不是受益者。</span><br><em>他们是我们团队的一员。</em>",
+ tagProblem:"问题", probTitle:"现状与挑战", probDesc:"马来西亚18万余名难民每天面对的四大现实",
+ prob1t:"无法合法工作", prob1d:"18万+人无法合法就业",
+ prob2t:"住房不安全", prob2d:"房东未经核实，租金过高",
+ prob3t:"语言障碍", prob3d:"多种语言，信息传递受阻",
+ prob4t:"缺乏交通工具", prob4d:"没有负担得起的出行方式",
+ quote2:"<em>一个应用。</em>所有需求。所有语言。",
+ tagSolution:"解决方案", solTitle:"解决方案：K-BRIDGE 应用", solSub:"一个应用。所有需求。所有语言。",
+ tagJobs2:"工作", tagHousing2:"住房", tagMarket2:"市场", tagCarpool2:"拼车", tagCommunity2:"社区", tagLang2:"3种语言",
+ sol1d:"安全获取工作信息", sol2d:"经核实房东，安全住房", sol3d:"社区物品交易市场",
+ sol4d:"实惠安全的拼车服务", sol5d:"信息共享平台", sol6d:"完整多语言支持",
+ tagHow:"运作方式", howTitle:"K-BRIDGE 如何运作",
+ how1t:"下载并注册", how1d:"使用NGO合作伙伴邀请码加入",
+ how2t:"获得500积分", how2d:"新会员获得约RM50价值积分",
+ how3t:"搜索所需服务", how3d:"用您的语言搜索工作、住房、市场、拼车",
+ how4t:"交易与连接", how4d:"使用积分/Touch 'n Go/现金付款",
+ quote3:"科技服务人类。<br><em>以信念建立，以社区延续。</em>",
+ tagBiz:"商业模式", revTitle:"收益与可持续性",
+ rev1t:"广告收入", rev1d:"每月RM 200~500", rev2t:"捐赠与资助", rev2d:"PayPal / TnG / FPX",
+ rev3t:"NGO合作伙伴关系", rev3d:"赞助邀请码", rev4t:"高级发布", rev4d:"每条RM 50~200",
+ tagVision:"愿景", visTitle:"👑 愿景：难民IT团队", visSub:"难民不是受益者——他们是我们团队的一员。",
+ vis1t:"应用开发者", vis1d:"Flutter与网页开发", vis2t:"社区管理员", vis2d:"社区管理",
+ vis3t:"翻译员", vis3d:"三语言翻译", vis4t:"数据分析师", vis4d:"影响力评估",
+ tagRoad:"路线图", roadTitle:"启动路线图",
+ road1h:"第一阶段 · 1~2个月", road1p:"基础建设", road1a:"签署NGO合作协议", road1b:"发放邀请码", road1c:"吉隆坡内测50~100人",
+ road2h:"第二阶段 · 3~4个月", road2p:"增长", road2a:"开放市场与拼车功能", road2b:"活跃用户500人+", road2c:"组建难民IT团队",
+ road3h:"第三阶段 · 5~6个月", road3p:"扩展", road3a:"用户1万人+", road3b:"启动捐赠活动", road3c:"扩展至槟城和新山",
+ tagPartner:"合作伙伴关系", partTitle:"合作提案",
+ partNeedTitle:"我们的需求", partN1:"向受益者发放邀请码", partN2:"核实雇主与房东",
+ partN3:"分享安全信息", partN4:"联合品牌推广", partN5:"积分现金充值",
+ partGetTitle:"贵机构将获得", partG1:"实时难民需求数据", partG2:"数字信息发布平台",
+ partG3:"月度影响力报告", partG4:"1万+品牌曝光", partG5:"难民自主运营的技术团队",
+ tagChildren:"我们的孩子", childTitle:"K-BRIDGE的孩子们",
+ addPhoto:"请添加照片", ethn1:"缅甸族", ethn2:"罗兴亚族", ethn3:"索马里裔",
+ childNameAge:"儿童姓名/年龄", childDescPh:"请在此添加这个孩子的故事。",
+ benefit1:"💼 就业连接受益者", benefit2:"💬 社区连接受益者", benefit3:"🏠 住房连接受益者",
+ photoBanner:"请提供真实照片，我们会立即更新！",
+ tagVoices:"心声", voicesTitle:"他们的故事",
+ voice1:"「我想工作但法律阻止我。」", voice1a:"— 艾哈迈德，32岁 · 吉隆坡",
+ voice2:"「房东突然把租金涨了一倍。」", voice2a:"— 玛丽亚，27岁 · 八打灵再也",
+ voice3:"「安全的拼车服务能让我带孩子去医院。」", voice3a:"— 法蒂玛，41岁 · 安邦",
+ voice4:"「三种语言的应用能把我们所有人连接起来。」", voice4a:"— 丹尼尔，25岁 · 士拉旺沙",
+ shareLbl:"分享", copyLink:"🔗 复制链接",
+ ctaTitle:"让我们共同创造",
+ ctaDesc:"K-BRIDGE不仅仅是一个应用——它是一场运动。<br>难民互助难民。科技服务人类。",
+ ctaBtn1:"咨询捐赠", ctaBtn2:"申请合作伙伴关系",
+ verse:"「因为我作客旅，你们留我住」— 马太福音 25:35",
+ modalTitle:"提交成功！", modalDesc:"K-BRIDGE团队将尽快与您联系。", modalOk:"确定",
+ tagDonate:"捐赠", donateH1:"捐赠", donateSub:"加入K-BRIDGE，改变马来西亚难民的未来",
+ impact1:"为难民家庭提供100积分", impact2:"一个月拼车支持", impact3:"一次应用开发培训", impact4:"1名难民的完整应用支持",
+ formTitle:"进行捐赠", formDesc:"您的善意将改变难民家庭的明天。",
+ donateTypeTitle:"捐赠类型", monthly:"定期捐赠", oneTime:"一次性捐赠",
+ amountTitle:"捐赠金额", custom:"自定义",
+ applicantInfo:"申请人信息", nameLbl:"姓名 *", emailLbl:"邮箱 *", phoneLbl:"联系电话",
+ consentTitle:"同意事项", consent1:"[必填] 我同意收集个人信息", viewLink:"查看",
+ consent2:"[选填] 我希望接收邮件通讯",
+ submitDonate:"立即捐赠", donateNote:"捐款将用于K-BRIDGE应用开发及马来西亚难民支持。",
+ sponsorTitle:"认识孩子们", sponsorDesc:"他们的故事激励了K-BRIDGE。",
+ ethnLoc1:"缅甸族 · 吉隆坡", ethnLoc2:"罗兴亚族 · 八打灵再也", ethnLoc3:"索马里裔 · 安邦",
+ childDescPh2:"请在此添加这个孩子的故事。", childDescPh3:"请添加这个孩子的故事。", childDescPh4:"请添加这个孩子的故事。",
+ tagBiz2:"主要项目", bizH1:"主要项目", bizSub:"K-BRIDGE推动的核心项目",
+ domTitle:"国内项目", domDesc:"以吉隆坡为中心，连接难民社区。",
+ dom1Title:"就业连接项目", dom1Desc:"马来西亚18万余名难民无法正式就业。K-BRIDGE与可信赖的NGO合作。",
+ dom2Title:"安全住房连接", dom2Desc:"通过认证系统解决未经核实房东过度收费的问题。",
+ dom3Title:"社区拼车服务", dom3Desc:"实惠安全的拼车服务，无需银行账户。",
+ tagGallery:"图库", domGalTitle:"国内项目现场照片", addPhotoShort:"添加照片",
+ ovTitle:"海外项目", ovDesc:"将K-BRIDGE扩展到东南亚地区。",
+ upcoming:"即将推出", longTerm:"长期计划",
+ ov1Title:"吉隆坡运营中心", ov1Desc:"以吉隆坡为运营中心。",
+ ov2Title:"槟城与新山", ov2Desc:"计划于2026年下半年扩展。",
+ ov3Title:"东南亚网络", ov3Desc:"制定扩展至泰国、印度尼西亚的路线图。",
+ campH1:"活动", campSub:"K-BRIDGE正在进行的捐赠活动",
+ ongoingBadge:"进行中", endedBadge:"已结束", progress:"达成率", completed:"已完成",
+ camp1t:"2026年夏季就业连接活动", camp1d:"为500名难民连接就业信息。",
+ camp2t:"安全住房1000户项目", camp2d:"为1000户提供经核实的住房信息。",
+ camp3t:"三语言翻译完成活动", camp3d:"将应用内所有内容翻译成三种语言。",
+ camp4t:"拼车服务测试版启动", camp4d:"已完成拼车测试。",
+ aboutH1:"关于我们", aboutSub:"K-BRIDGE是一个通过科技连接马来西亚难民的非营利平台。",
+ greetOpen:"您好，我是K-BRIDGE的创始人。",
+ greetP1:"K-BRIDGE的成立旨在通过科技消除马来西亚难民每天面临的障碍。",
+ greetP2:"我们不将难民视为受益者。他们是我们团队的一员。",
+ val1t:"信任", val1d:"通过邀请码建立安全平台。",
+ val2t:"包容", val2d:"三种语言让每位难民都不被排斥。",
+ val3t:"自立", val3d:"难民作为团队成员直接运营应用。",
+ val4t:"可持续性", val4d:"通过社区打造可持续的收益模式。",
+ revH1:"社区互动", revSub:"与K-BRIDGE社区互动交流",
+ badgeNotice:"公告", badgeUpdate:"更新",
+ notice1:"2026年夏季活动参与说明", notice2:"App v2.1更新说明",
+ rvi1:"32岁 · 吉隆坡", rvt1:"「多亏了K-BRIDGE，我找到了安全的就业信息。」", rvtag1:"💼 就业连接",
+ writeReviewTitle:"撰写评价", nameLbl2:"姓名", locLbl:"地区", ratingLbl:"评分",
+ reviewContentLbl:"评价内容", submitReviewBtn:"提交评价",
+ qa1q:"如何下载应用？", qa1a:"目前通过NGO合作伙伴的邀请码提供。",
+ faq1q:"K-BRIDGE是什么？", faq1a:"一个连接马来西亚难民与工作、住房、社区的非营利应用。"
+},
+ms:{
+ tagline:"Menghubungkan pelarian Malaysia dengan peluang · 2026",
+ navDonate:"Derma", navBiz:"Program Utama", navCampaign:"Kempen", navAbout:"Mengenai Kami", navReview:"Penglibatan Komuniti",
+ navMy:"Laman Saya",
+ subDonateInfo:"Maklumat Derma", subDonateChild:"Taja Seorang Kanak-kanak",
+ subBizDomestic:"Program Tempatan", subBizOverseas:"Program Luar Negara",
+ subCampOngoing:"Kempen Sedang Berjalan", subCampEnded:"Kempen Selesai",
+ subAboutGreeting:"Kata Aluan", subAboutIntro:"Mengenai Kami",
+ subRevNotice:"Notis", subRevStory:"Cerita", subRevGallery:"Galeri & Video", subRevQa:"Soal Jawab", subRevFaq:"Soalan Lazim",
+ fabBtn:"🤝 Derma / Bekerjasama", loginBtn:"Log Masuk", logoutBtn:"Log Keluar",
+ loginSub:"Log masuk ke akaun K-BRIDGE anda", idPh:"ID", pwPh:"Kata Laluan", rememberId:"Ingat ID",
+ signup:"Daftar", joinMembership:"Sertai Keahlian", findId:"Cari ID", changePw:"Tukar Kata Laluan",
+ phoneLoginBtn:"Log Masuk dengan Nombor Telefon Anda",
+ orContinue:"atau teruskan dengan", googleLogin:"Teruskan dengan Google", wechatLogin:"Teruskan dengan WeChat",
+ phonePh:"+60 12-345-6789",
+ searchPh:"Cari K-BRIDGE...", searchGo:"Cari", searchHint:"Cuba: derma, program, kempen, mengenai kami, komuniti",
+ joinTitle:"Pilih Jenis Penajaan Anda", joinSub:"Pilih pilihan yang sesuai dengan anda untuk bermula",
+ joinUnder14Title:"Penajaan untuk Bawah 14 Tahun", joinUnder14Desc:"Daftarkan kanak-kanak bawah 14 tahun untuk menerima penajaan, disahkan oleh ibu bapa atau penjaga.",
+ joinAdultTitle:"Penaja Individu (14+)", joinAdultDesc:"Untuk individu berumur 14 tahun ke atas yang ingin menderma secara peribadi.",
+ joinBusinessTitle:"Penaja Perniagaan (14+)", joinBusinessDesc:"Untuk syarikat dan organisasi yang ingin menderma bagi pihak perniagaan.",
+ guardianNameLbl:"Nama Penjaga *", orgNameLbl:"Nama Syarikat / Organisasi *", joinSubmit:"Cipta Akaun",
+ helloGreeting:"Helo,", personalBadge:"Individu", businessBadge:"Perniagaan", under14Badge:"Bawah 14",
+ donorNoLabel:"No. Penderma", welcomeCta:"Satu tindakan kecil menyelamatkan masa depan keluarga pelarian — jadi penderma K-BRIDGE hari ini!",
+ changeInfoLink:"Tukar Maklumat Peribadi", saveChanges:"Simpan Perubahan",
+ myDonation:"Derma Saya", myInfo:"Maklumat Saya", myReceiptCat:"Resit Cukai", myMaterials:"Sumber Penderma", myFaqCat:"Soalan Lazim",
+ myRegular:"Derma Bulanan", myOneTime:"Derma Sekali Sahaja",
+ myNoRecordsRegular:"Tiada derma bulanan lagi. Mulakan sokongan keluarga pelarian hari ini!",
+ myNoRecordsOnetime:"Tiada derma sekali sahaja lagi.",
+ myReceipt:"Resit Cukai", myConfirm:"Pengesahan Derma", myHistory:"Sejarah Derma",
+ myReceiptDesc:"Resit cukai dan rekod derma anda akan muncul di sini selepas anda membuat derma.",
+ myMaterialsDesc:"Sumber penderma yang boleh dimuat turun, risalah, dan laporan impak akan tersedia di sini.",
+ myFaqLink:"Soalan Lazim", my1to1:"Pertanyaan 1:1", myFaqDesc:"Soalan lazim dan sokongan pertanyaan 1:1 untuk penderma.",
+ heroSub:"Menghubungkan pelarian Malaysia dengan peluang",
+ heroBtn1:"Lihat Program", heroBtn2:"Derma Sekarang",
+ stat1:"Pelarian di Malaysia", stat2:"Bahasa Disokong", stat3:"Mata Percuma Ahli Baharu", stat4:"Nilai Setara Mata",
+ quote1:"<span>Pelarian bukan penerima bantuan.</span><br><em>Mereka ahli pasukan kami.</em>",
+ tagProblem:"MASALAH", probTitle:"Situasi Semasa & Cabaran", probDesc:"Empat realiti yang dihadapi pelarian di Malaysia",
+ prob1t:"Tiada Kerja Sah", prob1d:"180K+ tidak boleh bekerja secara sah",
+ prob2t:"Perumahan Tidak Selamat", prob2d:"Tuan rumah tidak disahkan, sewa berlebihan",
+ prob3t:"Halangan Bahasa", prob3d:"Pelbagai bahasa, komunikasi terputus",
+ prob4t:"Tiada Pengangkutan", prob4d:"Tiada cara mampu milik untuk bergerak",
+ quote2:"<em>Satu aplikasi.</em> Setiap keperluan. Setiap bahasa.",
+ tagSolution:"PENYELESAIAN", solTitle:"Penyelesaian: Aplikasi K-BRIDGE", solSub:"Satu aplikasi. Setiap keperluan. Setiap bahasa.",
+ tagJobs2:"Pekerjaan", tagHousing2:"Perumahan", tagMarket2:"Pasar", tagCarpool2:"Tumpang Kereta", tagCommunity2:"Komuniti", tagLang2:"3 Bahasa",
+ sol1d:"Akses selamat kepada kerja", sol2d:"Tuan rumah disahkan, perumahan selamat", sol3d:"Pasar barangan komuniti",
+ sol4d:"Tumpangan kereta mampu milik & selamat", sol5d:"Platform perkongsian maklumat", sol6d:"Sokongan pelbagai bahasa penuh",
+ tagHow:"CARA IA BERFUNGSI", howTitle:"Bagaimana K-BRIDGE Berfungsi",
+ how1t:"Muat Turun & Daftar", how1d:"Sertai dengan kod jemputan rakan kongsi NGO",
+ how2t:"Dapatkan 500 Mata", how2d:"Ahli baharu dapat ~RM 50 nilai",
+ how3t:"Cari Apa Yang Diperlukan", how3d:"Kerja, perumahan, pasar, tumpang kereta dalam bahasa anda",
+ how4t:"Urus Niaga & Berhubung", how4d:"Bayar dengan mata / Touch 'n Go / tunai",
+ quote3:"Teknologi berkhidmat untuk kemanusiaan.<br><em>Dibina atas iman, disokong oleh komuniti.</em>",
+ tagBiz:"MODEL PERNIAGAAN", revTitle:"Pendapatan & Kemampanan",
+ rev1t:"Pengiklanan", rev1d:"RM 200–500/bulan", rev2t:"Derma", rev2d:"PayPal / TnG / FPX",
+ rev3t:"Perkongsian NGO", rev3d:"Kod jemputan tajaan", rev4t:"Penyenaraian Premium", rev4d:"RM 50–200/penyenaraian",
+ tagVision:"VISI", visTitle:"👑 Visi: Pasukan IT Pelarian", visSub:"Pelarian bukan penerima bantuan — mereka ahli pasukan kami.",
+ vis1t:"Pembangun Aplikasi", vis1d:"Pembangunan Flutter & web", vis2t:"Pengurus Komuniti", vis2d:"Pengurusan komuniti",
+ vis3t:"Penterjemah", vis3d:"Terjemahan 3 bahasa", vis4t:"Penganalisis Data", vis4d:"Pengukuran impak",
+ tagRoad:"PELAN HALA TUJU", roadTitle:"Pelan Pelancaran",
+ road1h:"Fasa 1 · Bulan 1–2", road1p:"Asas", road1a:"Perjanjian perkongsian NGO", road1b:"Edarkan kod jemputan", road1c:"Beta KL 50–100 pengguna",
+ road2h:"Fasa 2 · Bulan 3–4", road2p:"Pertumbuhan", road2a:"Lancarkan pasar & tumpang kereta", road2b:"500+ pengguna aktif", road2c:"Bina pasukan IT pelarian",
+ road3h:"Fasa 3 · Bulan 5–6", road3p:"Pengembangan", road3a:"10,000+ pengguna", road3b:"Lancarkan kempen derma", road3c:"Kembangkan ke Penang & JB",
+ tagPartner:"PERKONGSIAN", partTitle:"Cadangan Perkongsian",
+ partNeedTitle:"Apa Yang Kami Perlukan", partN1:"Edarkan kod jemputan", partN2:"Sahkan majikan & tuan rumah",
+ partN3:"Kongsi maklumat keselamatan", partN4:"Penjenamaan bersama", partN5:"Tambah nilai tunai untuk mata",
+ partGetTitle:"Apa Yang Anda Dapat", partG1:"Data keperluan pelarian masa nyata", partG2:"Platform pengedaran digital",
+ partG3:"Laporan impak bulanan", partG4:"Pendedahan jenama 10,000+", partG5:"Pasukan teknologi dikendalikan pelarian",
+ tagChildren:"KANAK-KANAK KAMI", childTitle:"Kanak-kanak K-BRIDGE",
+ addPhoto:"Tambah foto di sini", ethn1:"Myanmar", ethn2:"Rohingya", ethn3:"Somalia",
+ childNameAge:"Nama / umur kanak-kanak", childDescPh:"Tambah kisah kanak-kanak ini di sini.",
+ benefit1:"💼 Penerima manfaat sambungan kerja", benefit2:"💬 Penerima manfaat sambungan komuniti", benefit3:"🏠 Penerima manfaat sambungan perumahan",
+ photoBanner:"Hantarkan foto sebenar dan kami akan kemas kini serta-merta!",
+ tagVoices:"SUARA", voicesTitle:"Kisah Mereka",
+ voice1:'"Saya mahu bekerja tetapi undang-undang menghalang saya."', voice1a:"— Ahmad, 32 · Kuala Lumpur",
+ voice2:'"Tuan rumah saya tiba-tiba menggandakan sewa."', voice2a:"— Maria, 27 · Petaling Jaya",
+ voice3:'"Perkhidmatan tumpang kereta yang selamat membolehkan saya membawa anak-anak ke hospital."', voice3a:"— Fatima, 41 · Ampang",
+ voice4:'"Aplikasi dalam 3 bahasa akan menghubungkan kita semua."', voice4a:"— Daniel, 25 · Setia Wangsa",
+ shareLbl:"Kongsi", copyLink:"🔗 Salin Pautan",
+ ctaTitle:"Mari Bina Ini Bersama",
+ ctaDesc:"K-BRIDGE bukan sekadar aplikasi — ia satu pergerakan.<br>Pelarian membantu pelarian. Teknologi berkhidmat untuk kemanusiaan.",
+ ctaBtn1:"Hubungi untuk Derma", ctaBtn2:"Mohon Perkongsian",
+ verse:'"Kerana Aku ini orang asing dan kamu menyambut Aku" — Matius 25:35',
+ modalTitle:"Berjaya Dihantar!", modalDesc:"Pasukan K-BRIDGE akan menghubungi anda tidak lama lagi.", modalOk:"OK",
+ tagDonate:"DERMA", donateH1:"Derma", donateSub:"Sertai K-BRIDGE dan ubah masa depan pelarian Malaysia",
+ impact1:"100 mata untuk keluarga pelarian", impact2:"Sokongan tumpang kereta sebulan", impact3:"Satu sesi latihan pembangunan aplikasi", impact4:"Sokongan penuh aplikasi untuk 1 pelarian",
+ formTitle:"Buat Derma", formDesc:"Kemurahan hati anda mengubah masa depan keluarga pelarian.",
+ donateTypeTitle:"Jenis Derma", monthly:"Bulanan", oneTime:"Sekali Sahaja",
+ amountTitle:"Jumlah", custom:"Kustom",
+ applicantInfo:"Maklumat Anda", nameLbl:"Nama *", emailLbl:"E-mel *", phoneLbl:"Telefon",
+ consentTitle:"Persetujuan", consent1:"[Wajib] Saya bersetuju dengan pengumpulan maklumat peribadi", viewLink:"Lihat",
+ consent2:"[Pilihan] Saya ingin menerima surat berita e-mel",
+ submitDonate:"Derma Sekarang", donateNote:"Derma membiayai pembangunan aplikasi K-BRIDGE dan sokongan pelarian di Malaysia.",
+ sponsorTitle:"Kenali Kanak-kanak", sponsorDesc:"Kisah mereka mengilhamkan K-BRIDGE.",
+ ethnLoc1:"Myanmar · Kuala Lumpur", ethnLoc2:"Rohingya · Petaling Jaya", ethnLoc3:"Somalia · Ampang",
+ childDescPh2:"Tambah kisah kanak-kanak ini di sini.", childDescPh3:"Tambah kisah kanak-kanak ini.", childDescPh4:"Tambah kisah kanak-kanak ini.",
+ tagBiz2:"PROGRAM UTAMA", bizH1:"Program", bizSub:"Program teras K-BRIDGE",
+ domTitle:"Program Tempatan", domDesc:"Berpusat di Kuala Lumpur, menghubungkan komuniti pelarian.",
+ dom1Title:"Program Sambungan Kerja", dom1Desc:"Pelarian di Malaysia dihalang daripada pekerjaan formal. K-BRIDGE bekerjasama dengan NGO.",
+ dom2Title:"Sambungan Perumahan Selamat", dom2Desc:"Menyelesaikan caj berlebihan melalui sistem pengesahan.",
+ dom3Title:"Perkhidmatan Tumpang Kereta Komuniti", dom3Desc:"Tumpangan mampu milik, tiada akaun bank diperlukan.",
+ tagGallery:"GALERI", domGalTitle:"Foto Program Tempatan", addPhotoShort:"Tambah Foto",
+ ovTitle:"Program Luar Negara", ovDesc:"Mengembangkan K-BRIDGE ke seluruh Asia Tenggara.",
+ upcoming:"Akan Datang", longTerm:"Jangka Panjang",
+ ov1Title:"Operasi Hab KL", ov1Desc:"Beroperasi dari Kuala Lumpur.",
+ ov2Title:"Penang & Johor Bahru", ov2Desc:"Pengembangan dirancang pada 2026.",
+ ov3Title:"Rangkaian Asia Tenggara", ov3Desc:"Pelan hala tuju untuk Thailand dan Indonesia.",
+ campH1:"Kempen", campSub:"Kempen pengumpulan dana K-BRIDGE",
+ ongoingBadge:"Sedang Berjalan", endedBadge:"Selesai", progress:"Kemajuan", completed:"Selesai",
+ camp1t:"Kempen Sambungan Kerja Musim Panas 2026", camp1d:"Menghubungkan 500 pelarian dengan pekerjaan.",
+ camp2t:"Projek 1000 Isi Rumah Perumahan Selamat", camp2d:"Menyediakan maklumat perumahan disahkan.",
+ camp3t:"Kempen Terjemahan 3 Bahasa", camp3d:"Menterjemah semua kandungan aplikasi.",
+ camp4t:"Pelancaran Beta Tumpang Kereta", camp4d:"Selesai ujian beta.",
+ aboutH1:"Mengenai Kami", aboutSub:"K-BRIDGE menghubungkan pelarian Malaysia melalui teknologi.",
+ greetOpen:"Selamat sejahtera, saya pengasas K-BRIDGE.",
+ greetP1:"K-BRIDGE bermula untuk merungkai halangan pelarian di Malaysia menggunakan teknologi.",
+ greetP2:"Kami tidak melihat pelarian sebagai penerima bantuan. Mereka ahli pasukan kami.",
+ val1t:"Kepercayaan", val1d:"Platform selamat dibina atas kod jemputan.",
+ val2t:"Keterangkuman", val2d:"3 bahasa supaya tiada pelarian tertinggal.",
+ val3t:"Kendiri", val3d:"Pelarian menjalankan aplikasi sebagai ahli pasukan.",
+ val4t:"Kemampanan", val4d:"Model mampan melalui komuniti.",
+ revH1:"Penglibatan Komuniti", revSub:"Berhubung dengan komuniti K-BRIDGE",
+ badgeNotice:"Notis", badgeUpdate:"Kemas Kini",
+ notice1:"Maklumat Kempen Musim Panas 2026", notice2:"Nota Kemas Kini Aplikasi v2.1",
+ rvi1:"32 · Kuala Lumpur", rvt1:'"Terima kasih kepada K-BRIDGE, saya mendapat maklumat kerja yang selamat."', rvtag1:"💼 Sambungan Kerja",
+ writeReviewTitle:"Tulis Ulasan", nameLbl2:"Nama", locLbl:"Lokasi", ratingLbl:"Penilaian",
+ reviewContentLbl:"Ulasan", submitReviewBtn:"Hantar Ulasan",
+ qa1q:"Bagaimana saya memuat turun aplikasi?", qa1a:"Tersedia melalui kod jemputan daripada rakan kongsi NGO.",
+ faq1q:"Apakah K-BRIDGE?", faq1a:"Aplikasi bukan untung yang menghubungkan pelarian Malaysia dengan pekerjaan, perumahan, dan komuniti."
+}
+};
+
+function applyLang(lang){
+  try{
+    var dict = I18N[lang];
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < nodes.length; i++) {
+      var key = nodes[i].getAttribute("data-i18n");
+      if (dict && dict[key] !== undefined) { nodes[i].innerHTML = dict[key]; }
+    }
+    var phNodes = document.querySelectorAll("[data-i18n-ph]");
+    for (var j = 0; j < phNodes.length; j++) {
+      var pkey = phNodes[j].getAttribute("data-i18n-ph");
+      if (dict && dict[pkey] !== undefined) { phNodes[j].setAttribute("placeholder", dict[pkey]); }
+    }
+  }catch(e){ console.warn("applyLang error", e); }
+}
+
+function applyCurrency(lang){
+  try{
+    var c = CURRENCY[lang];
+    var nodes = document.querySelectorAll("[data-amt]");
+    for (var i = 0; i < nodes.length; i++) {
+      var idx = nodes[i].getAttribute("data-amt");
+      if (idx !== "direct" && c.vals[idx] !== undefined) { nodes[i].textContent = c.sym + c.vals[idx]; }
+    }
+    var custom = document.getElementById("fp-custom");
+    if (custom) custom.placeholder = c.ph;
+  }catch(e){ console.warn("applyCurrency error", e); }
+}
+
+function setLang(lang){
+  try{
+    currentLang = lang;
+    document.querySelectorAll(".lang-btn").forEach(function(b){ b.classList.remove("on"); });
+    var btn = document.getElementById("lang-" + lang);
+    if(btn) btn.classList.add("on");
+    applyLang(lang);
+    applyCurrency(lang);
+    renderCarousel();
+    updateSnsVisibility();
+  }catch(e){ console.warn("setLang error", e); }
+}
+
+function goPage(id){
+  try{
+    document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
+    var pg = document.getElementById("page-" + id);
+    if(pg) pg.classList.add("active");
+    document.querySelectorAll(".gnb-item > a").forEach(function(a){ a.classList.remove("active"); });
+    var nav = document.getElementById("nav-" + id);
+    if (nav) nav.classList.add("active");
+    window.scrollTo(0,0);
+    initCounters();
+    if(id === "login"){
+      updateSnsVisibility();
+      var idInput = document.getElementById("loginIdInput");
+      var rememberChk = document.getElementById("rememberId");
+      if(rememberedId && idInput && rememberChk){
+        idInput.value = rememberedId;
+        rememberChk.checked = true;
+      }
+    }
+  }catch(e){ console.warn("goPage error", e); }
+}
+
+function updateSnsVisibility(){
+  var g = document.getElementById("snsGoogle");
+  var w = document.getElementById("snsWechat");
+  if(!g || !w) return;
+  if(currentLang === "zh"){ g.style.display = "none"; w.style.display = "flex"; }
+  else { g.style.display = "flex"; w.style.display = "none"; }
+}
+
+function loggedInMsg(){
+  return currentLang==="zh" ? "登录成功！" : currentLang==="ms" ? "Berjaya log masuk!" : "Logged in!";
+}
+function fillIdPwMsg(){
+  return currentLang==="zh" ? "请输入账号和密码。" : currentLang==="ms" ? "Sila masukkan ID dan kata laluan." : "Please enter your ID and password.";
+}
+
+function generateDonorNo(){
+  return "2026" + Math.floor(100000 + Math.random()*900000);
+}
+
+function updateAuthUI(){
+  var navMyItem = document.getElementById("nav-my-item");
+  var userBox = document.getElementById("gnbUserBox");
+  var loginBtn = document.getElementById("gnbLoginBtn");
+  var userNameEl = document.getElementById("gnbUserName");
+  if(currentUser.loggedIn){
+    if(navMyItem) navMyItem.style.display = "flex";
+    if(userBox) userBox.style.display = "flex";
+    if(loginBtn) loginBtn.style.display = "none";
+    if(userNameEl) userNameEl.textContent = currentUser.name || "Member";
+    var nameDisp = document.getElementById("myUserNameDisplay");
+    if(nameDisp) nameDisp.textContent = currentUser.name || "Member";
+    var donorNoEl = document.getElementById("myDonorNo");
+    if(donorNoEl) donorNoEl.textContent = currentUser.donorNo || "-";
+    var badgeEl = document.getElementById("myBadge");
+    if(badgeEl){
+      var badgeKey = currentUser.type === "business" ? "businessBadge" : currentUser.type === "under14" ? "under14Badge" : "personalBadge";
+      badgeEl.setAttribute("data-i18n", badgeKey);
+      badgeEl.textContent = (I18N[currentLang] && I18N[currentLang][badgeKey]) || "Individual";
+    }
+  } else {
+    if(navMyItem) navMyItem.style.display = "none";
+    if(userBox) userBox.style.display = "none";
+    if(loginBtn) loginBtn.style.display = "block";
+  }
+}
+
+function doLogout(){
+  currentUser = { loggedIn:false, name:"", type:"adult", donorNo:"" };
+  updateAuthUI();
+  goPage("home");
+}
+
+function doLoginMain(){
+  var idVal = document.getElementById("loginIdInput").value.trim();
+  var pwVal = document.getElementById("loginPwInput").value.trim();
+  if(!idVal || !pwVal){ alert(fillIdPwMsg()); return; }
+  rememberedId = document.getElementById("rememberId").checked ? idVal : "";
+  currentUser.loggedIn = true;
+  currentUser.name = currentUser.name || idVal;
+  currentUser.donorNo = currentUser.donorNo || generateDonorNo();
+  updateAuthUI();
+  alert(loggedInMsg());
+  goPage("home");
+}
+function doPhoneLogin(){
+  currentUser.loggedIn = true;
+  currentUser.name = currentUser.name || "Member";
+  currentUser.donorNo = currentUser.donorNo || generateDonorNo();
+  updateAuthUI();
+  alert(loggedInMsg());
+  goPage("home");
+}
+function doGoogleLogin(){
+  var win = window.open("https://accounts.google.com/ServiceLogin?continue=https://www.google.com", "googleLogin", "width=520,height=680");
+  var timer = setInterval(function(){
+    if(win && win.closed){
+      clearInterval(timer);
+      currentUser.loggedIn = true;
+      currentUser.name = currentUser.name || "Google User";
+      currentUser.donorNo = currentUser.donorNo || generateDonorNo();
+      updateAuthUI();
+      alert(loggedInMsg());
+      goPage("home");
+    }
+  }, 500);
+}
+function doWechatLogin(){
+  var win = window.open("https://open.weixin.qq.com/connect/qrconnect", "wechatLogin", "width=500,height=620");
+  var timer = setInterval(function(){
+    if(win && win.closed){
+      clearInterval(timer);
+      currentUser.loggedIn = true;
+      currentUser.name = currentUser.name || "WeChat User";
+      currentUser.donorNo = currentUser.donorNo || generateDonorNo();
+      updateAuthUI();
+      alert(loggedInMsg());
+      goPage("home");
+    }
+  }, 500);
+}
+
+function selectJoinType(type){
+  pendingJoinType = type;
+  document.querySelectorAll(".join-card").forEach(function(c){ c.classList.remove("selected"); });
+  var card = document.getElementById("join-" + type);
+  if(card) card.classList.add("selected");
+  document.getElementById("join-guardian-field").style.display = type === "under14" ? "block" : "none";
+  document.getElementById("join-org-field").style.display = type === "business" ? "block" : "none";
+  document.getElementById("joinFormWrap").classList.add("show");
+  document.getElementById("joinFormWrap").scrollIntoView({behavior:"smooth"});
+}
+
+function submitJoin(){
+  var name = document.getElementById("join-name").value.trim();
+  var email = document.getElementById("join-email").value.trim();
+  var id = document.getElementById("join-id").value.trim();
+  var pw = document.getElementById("join-pw").value.trim();
+  if(!pendingJoinType){ alert(currentLang==="zh"?"请选择赞助类型。":currentLang==="ms"?"Sila pilih jenis penajaan.":"Please select a sponsorship type."); return; }
+  if(!name || !email || !id || !pw){ alert(currentLang==="zh"?"请填写所有必填项。":currentLang==="ms"?"Sila isi semua medan.":"Please fill in all required fields."); return; }
+  currentUser.loggedIn = true;
+  currentUser.name = name;
+  currentUser.type = pendingJoinType;
+  currentUser.donorNo = generateDonorNo();
+  updateAuthUI();
+  alert(loggedInMsg());
+  goPage("home");
+}
+
+function myTab(id){ switchTab("my-t-", id, "at", "atab-content"); document.getElementById("my-t-"+id).classList.add("on"); document.getElementById("my-c-"+id).classList.add("show"); }
+function myDonSub(id){
+  document.getElementById("my-don-regular").classList.toggle("on", id==="regular");
+  document.getElementById("my-don-onetime").classList.toggle("on", id==="onetime");
+  document.getElementById("my-don-regular-c").style.display = id==="regular" ? "block" : "none";
+  document.getElementById("my-don-onetime-c").style.display = id==="onetime" ? "block" : "none";
+}
+function myRecSub(id){
+  ["receipt","confirm","history"].forEach(function(k){
+    var el = document.getElementById("my-rec-"+k);
+    if(el) el.classList.toggle("on", k===id);
+  });
+}
+function myFaqSub(id){
+  document.getElementById("my-faq-faq").classList.toggle("on", id==="faq");
+  document.getElementById("my-faq-11").classList.toggle("on", id==="inquiry");
+}
+
+function switchTab(prefix, id, btnClass, contentClass){
+  document.querySelectorAll("." + btnClass).forEach(function(b){ b.classList.remove("on"); });
+  document.querySelectorAll("." + contentClass).forEach(function(c){ c.classList.remove("show"); });
+  var b2 = document.getElementById(prefix + id); if(b2) b2.classList.add("on");
+  var c2 = document.getElementById(prefix.replace("-", "c-") + id); if(c2) c2.classList.add("show");
+}
+function donateTab(id){ switchTab("dt-", id, "dt", "dtab-content"); }
+function bizTab(id){ switchTab("bt-", id, "bt", "btab-content"); }
+function campTab(id){ switchTab("ct-", id, "ct", "ctab-content"); }
+function aboutTab(id){ switchTab("at-", id, "at", "atab-content"); }
+function reviewTab(id){ switchTab("rt-", id, "rt", "rtab-content"); }
+
+window.addEventListener("scroll", function(){
+  var d = document.documentElement;
+  var p = document.getElementById("prog");
+  if(p) p.style.width = (d.scrollTop / (d.scrollHeight - d.clientHeight) * 100) + "%";
+});
+
+function initCounters(){
+  try{
+    document.querySelectorAll("[data-cnt]").forEach(function(el){
+      if (el._counted) return;
+      var io = new IntersectionObserver(function(ens){
+        ens.forEach(function(e){
+          if (!e.isIntersecting) return;
+          var t = +el.dataset.cnt, s = el.dataset.suf || "";
+          var c = 0, st = Math.max(1, Math.ceil(t/60));
+          var id = setInterval(function(){
+            c = Math.min(c+st, t);
+            el.textContent = c + s;
+            if (c >= t) { clearInterval(id); el._counted = true; }
+          }, 25);
+          io.unobserve(el);
+        });
+      }, {threshold:.5});
+      io.observe(el);
+    });
+  }catch(e){ console.warn("initCounters error", e); }
+}
+
+/* ══ HERO CAROUSEL — self-healing, fully guarded ══ */
+function renderCarousel(){
+  try{
+    var hero = document.getElementById("heroCarousel");
+    if(!hero) return;
+    var track = hero.querySelector(".hc-track");
+    if(!track){
+      track = document.createElement("div");
+      track.className = "hc-track";
+      hero.appendChild(track);
+    }
+    var controls = hero.querySelector(".hc-controls");
+    if(!controls){
+      controls = document.createElement("div");
+      controls.className = "hc-controls";
+      controls.innerHTML =
+        '<div class="hc-segs"></div>' +
+        '<button class="hc-ctrl-btn" data-act="prev">‹</button>' +
+        '<button class="hc-ctrl-btn" data-act="next">›</button>' +
+        '<button class="hc-ctrl-btn" data-act="pause">⏸</button>';
+      hero.appendChild(controls);
+      controls.querySelector('[data-act="prev"]').onclick = function(){ hcGo(hcIdx-1); };
+      controls.querySelector('[data-act="next"]').onclick = function(){ hcGo(hcIdx+1); };
+      controls.querySelector('[data-act="pause"]').onclick = function(){ hcTogglePause(); };
+    }
+    var segs = controls.querySelector(".hc-segs");
+    if(!segs) return;
+    track.innerHTML = "";
+    segs.innerHTML = "";
+    var realCount = HC_SLIDES.length;
+    var renderList = HC_SLIDES.concat([HC_SLIDES[0]]);
+    renderList.forEach(function(s, i){
+      var t = s[currentLang] || s.en;
+      var slide = document.createElement("div");
+      slide.className = "hc-slide";
+      var bgStyle = s.img ? ("background-image:url(" + s.img + ")") : "";
+      var photoDiv = document.createElement("div");
+      photoDiv.className = "hc-photo" + (s.img ? "" : " hc-photo-empty");
+      if(bgStyle) photoDiv.setAttribute("style", bgStyle);
+      if(!s.img){ photoDiv.innerHTML = '<div style="font-size:40px;">📸</div><div style="font-size:12px;">No photo yet</div>'; }
+      var addBtn = document.createElement("button");
+      addBtn.className = "hc-addphoto";
+      addBtn.textContent = "📷 Add / Change Photo";
+      var realIdx = i % realCount;
+      addBtn.onclick = (function(idx){ return function(){ hcPickPhoto(idx); }; })(realIdx);
+      var textDiv = document.createElement("div");
+      textDiv.className = "hc-text";
+      var eyebrow = document.createElement("div");
+      eyebrow.className = "hc-eyebrow";
+      eyebrow.textContent = "K-BRIDGE · 2026";
+      var titleDiv = document.createElement("div");
+      titleDiv.className = "hc-title";
+      titleDiv.contentEditable = "true";
+      titleDiv.textContent = t.title;
+      titleDiv.oninput = (function(idx){ return function(){ hcEdit(idx, "title", this); }; })(realIdx);
+      var descDiv = document.createElement("div");
+      descDiv.className = "hc-desc";
+      descDiv.contentEditable = "true";
+      descDiv.textContent = t.desc;
+      descDiv.oninput = (function(idx){ return function(){ hcEdit(idx, "desc", this); }; })(realIdx);
+      var ctaDiv = document.createElement("div");
+      ctaDiv.className = "hc-cta";
+      var btn1 = document.createElement("button");
+      btn1.className = "btn-white";
+      btn1.setAttribute("data-i18n","heroBtn1");
+      btn1.textContent = "View Programs";
+      btn1.onclick = function(){ goPage("biz"); };
+      var btn2 = document.createElement("button");
+      btn2.className = "btn-outline";
+      btn2.setAttribute("data-i18n","heroBtn2");
+      btn2.textContent = "Donate";
+      btn2.onclick = function(){ goPage("donate"); };
+      ctaDiv.appendChild(btn1);
+      ctaDiv.appendChild(btn2);
+      var noteDiv = document.createElement("div");
+      noteDiv.className = "hc-editnote";
+      noteDiv.textContent = "\u270E Click title or text to edit \u00B7 Click \"Add Photo\" to upload an image";
+      textDiv.appendChild(eyebrow);
+      textDiv.appendChild(titleDiv);
+      textDiv.appendChild(descDiv);
+      textDiv.appendChild(ctaDiv);
+      textDiv.appendChild(noteDiv);
+      slide.appendChild(photoDiv);
+      slide.appendChild(addBtn);
+      slide.appendChild(textDiv);
+      track.appendChild(slide);
+    });
+    for(var si=0; si<realCount; si++){
+      var seg = document.createElement("div");
+      seg.className = "hc-seg";
+      var fill = document.createElement("div");
+      fill.className = "hc-seg-fill";
+      fill.setAttribute("data-idx", si);
+      seg.appendChild(fill);
+      seg.onclick = (function(idx){ return function(){ hcGo(idx); }; })(si);
+      segs.appendChild(seg);
+    }
+    applyLang(currentLang);
+    hcProgress = 0;
+    track.style.transition = "none";
+    track.style.transform = "translateX(-" + (hcIdx * 100) + "%)";
+    void track.offsetWidth;
+    track.style.transition = "";
+    updateProgressUI();
+  }catch(err){ console.warn("renderCarousel error:", err); }
+}
+
+function hcGo(n){
+  try{
+    var realCount = HC_SLIDES.length;
+    if(realCount === 0) return;
+    var hero = document.getElementById("heroCarousel");
+    if(!hero) return;
+    var track = hero.querySelector(".hc-track");
+    if(!track) return;
+
+    if(n >= realCount){
+      hcIdx = realCount;
+      track.style.transition = "";
+      track.style.transform = "translateX(-" + (hcIdx * 100) + "%)";
+      hcProgress = 0;
+      updateProgressUI();
+      var onEnd = function(){
+        track.removeEventListener("transitionend", onEnd);
+        track.style.transition = "none";
+        hcIdx = 0;
+        track.style.transform = "translateX(0%)";
+        void track.offsetWidth;
+        track.style.transition = "";
+      };
+      track.addEventListener("transitionend", onEnd);
+    } else if(n < 0){
+      hcIdx = ((n % realCount) + realCount) % realCount;
+      track.style.transition = "";
+      track.style.transform = "translateX(-" + (hcIdx * 100) + "%)";
+      hcProgress = 0;
+      updateProgressUI();
+    } else {
+      hcIdx = n;
+      track.style.transition = "";
+      track.style.transform = "translateX(-" + (hcIdx * 100) + "%)";
+      hcProgress = 0;
+      updateProgressUI();
+    }
+  }catch(err){ console.warn("hcGo error:", err); }
+}
+
+function updateProgressUI(){
+  try{
+    var fills = document.querySelectorAll(".hc-seg-fill");
+    fills.forEach(function(f){
+      var i = +f.getAttribute("data-idx");
+      if(i < hcIdx) f.style.width = "100%";
+      else if(i === hcIdx) f.style.width = hcProgress + "%";
+      else f.style.width = "0%";
+    });
+  }catch(err){ console.warn("updateProgressUI error:", err); }
+}
+function hcEdit(i, field, el){
+  try{
+    if(!HC_SLIDES[i][currentLang]) HC_SLIDES[i][currentLang] = {title:"", desc:""};
+    HC_SLIDES[i][currentLang][field] = el.textContent;
+  }catch(err){ console.warn("hcEdit error:", err); }
+}
+
+function hcPickPhoto(i){
+  try{
+    var input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        HC_SLIDES[i].img = ev.target.result;
+        renderCarousel();
+        hcGo(i);
+      };
+      reader.readAsDataURL(file);
+    };
+    input.click();
+  }catch(err){ console.warn("hcPickPhoto error:", err); }
+}
+
+function hcTogglePause(){
+  hcManualPause = !hcManualPause;
+  var hero = document.getElementById("heroCarousel");
+  if(!hero) return;
+  var btn = hero.querySelector('[data-act="pause"]');
+  if(btn) btn.textContent = hcManualPause ? "▶" : "⏸";
+}
+
+var hcTicker = setInterval(function(){
+  try{
+    if(hcHover || hcManualPause || !hcInView) return;
+    if(HC_SLIDES.length === 0) return;
+    hcProgress += (HC_TICK / HC_DURATION) * 100;
+    if(hcProgress >= 100){ hcGo(hcIdx + 1); }
+    else { updateProgressUI(); }
+  }catch(err){ console.warn("hcTicker error:", err); }
+}, HC_TICK);
+
+document.addEventListener("DOMContentLoaded", function(){
+  try{
+    var hero = document.getElementById("heroCarousel");
+    if(hero){
+      hero.addEventListener("mouseenter", function(){ hcHover = true; });
+      hero.addEventListener("mouseleave", function(){ hcHover = false; });
+      var io2 = new IntersectionObserver(function(ents){
+        ents.forEach(function(e){ hcInView = e.isIntersecting; });
+      }, {threshold:.3});
+      io2.observe(hero);
+    }
+    renderCarousel();
+    initCounters();
+  }catch(err){ console.warn("DOMContentLoaded error:", err); }
+});
+renderCarousel();
+
+function toggleSearch(){
+  var ov = document.getElementById("searchOverlay");
+  if(!ov) return;
+  ov.classList.toggle("show");
+  if(ov.classList.contains("show")){
+    setTimeout(function(){ var inp = document.getElementById("searchInput"); if(inp) inp.focus(); }, 50);
+  }
+}
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    var ov = document.getElementById("searchOverlay");
+    if(ov && ov.classList.contains("show")) ov.classList.remove("show");
+  }
+});
+document.addEventListener("click", function(e){
+  var ov = document.getElementById("searchOverlay");
+  if(ov && e.target === ov) ov.classList.remove("show");
+});
+function doSearch(){
+  var inp = document.getElementById("searchInput");
+  if(!inp) return;
+  var q = inp.value.trim().toLowerCase();
+  if(!q) return;
+  var routes = [
+    {kw:["donate","donation","捐","derma"], page:"donate"},
+    {kw:["program","job","housing","项目","program utama"], page:"biz"},
+    {kw:["campaign","活动","kempen"], page:"campaign"},
+    {kw:["about","关于","mengenai"], page:"about"},
+    {kw:["community","review","story","社区","komuniti"], page:"review"}
+  ];
+  var matched = null;
+  for(var i=0;i<routes.length;i++){
+    for(var j=0;j<routes[i].kw.length;j++){
+      if(q.indexOf(routes[i].kw[j]) !== -1){ matched = routes[i].page; break; }
+    }
+    if(matched) break;
+  }
+  var ov = document.getElementById("searchOverlay");
+  if(ov) ov.classList.remove("show");
+  inp.value = "";
+  if(matched){ goPage(matched); }
+  else {
+    goPage("home");
+    alert(currentLang==="zh" ? "未找到匹配结果，已返回首页。" : currentLang==="ms" ? "Tiada hasil ditemui." : "No matching page found.");
+  }
+}
+
+var cur = 0, tot = 4;
+function goTest(n){
+  try{
+    var sl = document.getElementById("tsl");
+    if(!sl) return;
+    cur = n;
+    sl.style.transform = "translateX(-" + (n*100) + "%)";
+    document.querySelectorAll(".tdot").forEach(function(d, i){ d.classList.toggle("on", i === n); });
+  }catch(err){ console.warn("goTest error:", err); }
+}
+try{
+  var ddEl = document.getElementById("tdd");
+  if(ddEl){
+    for(var ti=0; ti<tot; ti++){
+      var td = document.createElement("div");
+      td.className = "tdot" + (ti===0?" on":"");
+      (function(idx){ td.onclick = function(){ goTest(idx); }; })(ti);
+      ddEl.appendChild(td);
+    }
+  }
+}catch(err){ console.warn("testimonial init error:", err); }
+setInterval(function(){ goTest((cur+1) % tot); }, 4200);
+
+function fpTab(n){
+  var t1=document.getElementById("fp-t1"), t2=document.getElementById("fp-t2");
+  if(t1) t1.classList.toggle("on", n===1);
+  if(t2) t2.classList.toggle("on", n===2);
+}
+function fpAmt(el){
+  document.querySelectorAll(".fp-ab").forEach(function(b){ b.classList.remove("on"); });
+  el.classList.add("on");
+  var v = el.getAttribute("data-amt");
+  var custom = document.getElementById("fp-custom");
+  if(custom) custom.style.display = (v === "direct") ? "block" : "none";
+}
+function fpSubmit(){
+  var nameEl = document.getElementById("fp-name"), emailEl = document.getElementById("fp-email"), ck1 = document.getElementById("fp-ck1");
+  if(!nameEl || !emailEl || !ck1) return;
+  var n = nameEl.value.trim(), em = emailEl.value.trim();
+  if(!n||!em){ alert(currentLang==="zh"?"姓名和邮箱为必填项。":currentLang==="ms"?"Nama dan e-mel adalah wajib.":"Name and email are required."); return; }
+  if(!ck1.checked){ alert(currentLang==="zh"?"请勾选个人信息收集同意。":currentLang==="ms"?"Sila bersetuju.":"Please agree to personal info collection."); return; }
+  var modal = document.getElementById("modal");
+  if(modal) modal.classList.add("show");
+}
+
+function toggleQa(el){
+  el.classList.toggle("open");
+  if(el.nextElementSibling) el.nextElementSibling.classList.toggle("open");
+}
+function setStars(n){
+  starVal = n;
+  document.querySelectorAll(".rw-star").forEach(function(s, i){ s.style.color = i<n?"#f59e0b":"#ddd"; });
+}
+function submitReview(){
+  var nameEl = document.getElementById("rw-name"), textEl = document.getElementById("rw-text"), locEl = document.getElementById("rw-loc");
+  if(!nameEl || !textEl) return;
+  var n = nameEl.value.trim(), t = textEl.value.trim();
+  if(!n||!t){ alert(currentLang==="zh"?"请输入姓名和评价内容。":currentLang==="ms"?"Sila masukkan nama dan ulasan.":"Please enter your name and review."); return; }
+  if(!starVal){ alert(currentLang==="zh"?"请选择星级评分。":currentLang==="ms"?"Sila pilih penilaian.":"Please select a star rating."); return; }
+  var modal = document.getElementById("modal");
+  if(modal) modal.classList.add("show");
+  nameEl.value=""; textEl.value=""; if(locEl) locEl.value="";
+  setStars(0);
+}
+function shareIt(t){
+  if(t==="facebook") window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(location.href));
+  else if(t==="twitter") window.open("https://twitter.com/intent/tweet?text="+encodeURIComponent("👑 K-BRIDGE")+"&url="+encodeURIComponent(location.href));
+  else if(t==="copy"){ navigator.clipboard.writeText(location.href).then(function(){ alert("Link copied!"); }); }
+  else if(t==="whatsapp") window.open("https://wa.me/?text="+encodeURIComponent("👑 K-BRIDGE "+location.href));
+}
+</script>
+</body>
+</html>
