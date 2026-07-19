@@ -3,660 +3,613 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-BRIDGE | 말레이시아 난민을 기회로 연결하다</title>
+<title>K-BRIDGE — 말레이시아 난민을 기회로 연결하다</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root{
-    --forest-900:#0F3D2A;
-    --forest-800:#14432E;
-    --forest-700:#1F6B47;
-    --forest-600:#2C8459;
-    --cream:#FAF6EC;
-    --sand:#EFE7D2;
-    --ink:#1B241E;
-    --ink-soft:#4A554D;
-    --gold:#E3A438;
-    --gold-deep:#C6811F;
-    --cat-job:#2F6FED;
-    --cat-house:#8B5FBF;
-    --cat-market:#E8952E;
-    --cat-carpool:#DC5B4B;
-    --cat-community:#1F9D6C;
-    --cat-lang:#123D2A;
-    --radius:18px;
-    --shadow:0 10px 30px rgba(15,61,42,0.08);
-  }
-  *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{
-    margin:0;
-    font-family:'PretendardVariable','Pretendard',-apple-system,BlinkMacSystemFont,'Malgun Gothic',sans-serif;
-    color:var(--ink);
-    background:var(--cream);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,.serif{font-family:'Noto Serif KR',serif;}
-  a{color:inherit;text-decoration:none;}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
-  img{max-width:100%;display:block;}
-  button{font-family:inherit;cursor:pointer;}
+/* ============ TOKENS ============ */
+:root{
+  --forest:#12392C;
+  --forest-deep:#0B2820;
+  --jade:#1E7A54;
+  --gold:#E0A526;
+  --gold-deep:#B9840F;
+  --terracotta:#C1502E;
+  --ivory:#FAF7F0;
+  --paper:#FFFFFF;
+  --ink:#1F2421;
+  --ink-soft:#4B564F;
+  --line:#E4DFD2;
+  --radius:14px;
+  --shadow:0 10px 30px -12px rgba(18,57,44,0.18);
+  --serif:'Fraunces', serif;
+  --sans:'Manrope', sans-serif;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; font-family:var(--sans); color:var(--ink); background:var(--ivory);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--serif); margin:0; color:var(--forest-deep); line-height:1.15;}
+p{line-height:1.7; color:var(--ink-soft);}
+a{color:inherit; text-decoration:none;}
+button{font-family:var(--sans); cursor:pointer;}
+img{max-width:100%; display:block;}
+.eyebrow{
+  font-size:12.5px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase;
+  color:var(--gold-deep);
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+.visually-hidden{position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0 0 0 0);}
 
-  /* ---------- header ---------- */
-  header.site{
-    position:fixed;top:0;left:0;right:0;z-index:100;
-    background:rgba(15,61,42,0.92);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid rgba(255,255,255,0.08);
-  }
-  .nav-inner{
-    max-width:1120px;margin:0 auto;padding:14px 24px;
-    display:flex;align-items:center;justify-content:space-between;
-  }
-  .brand{
-    display:flex;align-items:center;gap:9px;
-    font-family:'Noto Serif KR',serif;font-weight:900;font-size:20px;color:#fff;letter-spacing:0.5px;
-  }
-  .brand svg{width:22px;height:22px;flex:none;}
-  nav.links{display:flex;gap:26px;}
-  nav.links a{
-    color:rgba(255,255,255,0.82);font-size:14.5px;font-weight:500;
-    padding:6px 2px;border-bottom:2px solid transparent;transition:.2s;
-  }
-  nav.links a:hover{color:#fff;border-color:var(--gold);}
-  .nav-cta{
-    background:var(--gold);color:var(--forest-900);font-weight:700;font-size:14px;
-    padding:9px 18px;border-radius:999px;border:none;white-space:nowrap;
-  }
-  .nav-cta:hover{background:#f0b654;}
-  .menu-btn{display:none;background:none;border:none;color:#fff;font-size:24px;}
+/* ============ HEADER ============ */
+header{
+  position:sticky; top:0; z-index:200; background:rgba(250,247,240,0.94);
+  backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
+}
+.nav-row{display:flex; align-items:center; gap:22px; height:76px;}
+.logo{
+  display:flex; align-items:center; gap:8px; font-family:var(--serif); font-weight:800;
+  font-size:22px; color:var(--forest-deep); white-space:nowrap;
+}
+.logo span.crown{font-size:20px;}
+nav.main-nav{display:flex; gap:4px; position:relative; flex:1;}
+.nav-item{position:relative;}
+.nav-item>button{
+  background:none; border:none; font-size:15.5px; font-weight:700; color:var(--ink);
+  padding:12px 14px; border-radius:8px; display:flex; align-items:center; gap:5px;
+}
+.nav-item>button:hover, .nav-item.open>button{background:#EFEADB; color:var(--forest-deep);}
+.caret{font-size:10px; opacity:0.6; transition:transform .15s;}
+.nav-item.open .caret{transform:rotate(180deg);}
+.dropdown{
+  position:absolute; top:calc(100% + 6px); left:0; min-width:190px; background:var(--paper);
+  border-radius:12px; box-shadow:var(--shadow); border:1px solid var(--line);
+  padding:8px; display:none; flex-direction:column; gap:2px;
+}
+.nav-item.open .dropdown{display:flex;}
+.dropdown a{
+  padding:10px 12px; border-radius:8px; font-size:14.5px; font-weight:600; color:var(--ink);
+}
+.dropdown a:hover{background:#EFEADB; color:var(--forest-deep);}
+.header-tools{display:flex; align-items:center; gap:10px;}
+.search-box{
+  display:flex; align-items:center; gap:6px; background:#EFEADB; border-radius:20px;
+  padding:8px 12px; width:150px; transition:width .2s;
+}
+.search-box:focus-within{width:210px;}
+.search-box input{
+  border:none; background:none; outline:none; font-size:13.5px; width:100%; font-family:var(--sans);
+}
+.icon-btn{background:none; border:none; font-size:16px; color:var(--ink-soft);}
+.text-btn{
+  background:none; border:none; font-size:13.5px; font-weight:700; color:var(--ink);
+  padding:8px 10px; white-space:nowrap;
+}
+.text-btn:hover{color:var(--forest);}
+.lang-select{
+  border:1px solid var(--line); background:var(--paper); border-radius:20px; padding:7px 12px;
+  font-size:13px; font-weight:700; color:var(--ink-soft); font-family:var(--sans);
+}
+.donate-btn{
+  background:var(--gold); color:var(--forest-deep); font-weight:800; font-size:14px;
+  padding:11px 20px; border-radius:24px; border:none; white-space:nowrap; box-shadow:0 6px 14px -6px rgba(224,165,38,0.6);
+}
+.donate-btn:hover{background:var(--gold-deep); color:#fff;}
+@media(max-width:980px){
+  .search-box, .lang-select-label{display:none;}
+  nav.main-nav{display:none;}
+}
 
-  /* ---------- hero ---------- */
-  .hero{
-    position:relative;overflow:hidden;
-    background:radial-gradient(120% 140% at 15% -10%, var(--forest-700) 0%, var(--forest-800) 45%, var(--forest-900) 100%);
-    color:#fff;padding:168px 0 96px;
-  }
-  .hero .wrap{position:relative;z-index:3;display:grid;grid-template-columns:1.1fr 0.9fr;gap:48px;align-items:center;}
-  .hero-crown{font-size:34px;line-height:1;margin-bottom:18px;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25));}
-  .hero h1{font-size:52px;font-weight:900;line-height:1.15;margin:0 0 20px;letter-spacing:-0.5px;}
-  .hero h1 .accent{color:var(--gold);}
-  .hero p.lead{font-size:18px;color:rgba(255,255,255,0.82);max-width:480px;margin:0 0 28px;font-weight:500;}
-  .chip-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:36px;}
-  .chip{
-    border:1px solid rgba(255,255,255,0.28);color:rgba(255,255,255,0.9);
-    padding:7px 15px;border-radius:999px;font-size:13.5px;font-weight:600;
-  }
-  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;}
-  .btn-primary{
-    background:var(--gold);color:var(--forest-900);padding:14px 26px;border-radius:999px;
-    font-weight:800;font-size:15px;border:none;box-shadow:0 8px 20px rgba(227,164,56,0.35);
-  }
-  .btn-primary:hover{background:#f0b654;}
-  .btn-ghost{
-    background:transparent;color:#fff;padding:14px 26px;border-radius:999px;
-    font-weight:700;font-size:15px;border:1.5px solid rgba(255,255,255,0.5);
-  }
-  .btn-ghost:hover{border-color:#fff;}
-  .hero-visual{position:relative;height:340px;}
-  .bridge-svg{width:100%;height:100%;}
-  .hero-photo-slot{
-    position:absolute;inset:0;border-radius:20px;overflow:hidden;
-    background:rgba(255,255,255,0.04);
-  }
-  .hero-photo-slot img{width:100%;height:100%;object-fit:cover;}
-  .hero-target-line{
-    font-family:'Noto Serif KR',serif;font-style:italic;color:rgba(255,255,255,0.55);
-    font-size:13px;margin-top:34px;
-  }
+/* ============ HERO ============ */
+.hero{
+  position:relative; overflow:hidden; background:radial-gradient(circle at 82% 20%, #1a4a38 0%, var(--forest) 45%, var(--forest-deep) 100%);
+  color:#fff; padding:100px 0 0;
+}
+.hero .ring{position:absolute; border-radius:50%; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03);}
+.hero .ring.r1{width:520px; height:520px; top:-180px; right:-140px;}
+.hero .ring.r2{width:340px; height:340px; bottom:-120px; right:60px;}
+.hero-inner{position:relative; z-index:2; max-width:680px;}
+.hero .crown-big{font-size:38px; display:block; margin-bottom:18px;}
+.hero h1{font-size:56px; font-weight:900; color:#fff; letter-spacing:-0.01em;}
+.hero .tagline{font-size:20px; margin:18px 0 26px; color:#EDE9DC; font-family:var(--serif); font-style:italic; font-weight:500;}
+.hero .pillars{
+  display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.18);
+}
+.pillars span{
+  font-size:13.5px; font-weight:700; background:rgba(255,255,255,0.09); padding:7px 14px; border-radius:20px;
+}
+.hero-ctas{display:flex; gap:12px; margin:30px 0 60px;}
+.btn-primary{background:var(--gold); color:var(--forest-deep); font-weight:800; padding:14px 26px; border-radius:26px; border:none; font-size:15px;}
+.btn-primary:hover{background:#fff;}
+.btn-ghost{background:transparent; border:1.5px solid rgba(255,255,255,0.5); color:#fff; padding:14px 26px; border-radius:26px; font-weight:700; font-size:15px;}
+.btn-ghost:hover{border-color:#fff;}
+/* signature bridge arc */
+.bridge-arc{position:relative; z-index:2; width:100%; height:90px; display:block;}
+.bridge-arc path{fill:none; stroke:rgba(255,255,255,0.35); stroke-width:2;}
+.bridge-arc circle{fill:var(--gold);}
 
-  /* ---------- section basics ---------- */
-  section{padding:96px 0;}
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;
-    letter-spacing:1.5px;text-transform:uppercase;color:var(--forest-700);margin-bottom:14px;
-  }
-  .eyebrow svg{width:14px;height:14px;}
-  h2.section-title{font-size:36px;font-weight:900;margin:0 0 14px;letter-spacing:-0.3px;color:var(--forest-900);}
-  p.section-sub{font-size:16.5px;color:var(--ink-soft);max-width:620px;margin:0 0 48px;}
-  .light-on-dark .eyebrow{color:var(--gold);}
-  .light-on-dark h2.section-title{color:#fff;}
-  .light-on-dark p.section-sub{color:rgba(255,255,255,0.72);}
+/* ============ SECTIONS ============ */
+section.block{padding:86px 0;}
+section.block.alt{background:#F2EEE1;}
+.section-head{max-width:640px; margin-bottom:44px;}
+.section-head h2{font-size:34px; font-weight:800; margin-top:8px;}
+.section-head p{margin-top:12px; font-size:16px;}
 
-  /* ---------- problem cards ---------- */
-  .grid-2x2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .problem-card{
-    background:#fff;border-radius:var(--radius);padding:28px 26px;box-shadow:var(--shadow);
-    border:1px solid rgba(15,61,42,0.06);
-  }
-  .problem-card .icon{
-    width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    font-size:20px;margin-bottom:16px;
-  }
-  .problem-card h3{font-size:18px;margin:0 0 8px;font-weight:800;color:var(--forest-900);}
-  .problem-card p{font-size:14.5px;color:var(--ink-soft);margin:0;}
-  .ic-nowork{background:#FDEDEA;color:#DC5B4B;}
-  .ic-house{background:#F1EAFA;color:#8B5FBF;}
-  .ic-lang{background:#EAF2FE;color:#2F6FED;}
-  .ic-car{background:#FEF3E1;color:#E8952E;}
+.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
+.grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
+@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
 
-  /* ---------- solution tiles ---------- */
-  .solution-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-  .tile{
-    border-radius:14px;padding:22px 20px;color:#fff;font-weight:800;font-size:16px;
-    display:flex;align-items:center;gap:10px;min-height:70px;box-shadow:var(--shadow);
-  }
-  .tile span.emoji{font-size:20px;}
-  .tile-job{background:var(--cat-job);}
-  .tile-house{background:var(--cat-house);}
-  .tile-market{background:var(--cat-market);}
-  .tile-carpool{background:var(--cat-carpool);}
-  .tile-community{background:var(--cat-community);}
-  .tile-lang{background:var(--cat-lang);}
-  .solution-tag{
-    text-align:center;font-family:'Noto Serif KR',serif;font-weight:700;font-size:19px;
-    color:var(--forest-800);margin:-14px 0 36px;
-  }
+.problem-card{
+  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px;
+  border-top:4px solid var(--terracotta);
+}
+.problem-card .ic{font-size:24px; margin-bottom:12px; display:block;}
+.problem-card h3{font-size:17px; margin-bottom:8px;}
+.problem-card p{font-size:14px; margin:0;}
 
-  /* ---------- steps ---------- */
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;}
-  .step{text-align:center;padding:0 14px;position:relative;}
-  .step-num{
-    width:56px;height:56px;border-radius:50%;background:var(--forest-800);color:#fff;
-    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;
-    margin:0 auto 18px;position:relative;z-index:2;
-  }
-  .step-line{
-    position:absolute;top:28px;left:calc(50% + 28px);right:calc(-50% + 28px);
-    height:2px;background:linear-gradient(90deg,var(--forest-600),var(--sand));z-index:1;
-  }
-  .step:last-child .step-line{display:none;}
-  .step .emoji{font-size:26px;margin-bottom:10px;display:block;}
-  .step h4{font-size:16px;font-weight:800;margin:0 0 8px;color:var(--forest-900);}
-  .step p{font-size:13.5px;color:var(--ink-soft);margin:0;}
+.feature-card{
+  border-radius:var(--radius); padding:22px; color:#fff; min-height:100px; display:flex; flex-direction:column; justify-content:center; gap:6px;
+}
+.feature-card .ic{font-size:20px;}
+.feature-card h3{color:#fff; font-size:16px; font-weight:700;}
+.f1{background:#2563A8;} .f2{background:#7B3FE4;} .f3{background:var(--gold-deep);}
+.f4{background:var(--terracotta);} .f5{background:var(--jade);} .f6{background:var(--forest-deep);}
 
-  /* ---------- points system ---------- */
-  .points-band{background:var(--sand);}
-  .points-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;}
-  .points-col h3{font-size:18px;font-weight:800;margin:0 0 16px;color:var(--forest-900);display:flex;align-items:center;gap:8px;}
-  .points-col ul{margin:0;padding:0;list-style:none;}
-  .points-col li{
-    padding:10px 0 10px 26px;border-bottom:1px solid rgba(15,61,42,0.08);
-    font-size:14.5px;position:relative;color:var(--ink);
-  }
-  .points-col li:before{
-    content:"";position:absolute;left:0;top:16px;width:6px;height:6px;border-radius:50%;background:var(--gold-deep);
-  }
-  .points-col li:last-child{border-bottom:none;}
-  .security-band{
-    margin-top:32px;background:var(--forest-800);color:#fff;text-align:center;
-    padding:16px 20px;border-radius:12px;font-weight:700;font-size:14.5px;letter-spacing:0.2px;
-  }
-  .security-band .gold-txt{color:var(--gold);}
+.steps{display:flex; gap:0; align-items:flex-start; position:relative;}
+.step{flex:1; text-align:center; padding:0 12px; position:relative;}
+.step .num{
+  width:56px; height:56px; border-radius:50%; background:var(--forest); color:#fff; font-weight:800; font-size:19px;
+  display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
+}
+.step .stepline{
+  position:absolute; top:28px; left:calc(50% + 40px); width:calc(100% - 80px); height:2px; background:var(--line);
+}
+.step:last-child .stepline{display:none;}
+.step .ic{font-size:22px; margin-bottom:8px;}
+.step h3{font-size:15.5px; margin-bottom:6px;}
+.step p{font-size:13px;}
+@media(max-width:800px){.steps{flex-direction:column; gap:26px;} .stepline{display:none;}}
 
-  /* ---------- revenue cards ---------- */
-  .revenue-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .revenue-card{
-    background:#fff;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);
-    border-left:5px solid var(--forest-700);
-  }
-  .revenue-card h3{font-size:17px;font-weight:800;margin:0 0 8px;display:flex;gap:10px;align-items:center;color:var(--forest-900);}
-  .revenue-card p{font-size:14px;color:var(--ink-soft);margin:0;}
-  .revenue-card:nth-child(2){border-color:var(--cat-carpool);}
-  .revenue-card:nth-child(3){border-color:var(--cat-community);}
-  .revenue-card:nth-child(4){border-color:var(--gold-deep);}
+.points-card{background:var(--paper); border-radius:var(--radius); padding:28px; border:1px solid var(--line);}
+.points-card h3{font-size:16px; margin-bottom:14px;}
+.points-card ul{margin:0; padding-left:18px; font-size:14.5px; color:var(--ink-soft);}
+.points-card li{margin-bottom:8px;}
+.security-strip{
+  margin-top:22px; background:#E7F3EC; border:1px solid #CFE7DA; border-radius:12px; padding:16px 20px;
+  text-align:center; font-weight:700; color:var(--forest-deep); font-size:14px;
+}
 
-  /* ---------- vision (dark) ---------- */
-  .vision{background:linear-gradient(160deg,var(--forest-900),var(--forest-800));color:#fff;}
-  .vision-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-  .vision-card{
-    background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
-    border-radius:var(--radius);padding:26px;
-  }
-  .vision-card h3{font-size:17px;font-weight:800;margin:0 0 8px;display:flex;gap:10px;align-items:center;}
-  .vision-card p{font-size:14px;color:rgba(255,255,255,0.7);margin:0;}
-  .vision-quote{
-    text-align:center;font-family:'Noto Serif KR',serif;font-size:20px;font-weight:700;
-    color:var(--gold);margin:0 0 48px;
-  }
+.revenue-card{background:var(--paper); border-radius:var(--radius); padding:24px; border-left:5px solid var(--jade);}
+.revenue-card.c2{border-left-color:var(--terracotta);}
+.revenue-card.c3{border-left-color:var(--gold-deep);}
+.revenue-card.c4{border-left-color:#2563A8;}
+.revenue-card h3{font-size:16px; margin-bottom:8px;}
+.revenue-card p{font-size:14px;}
 
-  /* ---------- gallery (admin images) ---------- */
-  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-  .gallery-item{
-    position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/3;background:var(--sand);
-    box-shadow:var(--shadow);
-  }
-  .gallery-item img{width:100%;height:100%;object-fit:cover;}
-  .gallery-empty{
-    grid-column:1/-1;text-align:center;padding:56px 20px;color:var(--ink-soft);
-    border:1.5px dashed rgba(15,61,42,0.25);border-radius:var(--radius);font-size:14.5px;
-  }
-  .gallery-del{
-    position:absolute;top:8px;right:8px;background:rgba(15,61,42,0.85);color:#fff;border:none;
-    width:26px;height:26px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;
-  }
-  .gallery-add-tile{
-    aspect-ratio:4/3;border-radius:14px;border:2px dashed var(--forest-600);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    color:var(--forest-700);font-weight:700;font-size:13px;background:rgba(31,107,71,0.05);
-  }
+.vision-band{background:var(--forest-deep); color:#fff; padding:90px 0;}
+.vision-band .section-head h2, .vision-band .section-head .eyebrow{color:#fff;}
+.vision-band .section-head p{color:#DCE6DF;}
+.vision-card{background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:24px;}
+.vision-card .ic{font-size:22px;}
+.vision-card h3{color:#fff; font-size:16px; margin:10px 0 8px;}
+.vision-card p{color:#D8E2DA; font-size:14px;}
 
-  /* ---------- partnership ---------- */
-  .partner-cols{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:44px;}
-  .partner-col h3{font-size:17px;font-weight:800;margin:0 0 16px;color:var(--forest-900);}
-  .partner-col ul{margin:0;padding-left:20px;}
-  .partner-col li{font-size:14.5px;color:var(--ink);margin-bottom:10px;}
-  .partner-logos{
-    display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:center;
-    background:var(--sand);border-radius:14px;padding:26px;
-  }
-  .partner-logo-item{
-    position:relative;background:#fff;border-radius:10px;padding:10px 18px;box-shadow:var(--shadow);
-    font-weight:700;font-size:14px;color:var(--forest-800);display:flex;align-items:center;gap:8px;min-height:44px;
-  }
-  .partner-logo-item img{height:28px;width:auto;object-fit:contain;}
-  .partner-logo-item .gallery-del{position:absolute;top:-8px;right:-8px;width:20px;height:20px;font-size:11px;}
-  .partner-add-btn{
-    border:1.5px dashed var(--forest-600);color:var(--forest-700);background:transparent;
-    padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;
-  }
+.partner-cols{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
+.partner-cols h3{font-size:15px; letter-spacing:0.03em; margin-bottom:16px;}
+.partner-cols ul{margin:0; padding-left:18px; color:var(--ink-soft); font-size:14.5px;}
+.partner-cols li{margin-bottom:10px;}
+.partner-strip{
+  margin-top:30px; background:#E7F3EC; border-radius:12px; padding:16px; text-align:center;
+  font-weight:700; color:var(--forest-deep); font-size:14px;
+}
+@media(max-width:800px){.partner-cols{grid-template-columns:1fr;}}
 
-  /* ---------- roadmap ---------- */
-  .roadmap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
-  .road-card{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:#fff;}
-  .road-head{padding:14px 20px;color:#fff;font-weight:800;font-size:14px;}
-  .road-body{padding:22px 20px;}
-  .road-body h4{font-size:18px;margin:0 0 14px;color:var(--forest-900);}
-  .road-body ul{margin:0;padding-left:18px;}
-  .road-body li{font-size:13.5px;color:var(--ink-soft);margin-bottom:8px;}
-  .road-1 .road-head{background:var(--forest-700);}
-  .road-2 .road-head{background:var(--cat-market);}
-  .road-3 .road-head{background:var(--gold-deep);}
+.roadmap-card{border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:var(--paper);}
+.roadmap-head{padding:14px 18px; font-weight:800; font-size:13.5px; color:#fff;}
+.roadmap-head.p1{background:var(--forest);}
+.roadmap-head.p2{background:var(--jade);}
+.roadmap-head.p3{background:var(--gold-deep);}
+.roadmap-body{padding:20px;}
+.roadmap-body h3{font-size:16px; margin-bottom:12px;}
+.roadmap-body ul{margin:0; padding-left:16px; color:var(--ink-soft); font-size:13.5px;}
+.roadmap-body li{margin-bottom:8px;}
 
-  /* ---------- closing ---------- */
-  .closing{
-    background:radial-gradient(120% 140% at 85% 110%, var(--forest-700) 0%, var(--forest-900) 60%);
-    color:#fff;text-align:center;
-  }
-  .closing .hero-crown{margin:0 auto 18px;text-align:center;}
-  .closing h2{font-size:38px;font-weight:900;margin:0 0 12px;}
-  .closing p.tagline{font-size:17px;color:var(--gold);font-weight:700;margin:0 0 8px;}
-  .closing p.sub{color:rgba(255,255,255,0.75);max-width:520px;margin:0 auto 36px;font-size:15px;}
-  .contact-row{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-bottom:44px;font-size:14.5px;}
-  .contact-row div{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.88);}
-  .verse{font-family:'Noto Serif KR',serif;font-style:italic;color:rgba(255,255,255,0.55);font-size:14px;}
+.closing{
+  background:radial-gradient(circle at 85% 15%, #1a4a38 0%, var(--forest) 40%, var(--forest-deep) 100%);
+  color:#fff; padding:90px 0; text-align:left;
+}
+.closing .crown-big{font-size:30px;}
+.closing h2{color:#fff; font-size:34px; margin:14px 0 12px;}
+.closing .italic{font-family:var(--serif); font-style:italic; font-size:17px; color:#EDE9DC;}
+.closing .contact{margin-top:26px; display:flex; flex-direction:column; gap:8px; font-size:14.5px;}
+.closing .verse{margin-top:34px; font-family:var(--serif); font-style:italic; color:#C9D6CD; font-size:14px;}
 
-  footer{background:var(--forest-900);color:rgba(255,255,255,0.45);text-align:center;padding:24px 0;font-size:12.5px;border-top:1px solid rgba(255,255,255,0.06);}
+/* ============ GALLERY ============ */
+.gallery-block{margin-top:30px;}
+.gallery-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+.gallery-grid img{width:100%; height:130px; object-fit:cover; border-radius:10px; border:1px solid var(--line);}
+.gallery-empty{
+  font-size:13px; color:var(--ink-soft); padding:18px; border:1px dashed var(--line); border-radius:10px; text-align:center;
+}
+.gallery-admin-item{position:relative;}
+.gallery-admin-item button{
+  position:absolute; top:6px; right:6px; background:rgba(20,20,20,0.65); color:#fff; border:none;
+  border-radius:6px; font-size:11px; padding:4px 7px;
+}
 
-  /* ---------- admin ---------- */
-  .admin-fab{
-    position:fixed;bottom:20px;right:20px;z-index:200;background:var(--forest-900);color:#fff;
-    border:1px solid rgba(255,255,255,0.2);border-radius:999px;padding:10px 18px;font-size:13px;font-weight:700;
-    box-shadow:0 8px 20px rgba(0,0,0,0.25);display:flex;align-items:center;gap:8px;
-  }
-  .admin-fab.on{background:var(--gold);color:var(--forest-900);}
-  .modal-bg{
-    position:fixed;inset:0;background:rgba(15,20,17,0.55);z-index:300;display:none;
-    align-items:center;justify-content:center;padding:20px;
-  }
-  .modal-bg.show{display:flex;}
-  .modal{
-    background:#fff;border-radius:16px;padding:32px;max-width:360px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,0.3);
-  }
-  .modal h3{margin:0 0 6px;font-size:19px;color:var(--forest-900);}
-  .modal p{font-size:13.5px;color:var(--ink-soft);margin:0 0 18px;}
-  .modal input{
-    width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid #ddd;font-size:16px;
-    letter-spacing:4px;text-align:center;margin-bottom:12px;
-  }
-  .modal .modal-actions{display:flex;gap:10px;}
-  .modal button.confirm{flex:1;background:var(--forest-800);color:#fff;border:none;padding:12px;border-radius:10px;font-weight:700;}
-  .modal button.cancel{flex:1;background:#f1f1ee;color:var(--ink);border:none;padding:12px;border-radius:10px;font-weight:700;}
-  .modal .err{color:#DC5B4B;font-size:13px;margin:-6px 0 12px;display:none;}
-  .admin-bar{
-    position:fixed;top:0;left:0;right:0;z-index:150;background:var(--gold);color:var(--forest-900);
-    text-align:center;font-size:13px;font-weight:700;padding:8px;display:none;
-  }
-  .admin-bar.show{display:block;}
-  .upload-overlay{
-    position:absolute;inset:0;background:rgba(15,61,42,0.55);display:none;
-    align-items:center;justify-content:center;border-radius:20px;
-  }
-  .admin-on .hero-photo-slot:hover .upload-overlay,
-  .admin-on .hero-photo-slot .upload-overlay.always{display:flex;}
-  .upload-btn{
-    background:#fff;color:var(--forest-900);border:none;padding:10px 18px;border-radius:999px;
-    font-weight:700;font-size:13px;
-  }
-  input[type=file]{display:none;}
+/* ============ MODALS ============ */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(15,30,24,0.55); display:none; align-items:center; justify-content:center; z-index:500; padding:20px;
+}
+.modal-overlay.active{display:flex;}
+.modal{background:var(--paper); border-radius:16px; padding:32px; width:100%; max-width:400px; box-shadow:var(--shadow); position:relative; max-height:88vh; overflow-y:auto;}
+.modal h3{font-size:20px; margin-bottom:6px;}
+.modal p.sub{font-size:13.5px; margin-bottom:20px;}
+.modal .close-x{position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; color:var(--ink-soft);}
+.field{margin-bottom:14px;}
+.field label{font-size:13px; font-weight:700; display:block; margin-bottom:6px; color:var(--ink);}
+.field input, .field select{
+  width:100%; padding:11px 12px; border-radius:8px; border:1px solid var(--line); font-size:14px; font-family:var(--sans); outline:none;
+}
+.field input:focus{border-color:var(--jade);}
+.modal .btn-primary{width:100%; margin-top:6px; padding:13px; background:var(--forest); color:#fff;}
+.modal .btn-primary:hover{background:var(--forest-deep);}
+.switch-line{margin-top:16px; font-size:13px; text-align:center; color:var(--ink-soft);}
+.switch-line button{background:none; border:none; color:var(--jade); font-weight:800; font-size:13px;}
+.status-msg{font-size:13px; margin-top:10px; text-align:center;}
+.status-msg.ok{color:var(--jade);}
+.status-msg.err{color:var(--terracotta);}
 
-  /* ---------- responsive ---------- */
-  @media(max-width:880px){
-    nav.links{display:none;}
-    .menu-btn{display:block;}
-    .hero .wrap{grid-template-columns:1fr;}
-    .hero-visual{height:220px;order:-1;}
-    .hero h1{font-size:36px;}
-    .grid-2x2,.solution-grid,.steps,.points-cols,.revenue-grid,.vision-grid,.partner-cols,.roadmap-grid{grid-template-columns:1fr;}
-    .gallery-grid{grid-template-columns:repeat(2,1fr);}
-    .step-line{display:none;}
-    section{padding:64px 0;}
-    h2.section-title{font-size:28px;}
-    .contact-row{gap:16px;flex-direction:column;align-items:center;}
-  }
+/* admin panel */
+#adminPanelModal .modal{max-width:760px;}
+.admin-section{border-top:1px solid var(--line); padding:16px 0;}
+.admin-section h4{font-size:14.5px; margin-bottom:10px;}
+.admin-upload-row{display:flex; gap:8px; align-items:center; margin-bottom:12px;}
+.admin-upload-row input[type=file]{font-size:12.5px;}
+.admin-upload-row button{
+  background:var(--gold); border:none; padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; color:var(--forest-deep);
+}
+
+footer{background:var(--forest-deep); color:#B9C6BC; padding:30px 0; text-align:center; font-size:13px;}
+footer a{color:#DDE6D9; font-weight:700;}
 </style>
 </head>
 <body>
 
-<div class="admin-bar" id="adminBar">🔓 관리자 모드 — 사진을 추가하거나 삭제할 수 있습니다</div>
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav-row">
+    <div class="logo"><span class="crown">👑</span> K-BRIDGE</div>
 
-<header class="site">
-  <div class="nav-inner">
-    <div class="brand">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M2 20 Q6 8 12 8 Q18 8 22 20" stroke="#E3A438" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="5" r="2.4" fill="#E3A438"/></svg>
-      K-BRIDGE
-    </div>
-    <nav class="links">
-      <a href="#problem">현황</a>
-      <a href="#solution">해결책</a>
-      <a href="#how">이용방법</a>
-      <a href="#vision">비전</a>
-      <a href="#gallery">이야기</a>
-      <a href="#partnership">파트너십</a>
-      <a href="#roadmap">로드맵</a>
+    <nav class="main-nav">
+      <div class="nav-item">
+        <button data-i18n="nav.donate">후원 <span class="caret">▾</span></button>
+        <div class="dropdown">
+          <a href="#donate" data-i18n="donate.regular">정기후원</a>
+          <a href="#donate" data-i18n="donate.onetime">일시후원</a>
+          <a href="#donate" data-i18n="donate.goods">물품후원</a>
+          <a href="#donate" data-i18n="donate.major">고액기부</a>
+          <a href="#donate" data-i18n="donate.super">초고액기부</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button data-i18n="nav.campaign">캠페인</button>
+      </div>
+      <div class="nav-item">
+        <button data-i18n="nav.news">소식 <span class="caret">▾</span></button>
+        <div class="dropdown">
+          <a href="#news" data-i18n="news.notice">공지/뉴스</a>
+          <a href="#news" data-i18n="news.report">후원보고</a>
+          <a href="#news" data-i18n="news.archive">자료실</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <button data-i18n="nav.about">소개 <span class="caret">▾</span></button>
+        <div class="dropdown">
+          <a href="#about" data-i18n="about.org">재단소개</a>
+          <a href="#about" data-i18n="about.transparency">투명경영</a>
+        </div>
+      </div>
     </nav>
-    <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">문의하기</button>
+
+    <div class="header-tools">
+      <div class="search-box">
+        <span class="icon-btn">🔍</span>
+        <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
+      </div>
+      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
+      <button class="text-btn" id="openSignup" data-i18n="auth.signup">회원가입</button>
+      <select class="lang-select" id="langSelect">
+        <option value="ko">한국어</option>
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ms">Bahasa Melayu</option>
+      </select>
+      <button class="donate-btn" data-i18n="cta.donate">후원하기</button>
+    </div>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="wrap">
-    <div>
-      <div class="hero-crown">👑</div>
-      <div class="eyebrow" style="color:var(--gold)">NGO 파트너 &amp; 난민 커뮤니티 리더를 위한 소개</div>
-      <h1>말레이시아 난민을<br><span class="accent">기회</span>로 연결하다</h1>
-      <p class="lead">일자리, 주거, 마켓, 카풀, 커뮤니티 — 난민의 삶에 필요한 모든 것을 하나의 앱으로 연결하는 다국어 플랫폼입니다.</p>
-      <div class="chip-row">
-        <span class="chip">💼 일자리</span>
-        <span class="chip">🏠 주거</span>
-        <span class="chip">🛍️ 마켓</span>
-        <span class="chip">🚗 카풀</span>
-        <span class="chip">💬 커뮤니티</span>
-      </div>
-      <div class="hero-ctas">
-        <button class="btn-primary" onclick="document.getElementById('partnership').scrollIntoView({behavior:'smooth'})">파트너십 제안 보기</button>
-        <button class="btn-ghost" onclick="document.getElementById('how').scrollIntoView({behavior:'smooth'})">작동 방식 보기</button>
-      </div>
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="wrap hero-inner">
+    <span class="crown-big">👑</span>
+    <h1>K-BRIDGE</h1>
+    <p class="tagline" data-i18n="hero.tagline">말레이시아 난민을 기회로 연결하다</p>
+    <div class="pillars">
+      <span data-i18n="hero.p1">일자리</span>
+      <span data-i18n="hero.p2">주거</span>
+      <span data-i18n="hero.p3">마켓</span>
+      <span data-i18n="hero.p4">카풀</span>
+      <span data-i18n="hero.p5">커뮤니티</span>
     </div>
-    <div class="hero-visual">
-      <div class="hero-photo-slot" id="heroSlot">
-        <svg class="bridge-svg" id="heroDefaultArt" viewBox="0 0 400 340" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#2C8459"/>
-              <stop offset="1" stop-color="#0F3D2A"/>
-            </linearGradient>
-          </defs>
-          <rect width="400" height="340" fill="url(#skyG)" opacity="0.001"/>
-          <circle cx="330" cy="70" r="46" fill="#E3A438" opacity="0.18"/>
-          <line x1="0" y1="230" x2="400" y2="230" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
-          <path d="M20 230 L20 150 M100 230 L100 130 M300 230 L300 130 M380 230 L380 150" stroke="#E3A438" stroke-width="4" stroke-linecap="round"/>
-          <path d="M20 150 Q200 60 380 150" stroke="#E3A438" stroke-width="4" fill="none" stroke-linecap="round"/>
-          <path d="M100 130 Q200 90 300 130" stroke="#E3A438" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.8"/>
-          <line x1="60" y1="230" x2="60" y2="185" stroke="#E3A438" stroke-width="2" opacity="0.7"/>
-          <line x1="160" y1="230" x2="160" y2="140" stroke="#E3A438" stroke-width="2" opacity="0.7"/>
-          <line x1="240" y1="230" x2="240" y2="140" stroke="#E3A438" stroke-width="2" opacity="0.7"/>
-          <line x1="340" y1="230" x2="340" y2="185" stroke="#E3A438" stroke-width="2" opacity="0.7"/>
-          <path d="M20 232 Q200 250 380 232 L380 340 L20 340 Z" fill="#0B2E1F"/>
-          <path d="M20 232 Q200 250 380 232 L380 236 Q200 254 20 236 Z" fill="#E3A438" opacity="0.5"/>
-        </svg>
-        <img id="heroImg" style="display:none;" alt="K-BRIDGE 대표 이미지">
-        <div class="upload-overlay" id="heroOverlay">
-          <div style="text-align:center;">
-            <button class="upload-btn" onclick="document.getElementById('heroFile').click()">사진 업로드</button>
-            <input type="file" id="heroFile" accept="image/*" onchange="handleUpload(this,'hero','heroSlot')">
-            <div><button class="upload-btn" style="margin-top:8px;background:rgba(255,255,255,0.85)" onclick="deleteImage('hero','heroSlot')">사진 삭제</button></div>
-          </div>
-        </div>
-      </div>
+    <div class="hero-ctas">
+      <button class="btn-primary" data-i18n="cta.donate">후원하기</button>
+      <button class="btn-ghost" data-i18n="hero.learn">더 알아보기</button>
     </div>
+  </div>
+  <svg class="bridge-arc" viewBox="0 0 1180 90" preserveAspectRatio="none">
+    <path d="M0,90 C 250,10 930,10 1180,90" />
+    <circle cx="230" cy="34" r="4"></circle>
+    <circle cx="590" cy="12" r="5"></circle>
+    <circle cx="950" cy="34" r="4"></circle>
+  </svg>
+  <div class="gallery-block wrap" style="padding-bottom:40px;">
+    <div class="gallery-grid" data-gallery="hero"></div>
   </div>
 </section>
 
-<!-- PROBLEM -->
-<section id="problem">
+<!-- ============ 현황과 문제 ============ -->
+<section class="block" id="problems">
   <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-      현황과 문제
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="problems.eyebrow">CURRENT SITUATION</span>
+      <h2 data-i18n="problems.title">현황과 문제</h2>
     </div>
-    <h2 class="section-title">난민들이 매일 마주하는 4가지 장벽</h2>
-    <p class="section-sub">말레이시아 내 18만 명 이상의 난민은 법적 지위의 공백 속에서 일상의 가장 기본적인 것들조차 접근하기 어렵습니다.</p>
-    <div class="grid-2x2">
+    <div class="grid-2">
       <div class="problem-card">
-        <div class="icon ic-nowork">🚫</div>
-        <h3>취업 불가</h3>
-        <p>말레이시아 내 18만 명 이상의 난민은 법적으로 취업이 불가합니다. 최저임금 이하로 착취당하는 경우가 많습니다.</p>
+        <span class="ic">🚫</span>
+        <h3 data-i18n="problems.c1.title">취업 불가</h3>
+        <p data-i18n="problems.c1.body">말레이시아 내 18만 명 이상의 난민은 법적으로 취업이 불가합니다. 최저임금 이하로 착취당하는 경우가 많습니다.</p>
       </div>
       <div class="problem-card">
-        <div class="icon ic-house">🏚️</div>
-        <h3>불안전한 주거</h3>
-        <p>검증되지 않은 집주인에게 과도한 임대료를 내고 있습니다. 법적 보호나 커뮤니티 지원이 없습니다.</p>
+        <span class="ic">🏚️</span>
+        <h3 data-i18n="problems.c2.title">불안전한 주거</h3>
+        <p data-i18n="problems.c2.body">검증되지 않은 집주인에게 과도한 임대료를 내고 있습니다. 법적 보호나 커뮤니티 지원이 없습니다.</p>
       </div>
       <div class="problem-card">
-        <div class="icon ic-lang">💬</div>
-        <h3>언어 장벽</h3>
-        <p>난민 커뮤니티에서는 9개 언어가 사용됩니다. 중요한 정보가 모든 사람에게 전달되지 않습니다.</p>
+        <span class="ic">💬</span>
+        <h3 data-i18n="problems.c3.title">언어 장벽</h3>
+        <p data-i18n="problems.c3.body">난민 커뮤니티에서는 9개 언어가 사용됩니다. 중요한 정보가 모든 사람에게 전달되지 않습니다.</p>
       </div>
       <div class="problem-card">
-        <div class="icon ic-car">🚗</div>
-        <h3>이동수단 부재</h3>
-        <p>안전하고 저렴한 이동수단이 없어 일자리, 병원, 커뮤니티 자원에 접근하기 어렵습니다.</p>
+        <span class="ic">🚗</span>
+        <h3 data-i18n="problems.c4.title">이동수단 부재</h3>
+        <p data-i18n="problems.c4.body">안전하고 저렴한 이동수단이 없어 일자리, 병원, 커뮤니티 자원에 접근하기 어렵습니다.</p>
       </div>
     </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="problems"></div></div>
   </div>
 </section>
 
-<!-- SOLUTION -->
-<section id="solution" style="background:var(--sand);">
+<!-- ============ 해결책 ============ -->
+<section class="block alt" id="solution">
   <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.2L18.5 21 12 16.8 5.5 21l2-7.8L2 9h7z"/></svg>
-      해결책
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="solution.eyebrow">THE SOLUTION</span>
+      <h2 data-i18n="solution.title">해결책: K-BRIDGE 앱</h2>
+      <p data-i18n="solution.sub">하나의 앱. 모든 필요. 모든 언어.</p>
     </div>
-    <h2 class="section-title">K-BRIDGE 앱</h2>
-    <p class="solution-tag">하나의 앱. 모든 필요. 모든 언어.</p>
-    <div class="solution-grid">
-      <div class="tile tile-job"><span class="emoji">💼</span>일자리</div>
-      <div class="tile tile-house"><span class="emoji">🏠</span>주거</div>
-      <div class="tile tile-market"><span class="emoji">🛍️</span>마켓</div>
-      <div class="tile tile-carpool"><span class="emoji">🚗</span>카풀</div>
-      <div class="tile tile-community"><span class="emoji">💬</span>커뮤니티</div>
-      <div class="tile tile-lang"><span class="emoji">🌐</span>9개 언어</div>
+    <div class="grid-3">
+      <div class="feature-card f1"><span class="ic">💼</span><h3 data-i18n="solution.f1">일자리</h3></div>
+      <div class="feature-card f2"><span class="ic">🏠</span><h3 data-i18n="solution.f2">주거</h3></div>
+      <div class="feature-card f3"><span class="ic">🛍️</span><h3 data-i18n="solution.f3">마켓</h3></div>
+      <div class="feature-card f4"><span class="ic">🚗</span><h3 data-i18n="solution.f4">카풀</h3></div>
+      <div class="feature-card f5"><span class="ic">💬</span><h3 data-i18n="solution.f5">커뮤니티</h3></div>
+      <div class="feature-card f6"><span class="ic">🌐</span><h3 data-i18n="solution.f6">9개 언어</h3></div>
     </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="solution"></div></div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section id="how">
+<!-- ============ 작동 방식 ============ -->
+<section class="block" id="how">
   <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      이용 방법
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="how.eyebrow">HOW IT WORKS</span>
+      <h2 data-i18n="how.title">K-BRIDGE 작동 방식</h2>
     </div>
-    <h2 class="section-title">K-BRIDGE 작동 방식</h2>
-    <p class="section-sub">가입부터 실제 만남까지, 네 단계로 이어지는 간단한 흐름입니다.</p>
     <div class="steps">
-      <div class="step"><div class="step-line"></div><div class="step-num">1</div><span class="emoji">📲</span><h4>다운로드 &amp; 가입</h4><p>신뢰할 수 있는 NGO 파트너에게 받은 초대 코드로 가입합니다.</p></div>
-      <div class="step"><div class="step-line"></div><div class="step-num">2</div><span class="emoji">⭐</span><h4>500 포인트 지급</h4><p>신규 회원 모두에게 500 K-BRIDGE 포인트(약 RM 50)가 지급됩니다.</p></div>
-      <div class="step"><div class="step-line"></div><div class="step-num">3</div><span class="emoji">🔍</span><h4>필요한 것 검색</h4><p>자신의 언어로 일자리, 주거, 마켓, 카풀을 찾습니다.</p></div>
-      <div class="step"><div class="step-num">4</div><span class="emoji">🤝</span><h4>직거래 &amp; 연결</h4><p>직접 만나서 포인트, Touch 'n Go, 또는 현금으로 거래합니다.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- POINTS SYSTEM -->
-<section class="points-band">
-  <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h6M9 14h6"/></svg>
-      포인트 시스템
-    </div>
-    <h2 class="section-title">K-BRIDGE 포인트 시스템</h2>
-    <div class="points-cols">
-      <div class="points-col">
-        <h3>⭐ 포인트 작동 방식</h3>
-        <ul>
-          <li>1 포인트 = RM 0.10</li>
-          <li>신규 회원: 무료 500 포인트 지급</li>
-          <li>Touch 'n Go로 충전 가능</li>
-          <li>GrabPay로 충전 가능</li>
-          <li>NGO 사무소에서 현금 충전</li>
-          <li>포인트로 카풀 및 물품 구매</li>
-        </ul>
+      <div class="step">
+        <div class="num">1</div><div class="stepline"></div>
+        <span class="ic">📱</span>
+        <h3 data-i18n="how.s1.title">다운로드 &amp; 가입</h3>
+        <p data-i18n="how.s1.body">신뢰할 수 있는 NGO 파트너에서 받은 초대 코드로 가입합니다.</p>
       </div>
-      <div class="points-col">
-        <h3>💳 은행 계좌 없이도 가능한 이유</h3>
-        <ul>
-          <li>난민은 법적으로 은행 계좌 개설이 어렵습니다</li>
-          <li>Touch 'n Go &amp; GrabPay는 계좌 없이 사용 가능</li>
-          <li>파트너 NGO 사무소에서 현금 충전 가능</li>
-          <li>중간 거래자 없는 개인 간 직접 결제</li>
-          <li>앱 내 안전하고 투명한 거래 내역 제공</li>
-        </ul>
+      <div class="step">
+        <div class="num">2</div><div class="stepline"></div>
+        <span class="ic">⭐</span>
+        <h3 data-i18n="how.s2.title">500 포인트 지급</h3>
+        <p data-i18n="how.s2.body">신규 회원 모두에게 500 K-BRIDGE 포인트(약 RM 50)가 지급됩니다.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div><div class="stepline"></div>
+        <span class="ic">🔍</span>
+        <h3 data-i18n="how.s3.title">필요한 것 검색</h3>
+        <p data-i18n="how.s3.body">자신의 언어로 일자리, 주거, 마켓, 카풀을 찾습니다.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <span class="ic">🤝</span>
+        <h3 data-i18n="how.s4.title">직거래 &amp; 연결</h3>
+        <p data-i18n="how.s4.body">직접 만나서 포인트, Touch 'n Go, 또는 현금으로 거래합니다.</p>
       </div>
     </div>
-    <div class="security-band">보안: 초대 코드 시스템 + 인증된 사용자 + 리뷰 평점 = <span class="gold-txt">안전한 커뮤니티</span></div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="how"></div></div>
   </div>
 </section>
 
-<!-- REVENUE -->
-<section>
+<!-- ============ 포인트 시스템 ============ -->
+<section class="block alt" id="points">
   <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l6-9 6 9-6 9z"/><path d="M15 12l3-4.5L21 12l-3 4.5z"/></svg>
-      수익 및 지속가능성 모델
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="points.eyebrow">POINTS SYSTEM</span>
+      <h2 data-i18n="points.title">K-BRIDGE 포인트 시스템</h2>
     </div>
-    <h2 class="section-title">지속 가능한 운영을 위한 구조</h2>
-    <div class="revenue-grid">
-      <div class="revenue-card"><h3>📢 광고 수입</h3><p>현지 기업이 난민 1만 명+에게 광고. 배너 광고 &amp; 프리미엄 게시. 월 RM 200~500.</p></div>
-      <div class="revenue-card"><h3>🙏 후원 및 기부</h3><p>개인 및 기업 후원자. RM 10 = 난민 가족에게 100 포인트 지원. PayPal / TnG / FPX 가능.</p></div>
-      <div class="revenue-card"><h3>🤝 NGO 파트너십</h3><p>NGO가 수혜자를 위해 초대 코드 스폰서. UNHCR, 월드비전과 공동 브랜드 프로그램.</p></div>
-      <div class="revenue-card"><h3>💼 프리미엄 게시</h3><p>고용주 및 집주인이 인증된 게시물 등록. 중소기업도 부담 없는 RM 50~200/건.</p></div>
+    <div class="grid-2">
+      <div class="points-card">
+        <h3 data-i18n="points.h1">⭐ 포인트 작동 방식</h3>
+        <ul>
+          <li data-i18n="points.l1">1 포인트 = RM 0.10</li>
+          <li data-i18n="points.l2">신규 회원: 무료 500 포인트 지급</li>
+          <li data-i18n="points.l3">Touch 'n Go로 충전 가능</li>
+          <li data-i18n="points.l4">GrabPay로 충전 가능</li>
+          <li data-i18n="points.l5">NGO 사무소에서 현금 충전</li>
+          <li data-i18n="points.l6">포인트로 카풀 및 물품 구매</li>
+        </ul>
+      </div>
+      <div class="points-card">
+        <h3 data-i18n="points.h2">💳 은행 계좌 없이도 가능한 이유</h3>
+        <ul>
+          <li data-i18n="points.r1">난민은 법적으로 은행 계좌 개설이 어렵습니다</li>
+          <li data-i18n="points.r2">Touch 'n Go &amp; GrabPay는 계좌 없이 사용 가능</li>
+          <li data-i18n="points.r3">파트너 NGO 사무소에서 현금 충전 가능</li>
+          <li data-i18n="points.r4">중간 거래자 없는 개인 간 직접 결제</li>
+          <li data-i18n="points.r5">앱 내 안전하고 투명한 거래 내역 제공</li>
+        </ul>
+      </div>
+    </div>
+    <div class="security-strip" data-i18n="points.security">보안: 초대 코드 시스템 + 인증된 사용자 + 리뷰 평점 = 안전한 커뮤니티</div>
+  </div>
+</section>
+
+<!-- ============ 수익 모델 ============ -->
+<section class="block" id="revenue">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="revenue.eyebrow">SUSTAINABILITY</span>
+      <h2 data-i18n="revenue.title">수익 및 지속가능성 모델</h2>
+    </div>
+    <div class="grid-2">
+      <div class="revenue-card">
+        <h3 data-i18n="revenue.c1.title">📢 광고 수입</h3>
+        <p data-i18n="revenue.c1.body">현지 기업이 난민 1만 명+에게 광고. 배너 광고 &amp; 프리미엄 게시. 월 RM 200~500.</p>
+      </div>
+      <div class="revenue-card c2">
+        <h3 data-i18n="revenue.c2.title">🙏 후원 및 기부</h3>
+        <p data-i18n="revenue.c2.body">개인 및 기업 후원자. RM 10 = 난민 가족에게 100 포인트 지원. PayPal / TnG / FPX 가능.</p>
+      </div>
+      <div class="revenue-card c3">
+        <h3 data-i18n="revenue.c3.title">🤝 NGO 파트너십</h3>
+        <p data-i18n="revenue.c3.body">NGO가 수혜자를 위해 초대 코드 스폰서. UNHCR, 월드비전과 공동 브랜드 프로그램.</p>
+      </div>
+      <div class="revenue-card c4">
+        <h3 data-i18n="revenue.c4.title">💼 프리미엄 게시</h3>
+        <p data-i18n="revenue.c4.body">고용주 및 집주인이 인증된 게시물 등록. 중소기업도 부담 없는 RM 50~200/건.</p>
+      </div>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="revenue"></div></div>
+  </div>
+</section>
+
+<!-- ============ 비전: 난민 IT 팀 ============ -->
+<section class="vision-band" id="vision">
+  <div class="wrap">
+    <div class="section-head" style="max-width:680px; margin-left:auto; margin-right:auto; text-align:center;">
+      <span class="eyebrow" data-i18n="vision.eyebrow">👑 OUR VISION</span>
+      <h2 data-i18n="vision.title">비전: 난민 IT 팀</h2>
+      <p data-i18n="vision.sub">난민은 수혜자가 아닌 — 우리 팀의 일원입니다.</p>
+    </div>
+    <div class="grid-2">
+      <div class="vision-card"><span class="ic">💻</span><h3 data-i18n="vision.c1.title">앱 개발자</h3><p data-i18n="vision.c1.body">난민에게 Flutter &amp; 웹 개발을 교육하여 K-BRIDGE 앱을 직접 개발·유지합니다.</p></div>
+      <div class="vision-card"><span class="ic">📣</span><h3 data-i18n="vision.c2.title">커뮤니티 매니저</h3><p data-i18n="vision.c2.body">난민 리더가 자신의 커뮤니티를 관리하고 콘텐츠를 모더레이션하며 안전을 보장합니다.</p></div>
+      <div class="vision-card"><span class="ic">🌐</span><h3 data-i18n="vision.c3.title">번역가</h3><p data-i18n="vision.c3.body">모국어 사용자가 앱의 9개 언어 전체에 걸쳐 정확한 번역을 담당합니다.</p></div>
+      <div class="vision-card"><span class="ic">📊</span><h3 data-i18n="vision.c4.title">데이터 분석가</h3><p data-i18n="vision.c4.body">사용 현황을 추적하고 필요를 파악하여 NGO 파트너의 사회적 영향 측정을 지원합니다.</p></div>
     </div>
   </div>
 </section>
 
-<!-- VISION -->
-<section id="vision" class="vision">
+<!-- ============ 파트너십 제안 ============ -->
+<section class="block alt" id="partnership">
   <div class="wrap">
-    <div class="hero-crown" style="text-align:center;">👑</div>
-    <div class="eyebrow" style="justify-content:center;width:100%;">비전</div>
-    <h2 class="section-title" style="text-align:center;">난민 IT 팀</h2>
-    <p class="vision-quote">난민은 수혜자가 아닌 — 우리 팀의 일원입니다.</p>
-    <div class="vision-grid">
-      <div class="vision-card"><h3>💻 앱 개발자</h3><p>난민에게 Flutter &amp; 웹 개발을 교육하여 K-BRIDGE 앱을 직접 개발·유지합니다.</p></div>
-      <div class="vision-card"><h3>📣 커뮤니티 매니저</h3><p>난민 리더가 자신의 커뮤니티를 관리하고 콘텐츠를 모더레이션하며 안전을 보장합니다.</p></div>
-      <div class="vision-card"><h3>🌐 번역가</h3><p>모국어 사용자가 앱의 9개 언어 전체에 걸쳐 정확한 번역을 담당합니다.</p></div>
-      <div class="vision-card"><h3>📊 데이터 분석가</h3><p>사용 현황을 추적하고 필요를 파악하여 NGO 파트너의 사회적 영향 측정을 지원합니다.</p></div>
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="partner.eyebrow">PARTNERSHIP PROPOSAL</span>
+      <h2 data-i18n="partner.title">귀 기관과의 파트너십 제안</h2>
     </div>
-  </div>
-</section>
-
-<!-- GALLERY (ADMIN IMAGES) -->
-<section id="gallery">
-  <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15l-5-5L5 20"/></svg>
-      우리의 이야기
-    </div>
-    <h2 class="section-title">현장의 순간들</h2>
-    <p class="section-sub">K-BRIDGE 커뮤니티와 파트너 활동을 담은 사진입니다. 관리자 모드에서 자유롭게 추가하거나 삭제할 수 있습니다.</p>
-    <div class="gallery-grid" id="galleryGrid"></div>
-  </div>
-</section>
-
-<!-- PARTNERSHIP -->
-<section id="partnership" style="background:var(--sand);">
-  <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M7 10a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM21 20v-2a4 4 0 0 0-3-3.87M16 4.13a4 4 0 0 1 0 7.75"/></svg>
-      파트너십 제안
-    </div>
-    <h2 class="section-title">귀 기관과의 파트너십 제안</h2>
     <div class="partner-cols">
-      <div class="partner-col">
-        <h3>저희가 필요로 하는 것</h3>
+      <div>
+        <h3 data-i18n="partner.need">저희가 필요로 하는 것</h3>
         <ul>
-          <li>수혜자에게 초대 코드 배포</li>
-          <li>신뢰할 수 있는 고용주 및 집주인 검증</li>
-          <li>커뮤니티 피드를 통한 안전 정보 공유</li>
-          <li>난민과의 신뢰 구축을 위한 공동 브랜딩</li>
-          <li>사무소에서 포인트 현금 충전 서비스 제공</li>
+          <li data-i18n="partner.n1">수혜자에게 초대 코드 배포</li>
+          <li data-i18n="partner.n2">신뢰할 수 있는 고용주 및 집주인 검증</li>
+          <li data-i18n="partner.n3">커뮤니티 피드를 통한 안전 정보 공유</li>
+          <li data-i18n="partner.n4">난민과의 신뢰 구축을 위한 공동 브랜딩</li>
+          <li data-i18n="partner.n5">사무소에서 포인트 현금 충전 서비스 제공</li>
         </ul>
       </div>
-      <div class="partner-col">
-        <h3>귀 기관이 얻는 것</h3>
+      <div>
+        <h3 data-i18n="partner.gain">귀 기관이 얻는 것</h3>
         <ul>
-          <li>지역 난민 필요에 대한 실시간 데이터</li>
-          <li>지원물자 및 정보 배포를 위한 디지털 플랫폼</li>
-          <li>후원자를 위한 월간 임팩트 보고서</li>
-          <li>1만 명+ 사용자에게 공동 브랜드 노출</li>
-          <li>난민이 직접 운영하는 기술 팀</li>
+          <li data-i18n="partner.g1">지역 난민 필요에 대한 실시간 데이터</li>
+          <li data-i18n="partner.g2">지원물자 및 정보 배포를 위한 디지털 플랫폼</li>
+          <li data-i18n="partner.g3">후원자를 위한 월간 임팩트 보고서</li>
+          <li data-i18n="partner.g4">1만 명+ 사용자에게 공동 브랜드 노출</li>
+          <li data-i18n="partner.g5">난민이 직접 운영하는 기술 팀</li>
         </ul>
       </div>
     </div>
-    <p style="text-align:center;font-weight:700;color:var(--forest-800);margin-bottom:14px;">파트너 기관</p>
-    <div class="partner-logos" id="partnerLogos"></div>
+    <div class="partner-strip" data-i18n="partner.strip">파트너 기관: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope</div>
   </div>
 </section>
 
-<!-- ROADMAP -->
-<section id="roadmap">
+<!-- ============ 로드맵 ============ -->
+<section class="block" id="roadmap">
   <div class="wrap">
-    <div class="eyebrow">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
-      런칭 로드맵
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="roadmap.eyebrow">LAUNCH ROADMAP</span>
+      <h2 data-i18n="roadmap.title">런칭 로드맵</h2>
     </div>
-    <h2 class="section-title">단계별 실행 계획</h2>
-    <div class="roadmap-grid">
-      <div class="road-card road-1">
-        <div class="road-head">1단계 · 1~2개월</div>
-        <div class="road-body">
-          <h4>기반 구축</h4>
+    <div class="grid-3">
+      <div class="roadmap-card">
+        <div class="roadmap-head p1" data-i18n="roadmap.p1">1단계 · 1~2개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p1.title">기반 구축</h3>
           <ul>
-            <li>NGO 파트너십 협약 체결</li>
-            <li>초대 코드 배포</li>
-            <li>KL 지역 베타 사용자 50~100명</li>
-            <li>버마어 + 영어로 런칭</li>
+            <li data-i18n="roadmap.p1.l1">NGO 파트너십 협약 체결</li>
+            <li data-i18n="roadmap.p1.l2">초대 코드 배포</li>
+            <li data-i18n="roadmap.p1.l3">KL 지역 베타 사용자 50~100명</li>
+            <li data-i18n="roadmap.p1.l4">버마어 + 영어로 런칭</li>
           </ul>
         </div>
       </div>
-      <div class="road-card road-2">
-        <div class="road-head">2단계 · 3~4개월</div>
-        <div class="road-body">
-          <h4>성장</h4>
+      <div class="roadmap-card">
+        <div class="roadmap-head p2" data-i18n="roadmap.p2">2단계 · 3~4개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p2.title">성장</h3>
           <ul>
-            <li>마켓 &amp; 카풀 기능 오픈</li>
-            <li>결제 시스템 실제 운영</li>
-            <li>활성 사용자 500명+</li>
-            <li>난민 IT 팀 구성</li>
+            <li data-i18n="roadmap.p2.l1">마켓 &amp; 카풀 기능 오픈</li>
+            <li data-i18n="roadmap.p2.l2">결제 시스템 실제 운영</li>
+            <li data-i18n="roadmap.p2.l3">활성 사용자 500명+</li>
+            <li data-i18n="roadmap.p2.l4">난민 IT 팀 구성</li>
           </ul>
         </div>
       </div>
-      <div class="road-card road-3">
-        <div class="road-head">3단계 · 5~6개월</div>
-        <div class="road-body">
-          <h4>확장</h4>
+      <div class="roadmap-card">
+        <div class="roadmap-head p3" data-i18n="roadmap.p3">3단계 · 5~6개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p3.title">확장</h3>
           <ul>
-            <li>사용자 1만 명+</li>
-            <li>광고 수입 시작</li>
-            <li>후원 캠페인 런칭</li>
-            <li>페낭 &amp; 조호르바루 확장</li>
+            <li data-i18n="roadmap.p3.l1">사용자 1만 명+</li>
+            <li data-i18n="roadmap.p3.l2">광고 수입 시작</li>
+            <li data-i18n="roadmap.p3.l3">후원 캠페인 런칭</li>
+            <li data-i18n="roadmap.p3.l4">페낭 &amp; 조호르바루 확장</li>
           </ul>
         </div>
       </div>
@@ -664,267 +617,582 @@
   </div>
 </section>
 
-<!-- CLOSING / CONTACT -->
-<section id="contact" class="closing">
+<!-- ============ 마무리 ============ -->
+<section class="closing" id="closing">
   <div class="wrap">
-    <div class="hero-crown">👑</div>
-    <h2>함께 만들어 갑시다</h2>
-    <p class="tagline">K-BRIDGE는 앱 그 이상입니다 — 하나의 운동입니다.</p>
-    <p class="sub">난민이 난민을 돕습니다. 기술이 인류를 섬깁니다. 믿음으로 세우고, 공동체로 지속합니다.</p>
-    <div class="contact-row">
-      <div>✉️ kbridge@email.com</div>
-      <div>💬 WhatsApp: +60 12-XXX-XXXX</div>
-      <div>🌐 kbridge.netlify.app</div>
+    <span class="crown-big">👑</span>
+    <h2 data-i18n="closing.title">함께 만들어 갑시다</h2>
+    <p class="italic" data-i18n="closing.sub1">K-BRIDGE는 앱 그 이상입니다 — 하나의 운동입니다.</p>
+    <p data-i18n="closing.sub2" style="color:#DCE6DF;">난민이 난민을 돕습니다. 기술이 인류를 섬깁니다. 믿음으로 세우고, 공동체로 지속합니다.</p>
+    <div class="contact">
+      <span>📩 kbridge@email.com</span>
+      <span>📱 WhatsApp: +60 12-XXX-XXXX</span>
+      <span>🌐 kbridge.netlify.app</span>
     </div>
-    <p class="verse">"내가 나그네 되었을 때에 영접하였고" — 마태복음 25:35</p>
+    <p class="verse" data-i18n="closing.verse">"내가 나그네 되었을 때에 영접하였고" — 마태복음 25:35</p>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="closing"></div></div>
   </div>
 </section>
 
 <footer>
-  <div class="wrap">© 2026 K-BRIDGE. 말레이시아 난민을 위한 비영리 플랫폼.</div>
+  <div class="wrap">
+    <span data-i18n="footer.copy">© 2024 K-BRIDGE. All rights reserved.</span>
+    &nbsp;·&nbsp;
+    <a href="#" id="adminLink" data-i18n="footer.admin">관리자</a>
+  </div>
 </footer>
 
-<!-- ADMIN FAB -->
-<button class="admin-fab" id="adminFab" onclick="onAdminFabClick()">🔒 관리자</button>
-
-<!-- LOGIN MODAL -->
-<div class="modal-bg" id="loginModal">
+<!-- ============ LOGIN MODAL ============ -->
+<div class="modal-overlay" id="loginModal">
   <div class="modal">
-    <h3>관리자 로그인</h3>
-    <p>사진을 추가하거나 삭제하려면 관리자 암호를 입력하세요.</p>
-    <input type="password" id="pwInput" maxlength="4" placeholder="••••" inputmode="numeric">
-    <div class="err" id="pwErr">암호가 올바르지 않습니다.</div>
-    <div class="modal-actions">
-      <button class="cancel" onclick="closeModal()">취소</button>
-      <button class="confirm" onclick="tryLogin()">확인</button>
+    <button class="close-x" data-close="loginModal">✕</button>
+    <h3 data-i18n="login.title">로그인</h3>
+    <p class="sub" data-i18n="login.sub">K-BRIDGE 계정으로 로그인하세요.</p>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="loginPassword"></div>
+    <button class="btn-primary" id="loginSubmit" data-i18n="login.submit">로그인</button>
+    <div class="status-msg" id="loginStatus"></div>
+    <div class="switch-line"><span data-i18n="login.noaccount">계정이 없으신가요?</span> <button data-switch="signupModal" data-i18n="auth.signup">회원가입</button></div>
+  </div>
+</div>
+
+<!-- ============ SIGNUP MODAL ============ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="close-x" data-close="signupModal">✕</button>
+    <h3 data-i18n="signup.title">회원가입</h3>
+    <p class="sub" data-i18n="signup.sub">K-BRIDGE와 함께해 주세요.</p>
+    <div class="field"><label data-i18n="field.name">이름</label><input type="text" id="signupName"></div>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="signupEmail"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="signupPassword"></div>
+    <button class="btn-primary" id="signupSubmit" data-i18n="signup.submit">가입하기</button>
+    <div class="status-msg" id="signupStatus"></div>
+    <div class="switch-line"><span data-i18n="signup.hasaccount">이미 계정이 있으신가요?</span> <button data-switch="loginModal" data-i18n="auth.login">로그인</button></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN MODAL ============ -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminLoginModal">✕</button>
+    <h3 data-i18n="adminlogin.title">관리자 로그인</h3>
+    <p class="sub" data-i18n="adminlogin.sub">관리자 비밀번호를 입력하세요.</p>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="adminPassword"></div>
+    <button class="btn-primary" id="adminLoginSubmit" data-i18n="adminlogin.submit">접속</button>
+    <div class="status-msg" id="adminLoginStatus"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN PANEL MODAL ============ -->
+<div class="modal-overlay" id="adminPanelModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminPanelModal">✕</button>
+    <h3 data-i18n="adminpanel.title">사진 관리</h3>
+    <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
+    <div class="field">
+      <label data-i18n="adminpanel.select">섹션 선택</label>
+      <select id="adminSectionSelect">
+        <option value="hero">Hero</option>
+        <option value="problems">현황과 문제</option>
+        <option value="solution">해결책</option>
+        <option value="how">작동 방식</option>
+        <option value="revenue">수익 모델</option>
+        <option value="closing">마무리</option>
+      </select>
+    </div>
+    <div class="admin-upload-row">
+      <input type="file" id="adminFileInput" accept="image/*" multiple>
+      <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
+    </div>
+    <div class="status-msg" id="adminUploadStatus"></div>
+    <div class="admin-section">
+      <h4 data-i18n="adminpanel.current">현재 사진</h4>
+      <div class="gallery-grid" id="adminGalleryPreview"></div>
     </div>
   </div>
 </div>
 
 <script>
-/* ---------------- IndexedDB helper (client-side only image storage) ---------------- */
-const DB_NAME='kbridgeSiteDB', STORE='images';
-function openDB(){
-  return new Promise((resolve,reject)=>{
-    const req=indexedDB.open(DB_NAME,1);
-    req.onupgradeneeded=()=>{ req.result.createObjectStore(STORE); };
-    req.onsuccess=()=>resolve(req.result);
-    req.onerror=()=>reject(req.error);
-  });
-}
-async function idbGet(key){
-  const db=await openDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(STORE,'readonly').objectStore(STORE).get(key);
-    tx.onsuccess=()=>res(tx.result);
-    tx.onerror=()=>rej(tx.error);
-  });
-}
-async function idbSet(key,val){
-  const db=await openDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(STORE,'readwrite').objectStore(STORE).put(val,key);
-    tx.onsuccess=()=>res();
-    tx.onerror=()=>rej(tx.error);
-  });
-}
-async function idbDelete(key){
-  const db=await openDB();
-  return new Promise((res,rej)=>{
-    const tx=db.transaction(STORE,'readwrite').objectStore(STORE).delete(key);
-    tx.onsuccess=()=>res();
-    tx.onerror=()=>rej(tx.error);
-  });
+/* =========================================================
+   K-BRIDGE — CONFIG
+   Supabase를 연결하려면 아래 두 값을 채우세요.
+   (Settings → API 에서 Project URL / anon public key 복사)
+   값을 비워두면 자동으로 "로컬 데모 모드"로 동작합니다
+   (사진/로그인 정보가 이 브라우저에만 저장됩니다).
+========================================================= */
+const SUPABASE_URL = "";        // 예: "https://xxxx.supabase.co"
+const SUPABASE_ANON_KEY = "";   // 예: "eyJhbGciOi..."
+const ADMIN_PASSWORD = "0000";
+
+let sb = null;
+const DEMO_MODE = !SUPABASE_URL || !SUPABASE_ANON_KEY;
+if (!DEMO_MODE) {
+  sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-/* ---------------- Admin auth (in-memory only, resets on reload) ---------------- */
-let isAdmin=false;
-const ADMIN_PW='0000';
-
-function onAdminFabClick(){
-  if(isAdmin){ logout(); } else { openModal(); }
-}
-function openModal(){
-  document.getElementById('loginModal').classList.add('show');
-  document.getElementById('pwErr').style.display='none';
-  document.getElementById('pwInput').value='';
-  setTimeout(()=>document.getElementById('pwInput').focus(),50);
-}
-function closeModal(){ document.getElementById('loginModal').classList.remove('show'); }
-function tryLogin(){
-  const val=document.getElementById('pwInput').value;
-  if(val===ADMIN_PW){
-    isAdmin=true;
-    closeModal();
-    applyAdminState();
-  } else {
-    document.getElementById('pwErr').style.display='block';
+/* ---------------------------------------------------------
+   DATA LAYER — works with Supabase if configured,
+   otherwise falls back to localStorage so the site is fully
+   functional out of the box.
+   Supabase table expected: gallery_images (id, section, url, created_at)
+   Supabase storage bucket expected: "gallery" (public)
+--------------------------------------------------------- */
+async function loadImages(section){
+  if (!DEMO_MODE){
+    const { data, error } = await sb.from('gallery_images').select('*').eq('section', section).order('created_at');
+    if (error){ console.error(error); return []; }
+    return data.map(r => ({ id:r.id, url:r.url }));
   }
+  const store = JSON.parse(localStorage.getItem('kbridge_gallery') || '{}');
+  return store[section] || [];
 }
-function logout(){
-  isAdmin=false;
-  applyAdminState();
-}
-function applyAdminState(){
-  document.body.classList.toggle('admin-on',isAdmin);
-  document.getElementById('adminBar').classList.toggle('show',isAdmin);
-  document.getElementById('adminFab').classList.toggle('on',isAdmin);
-  document.getElementById('adminFab').textContent=isAdmin?'🔓 관리자 (로그아웃)':'🔒 관리자';
-  document.getElementById('heroOverlay').classList.toggle('always',isAdmin);
-  renderGallery();
-  renderPartnerLogos();
-}
-document.getElementById('pwInput').addEventListener('keydown',e=>{ if(e.key==='Enter') tryLogin(); });
-document.getElementById('loginModal').addEventListener('click',e=>{ if(e.target.id==='loginModal') closeModal(); });
 
-/* ---------------- image resize helper ---------------- */
-function resizeImage(file,maxW){
-  return new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const img=new Image();
-      img.onload=()=>{
-        const scale=Math.min(1,maxW/img.width);
-        const canvas=document.createElement('canvas');
-        canvas.width=img.width*scale;
-        canvas.height=img.height*scale;
-        canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
-        resolve(canvas.toDataURL('image/jpeg',0.82));
+async function addImage(section, file){
+  if (!DEMO_MODE){
+    const path = `${section}/${Date.now()}_${file.name}`;
+    const { error: upErr } = await sb.storage.from('gallery').upload(path, file);
+    if (upErr){ throw upErr; }
+    const { data: pub } = sb.storage.from('gallery').getPublicUrl(path);
+    const { error: dbErr } = await sb.from('gallery_images').insert({ section, url: pub.publicUrl });
+    if (dbErr){ throw dbErr; }
+    return;
+  }
+  const dataUrl = await compressToDataURL(file);
+  const store = JSON.parse(localStorage.getItem('kbridge_gallery') || '{}');
+  if (!store[section]) store[section] = [];
+  store[section].push({ id: 'local_' + Date.now() + '_' + Math.random().toString(36).slice(2), url: dataUrl });
+  localStorage.setItem('kbridge_gallery', JSON.stringify(store));
+}
+
+async function deleteImage(section, id){
+  if (!DEMO_MODE){
+    const { error } = await sb.from('gallery_images').delete().eq('id', id);
+    if (error) console.error(error);
+    return;
+  }
+  const store = JSON.parse(localStorage.getItem('kbridge_gallery') || '{}');
+  store[section] = (store[section] || []).filter(img => img.id !== id);
+  localStorage.setItem('kbridge_gallery', JSON.stringify(store));
+}
+
+function compressToDataURL(file, maxW=1000, quality=0.8){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
       };
-      img.onerror=reject;
-      img.src=e.target.result;
+      img.onerror = reject;
+      img.src = e.target.result;
     };
-    reader.onerror=reject;
+    reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-/* ---------------- HERO single image slot ---------------- */
-async function handleUpload(inputEl,key,slotId){
-  const file=inputEl.files[0];
-  if(!file) return;
-  const dataUrl=await resizeImage(file,1200);
-  await idbSet(key,dataUrl);
-  inputEl.value='';
-  loadHeroImage();
-}
-async function deleteImage(key,slotId){
-  await idbDelete(key);
-  loadHeroImage();
-}
-async function loadHeroImage(){
-  const data=await idbGet('hero');
-  const img=document.getElementById('heroImg');
-  const art=document.getElementById('heroDefaultArt');
-  if(data){
-    img.src=data; img.style.display='block'; art.style.display='none';
-  } else {
-    img.style.display='none'; art.style.display='block';
+async function renderGallery(section, targetEl, adminMode=false){
+  const images = await loadImages(section);
+  targetEl.innerHTML = '';
+  if (images.length === 0 && !adminMode){
+    return; // stays empty/invisible on public page
   }
-}
-
-/* ---------------- GALLERY (multi-image) ---------------- */
-async function renderGallery(){
-  const grid=document.getElementById('galleryGrid');
-  const list=(await idbGet('gallery'))||[];
-  grid.innerHTML='';
-  if(list.length===0 && !isAdmin){
-    grid.innerHTML='<div class="gallery-empty">아직 등록된 사진이 없습니다.</div>';
+  if (images.length === 0 && adminMode){
+    targetEl.innerHTML = `<div class="gallery-empty">${t('adminpanel.empty')}</div>`;
+    return;
   }
-  list.forEach(item=>{
-    const div=document.createElement('div');
-    div.className='gallery-item';
-    div.innerHTML=`<img src="${item.data}" alt="현장 사진">`+
-      (isAdmin?`<button class="gallery-del" onclick="deleteGalleryItem('${item.id}')">✕</button>`:'');
-    grid.appendChild(div);
+  images.forEach(img => {
+    const wrap = document.createElement('div');
+    if (adminMode) wrap.className = 'gallery-admin-item';
+    const el = document.createElement('img');
+    el.src = img.url;
+    wrap.appendChild(el);
+    if (adminMode){
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '✕';
+      delBtn.onclick = async () => {
+        await deleteImage(section, img.id);
+        renderGallery(section, targetEl, true);
+        renderAllPublicGalleries();
+      };
+      wrap.appendChild(delBtn);
+    }
+    targetEl.appendChild(wrap);
   });
-  if(isAdmin){
-    const addTile=document.createElement('div');
-    addTile.className='gallery-add-tile';
-    addTile.innerHTML='<span style="font-size:22px;">＋</span><span>사진 추가</span>';
-    addTile.onclick=()=>document.getElementById('galleryFileInput').click();
-    grid.appendChild(addTile);
-  }
-}
-async function addGalleryFile(inputEl){
-  const file=inputEl.files[0];
-  if(!file) return;
-  const dataUrl=await resizeImage(file,1000);
-  const list=(await idbGet('gallery'))||[];
-  list.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),data:dataUrl});
-  await idbSet('gallery',list);
-  inputEl.value='';
-  renderGallery();
-}
-async function deleteGalleryItem(id){
-  let list=(await idbGet('gallery'))||[];
-  list=list.filter(x=>x.id!==id);
-  await idbSet('gallery',list);
-  renderGallery();
 }
 
-/* ---------------- PARTNER LOGOS (multi-image) ---------------- */
-const defaultPartners=['UNHCR Malaysia','World Vision','Pusat Kebajikan GoodHope'];
-async function renderPartnerLogos(){
-  const wrap=document.getElementById('partnerLogos');
-  const list=(await idbGet('partnerLogos'))||[];
-  wrap.innerHTML='';
-  if(list.length===0){
-    defaultPartners.forEach(name=>{
-      const el=document.createElement('div');
-      el.className='partner-logo-item';
-      el.textContent=name;
-      wrap.appendChild(el);
-    });
+function renderAllPublicGalleries(){
+  document.querySelectorAll('[data-gallery]').forEach(el => {
+    renderGallery(el.dataset.gallery, el, false);
+  });
+}
+renderAllPublicGalleries();
+
+/* ---------------------------------------------------------
+   NAV DROPDOWNS
+--------------------------------------------------------- */
+document.querySelectorAll('.nav-item').forEach(item => {
+  const btn = item.querySelector('button');
+  btn.addEventListener('click', (e) => {
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.nav-item')) document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
+});
+
+/* ---------------------------------------------------------
+   MODALS
+--------------------------------------------------------- */
+function openModal(id){ document.getElementById(id).classList.add('active'); }
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => closeModal(b.dataset.close)));
+document.querySelectorAll('.modal-overlay').forEach(ov => ov.addEventListener('click', e => { if (e.target === ov) ov.classList.remove('active'); }));
+document.querySelectorAll('[data-switch]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.modal-overlay').forEach(o => o.classList.remove('active'));
+  openModal(b.dataset.switch);
+}));
+
+document.getElementById('openLogin').addEventListener('click', () => openModal('loginModal'));
+document.getElementById('openSignup').addEventListener('click', () => openModal('signupModal'));
+
+/* ---------------------------------------------------------
+   AUTH (Supabase if configured, else demo localStorage)
+--------------------------------------------------------- */
+document.getElementById('signupSubmit').addEventListener('click', async () => {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const statusEl = document.getElementById('signupStatus');
+  if (!email || !password){ statusEl.textContent = t('status.fillall'); statusEl.className='status-msg err'; return; }
+  try{
+    if (!DEMO_MODE){
+      const { error } = await sb.auth.signUp({ email, password, options:{ data:{ name } } });
+      if (error) throw error;
+    } else {
+      const users = JSON.parse(localStorage.getItem('kbridge_users') || '[]');
+      if (users.find(u => u.email === email)) throw new Error(t('status.exists'));
+      users.push({ name, email, password });
+      localStorage.setItem('kbridge_users', JSON.stringify(users));
+    }
+    statusEl.textContent = t('status.signupok'); statusEl.className='status-msg ok';
+    setTimeout(() => closeModal('signupModal'), 1200);
+  } catch(err){
+    statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
+  }
+});
+
+document.getElementById('loginSubmit').addEventListener('click', async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const statusEl = document.getElementById('loginStatus');
+  try{
+    if (!DEMO_MODE){
+      const { error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    } else {
+      const users = JSON.parse(localStorage.getItem('kbridge_users') || '[]');
+      const found = users.find(u => u.email === email && u.password === password);
+      if (!found) throw new Error(t('status.badlogin'));
+    }
+    statusEl.textContent = t('status.loginok'); statusEl.className='status-msg ok';
+    setTimeout(() => closeModal('loginModal'), 1000);
+  } catch(err){
+    statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
+  }
+});
+
+/* ---------------------------------------------------------
+   ADMIN
+--------------------------------------------------------- */
+let isAdmin = false;
+document.getElementById('adminLink').addEventListener('click', (e) => {
+  e.preventDefault();
+  if (isAdmin) openAdminPanel(); else openModal('adminLoginModal');
+});
+document.getElementById('adminLoginSubmit').addEventListener('click', () => {
+  const pw = document.getElementById('adminPassword').value;
+  const statusEl = document.getElementById('adminLoginStatus');
+  if (pw === ADMIN_PASSWORD){
+    isAdmin = true;
+    statusEl.textContent = ''; document.getElementById('adminPassword').value = '';
+    closeModal('adminLoginModal');
+    openAdminPanel();
   } else {
-    list.forEach(item=>{
-      const el=document.createElement('div');
-      el.className='partner-logo-item';
-      el.innerHTML=`<img src="${item.data}" alt="파트너 로고">`+
-        (isAdmin?`<button class="gallery-del" onclick="deletePartnerLogo('${item.id}')">✕</button>`:'');
-      wrap.appendChild(el);
-    });
+    statusEl.textContent = t('status.wrongpw'); statusEl.className='status-msg err';
   }
-  if(isAdmin){
-    const addBtn=document.createElement('button');
-    addBtn.className='partner-add-btn';
-    addBtn.textContent='＋ 로고 추가';
-    addBtn.onclick=()=>document.getElementById('partnerFileInput').click();
-    wrap.appendChild(addBtn);
+});
+function openAdminPanel(){
+  openModal('adminPanelModal');
+  const sel = document.getElementById('adminSectionSelect');
+  renderGallery(sel.value, document.getElementById('adminGalleryPreview'), true);
+}
+document.getElementById('adminSectionSelect').addEventListener('change', (e) => {
+  renderGallery(e.target.value, document.getElementById('adminGalleryPreview'), true);
+});
+document.getElementById('adminUploadBtn').addEventListener('click', async () => {
+  const files = document.getElementById('adminFileInput').files;
+  const section = document.getElementById('adminSectionSelect').value;
+  const statusEl = document.getElementById('adminUploadStatus');
+  if (!files.length){ statusEl.textContent = t('status.choosefile'); statusEl.className='status-msg err'; return; }
+  statusEl.textContent = t('status.uploading'); statusEl.className='status-msg';
+  try{
+    for (const file of files){ await addImage(section, file); }
+    statusEl.textContent = t('status.uploadok'); statusEl.className='status-msg ok';
+    document.getElementById('adminFileInput').value = '';
+    renderGallery(section, document.getElementById('adminGalleryPreview'), true);
+    renderAllPublicGalleries();
+  } catch(err){
+    statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
   }
-}
-async function addPartnerFile(inputEl){
-  const file=inputEl.files[0];
-  if(!file) return;
-  const dataUrl=await resizeImage(file,400);
-  const list=(await idbGet('partnerLogos'))||[];
-  list.push({id:Date.now().toString(36)+Math.random().toString(36).slice(2,6),data:dataUrl});
-  await idbSet('partnerLogos',list);
-  inputEl.value='';
-  renderPartnerLogos();
-}
-async function deletePartnerLogo(id){
-  let list=(await idbGet('partnerLogos'))||[];
-  list=list.filter(x=>x.id!==id);
-  await idbSet('partnerLogos',list);
-  renderPartnerLogos();
-}
+});
 
-/* hidden global file inputs for gallery/partner add-tiles */
-const galleryFileInput=document.createElement('input');
-galleryFileInput.type='file'; galleryFileInput.accept='image/*'; galleryFileInput.id='galleryFileInput';
-galleryFileInput.onchange=()=>addGalleryFile(galleryFileInput);
-document.body.appendChild(galleryFileInput);
+/* ---------------------------------------------------------
+   SEARCH — jumps to first matching section heading
+--------------------------------------------------------- */
+document.getElementById('searchInput').addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) return;
+  const candidates = document.querySelectorAll('section.block h2, section.vision-band h2, section.closing h2, .problem-card h3, .feature-card h3, .step h3');
+  for (const el of candidates){
+    if (el.textContent.toLowerCase().includes(q)){
+      el.closest('section').scrollIntoView({ behavior:'smooth' });
+      el.style.color = 'var(--gold-deep)';
+      setTimeout(() => el.style.color = '', 1500);
+      return;
+    }
+  }
+});
 
-const partnerFileInput=document.createElement('input');
-partnerFileInput.type='file'; partnerFileInput.accept='image/*'; partnerFileInput.id='partnerFileInput';
-partnerFileInput.onchange=()=>addPartnerFile(partnerFileInput);
-document.body.appendChild(partnerFileInput);
-
-/* ---------------- init ---------------- */
-loadHeroImage();
-renderGallery();
-renderPartnerLogos();
+/* =========================================================
+   I18N
+========================================================= */
+const I18N = {
+  ko:{
+    "nav.donate":"후원","donate.regular":"정기후원","donate.onetime":"일시후원","donate.goods":"물품후원","donate.major":"고액기부","donate.super":"초고액기부",
+    "nav.campaign":"캠페인","nav.news":"소식","news.notice":"공지/뉴스","news.report":"후원보고","news.archive":"자료실",
+    "nav.about":"소개","about.org":"재단소개","about.transparency":"투명경영",
+    "search.ph":"검색","auth.login":"로그인","auth.signup":"회원가입","cta.donate":"후원하기",
+    "hero.tagline":"말레이시아 난민을 기회로 연결하다","hero.p1":"일자리","hero.p2":"주거","hero.p3":"마켓","hero.p4":"카풀","hero.p5":"커뮤니티","hero.learn":"더 알아보기",
+    "problems.eyebrow":"현황","problems.title":"현황과 문제",
+    "problems.c1.title":"취업 불가","problems.c1.body":"말레이시아 내 18만 명 이상의 난민은 법적으로 취업이 불가합니다. 최저임금 이하로 착취당하는 경우가 많습니다.",
+    "problems.c2.title":"불안전한 주거","problems.c2.body":"검증되지 않은 집주인에게 과도한 임대료를 내고 있습니다. 법적 보호나 커뮤니티 지원이 없습니다.",
+    "problems.c3.title":"언어 장벽","problems.c3.body":"난민 커뮤니티에서는 9개 언어가 사용됩니다. 중요한 정보가 모든 사람에게 전달되지 않습니다.",
+    "problems.c4.title":"이동수단 부재","problems.c4.body":"안전하고 저렴한 이동수단이 없어 일자리, 병원, 커뮤니티 자원에 접근하기 어렵습니다.",
+    "solution.eyebrow":"해결책","solution.title":"해결책: K-BRIDGE 앱","solution.sub":"하나의 앱. 모든 필요. 모든 언어.",
+    "solution.f1":"일자리","solution.f2":"주거","solution.f3":"마켓","solution.f4":"카풀","solution.f5":"커뮤니티","solution.f6":"9개 언어",
+    "how.eyebrow":"작동 방식","how.title":"K-BRIDGE 작동 방식",
+    "how.s1.title":"다운로드 & 가입","how.s1.body":"신뢰할 수 있는 NGO 파트너에서 받은 초대 코드로 가입합니다.",
+    "how.s2.title":"500 포인트 지급","how.s2.body":"신규 회원 모두에게 500 K-BRIDGE 포인트(약 RM 50)가 지급됩니다.",
+    "how.s3.title":"필요한 것 검색","how.s3.body":"자신의 언어로 일자리, 주거, 마켓, 카풀을 찾습니다.",
+    "how.s4.title":"직거래 & 연결","how.s4.body":"직접 만나서 포인트, Touch 'n Go, 또는 현금으로 거래합니다.",
+    "points.eyebrow":"포인트 시스템","points.title":"K-BRIDGE 포인트 시스템",
+    "points.h1":"⭐ 포인트 작동 방식","points.l1":"1 포인트 = RM 0.10","points.l2":"신규 회원: 무료 500 포인트 지급","points.l3":"Touch 'n Go로 충전 가능","points.l4":"GrabPay로 충전 가능","points.l5":"NGO 사무소에서 현금 충전","points.l6":"포인트로 카풀 및 물품 구매",
+    "points.h2":"💳 은행 계좌 없이도 가능한 이유","points.r1":"난민은 법적으로 은행 계좌 개설이 어렵습니다","points.r2":"Touch 'n Go & GrabPay는 계좌 없이 사용 가능","points.r3":"파트너 NGO 사무소에서 현금 충전 가능","points.r4":"중간 거래자 없는 개인 간 직접 결제","points.r5":"앱 내 안전하고 투명한 거래 내역 제공",
+    "points.security":"보안: 초대 코드 시스템 + 인증된 사용자 + 리뷰 평점 = 안전한 커뮤니티",
+    "revenue.eyebrow":"지속가능성","revenue.title":"수익 및 지속가능성 모델",
+    "revenue.c1.title":"📢 광고 수입","revenue.c1.body":"현지 기업이 난민 1만 명+에게 광고. 배너 광고 & 프리미엄 게시. 월 RM 200~500.",
+    "revenue.c2.title":"🙏 후원 및 기부","revenue.c2.body":"개인 및 기업 후원자. RM 10 = 난민 가족에게 100 포인트 지원. PayPal / TnG / FPX 가능.",
+    "revenue.c3.title":"🤝 NGO 파트너십","revenue.c3.body":"NGO가 수혜자를 위해 초대 코드 스폰서. UNHCR, 월드비전과 공동 브랜드 프로그램.",
+    "revenue.c4.title":"💼 프리미엄 게시","revenue.c4.body":"고용주 및 집주인이 인증된 게시물 등록. 중소기업도 부담 없는 RM 50~200/건.",
+    "vision.eyebrow":"👑 우리의 비전","vision.title":"비전: 난민 IT 팀","vision.sub":"난민은 수혜자가 아닌 — 우리 팀의 일원입니다.",
+    "vision.c1.title":"앱 개발자","vision.c1.body":"난민에게 Flutter & 웹 개발을 교육하여 K-BRIDGE 앱을 직접 개발·유지합니다.",
+    "vision.c2.title":"커뮤니티 매니저","vision.c2.body":"난민 리더가 자신의 커뮤니티를 관리하고 콘텐츠를 모더레이션하며 안전을 보장합니다.",
+    "vision.c3.title":"번역가","vision.c3.body":"모국어 사용자가 앱의 9개 언어 전체에 걸쳐 정확한 번역을 담당합니다.",
+    "vision.c4.title":"데이터 분석가","vision.c4.body":"사용 현황을 추적하고 필요를 파악하여 NGO 파트너의 사회적 영향 측정을 지원합니다.",
+    "partner.eyebrow":"파트너십 제안","partner.title":"귀 기관과의 파트너십 제안",
+    "partner.need":"저희가 필요로 하는 것","partner.n1":"수혜자에게 초대 코드 배포","partner.n2":"신뢰할 수 있는 고용주 및 집주인 검증","partner.n3":"커뮤니티 피드를 통한 안전 정보 공유","partner.n4":"난민과의 신뢰 구축을 위한 공동 브랜딩","partner.n5":"사무소에서 포인트 현금 충전 서비스 제공",
+    "partner.gain":"귀 기관이 얻는 것","partner.g1":"지역 난민 필요에 대한 실시간 데이터","partner.g2":"지원물자 및 정보 배포를 위한 디지털 플랫폼","partner.g3":"후원자를 위한 월간 임팩트 보고서","partner.g4":"1만 명+ 사용자에게 공동 브랜드 노출","partner.g5":"난민이 직접 운영하는 기술 팀",
+    "partner.strip":"파트너 기관: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope",
+    "roadmap.eyebrow":"런칭 계획","roadmap.title":"런칭 로드맵",
+    "roadmap.p1":"1단계 · 1~2개월","roadmap.p1.title":"기반 구축","roadmap.p1.l1":"NGO 파트너십 협약 체결","roadmap.p1.l2":"초대 코드 배포","roadmap.p1.l3":"KL 지역 베타 사용자 50~100명","roadmap.p1.l4":"버마어 + 영어로 런칭",
+    "roadmap.p2":"2단계 · 3~4개월","roadmap.p2.title":"성장","roadmap.p2.l1":"마켓 & 카풀 기능 오픈","roadmap.p2.l2":"결제 시스템 실제 운영","roadmap.p2.l3":"활성 사용자 500명+","roadmap.p2.l4":"난민 IT 팀 구성",
+    "roadmap.p3":"3단계 · 5~6개월","roadmap.p3.title":"확장","roadmap.p3.l1":"사용자 1만 명+","roadmap.p3.l2":"광고 수입 시작","roadmap.p3.l3":"후원 캠페인 런칭","roadmap.p3.l4":"페낭 & 조호르바루 확장",
+    "closing.title":"함께 만들어 갑시다","closing.sub1":"K-BRIDGE는 앱 그 이상입니다 — 하나의 운동입니다.","closing.sub2":"난민이 난민을 돕습니다. 기술이 인류를 섬깁니다. 믿음으로 세우고, 공동체로 지속합니다.",
+    "closing.verse":"\"내가 나그네 되었을 때에 영접하였고\" — 마태복음 25:35",
+    "footer.copy":"© 2024 K-BRIDGE. All rights reserved.","footer.admin":"관리자",
+    "login.title":"로그인","login.sub":"K-BRIDGE 계정으로 로그인하세요.","login.submit":"로그인","login.noaccount":"계정이 없으신가요?",
+    "signup.title":"회원가입","signup.sub":"K-BRIDGE와 함께해 주세요.","signup.submit":"가입하기","signup.hasaccount":"이미 계정이 있으신가요?",
+    "field.email":"이메일","field.password":"비밀번호","field.name":"이름",
+    "adminlogin.title":"관리자 로그인","adminlogin.sub":"관리자 비밀번호를 입력하세요.","adminlogin.submit":"접속",
+    "adminpanel.title":"사진 관리","adminpanel.sub":"섹션을 선택하고 사진을 업로드 / 삭제하세요.","adminpanel.select":"섹션 선택","adminpanel.upload":"업로드","adminpanel.current":"현재 사진","adminpanel.empty":"등록된 사진이 없습니다.",
+    "status.fillall":"모든 항목을 입력해 주세요.","status.exists":"이미 가입된 이메일입니다.","status.signupok":"가입이 완료되었습니다!","status.badlogin":"이메일 또는 비밀번호가 올바르지 않습니다.","status.loginok":"로그인되었습니다!","status.error":"오류가 발생했습니다.","status.wrongpw":"비밀번호가 올바르지 않습니다.","status.choosefile":"파일을 선택해 주세요.","status.uploading":"업로드 중...","status.uploadok":"업로드 완료!"
+  },
+  en:{
+    "nav.donate":"Donate","donate.regular":"Monthly Giving","donate.onetime":"One-time Gift","donate.goods":"In-kind Donation","donate.major":"Major Gift","donate.super":"Legacy Gift",
+    "nav.campaign":"Campaigns","nav.news":"News","news.notice":"Notices/News","news.report":"Impact Reports","news.archive":"Resources",
+    "nav.about":"About","about.org":"About Us","about.transparency":"Transparency",
+    "search.ph":"Search","auth.login":"Log in","auth.signup":"Sign up","cta.donate":"Donate Now",
+    "hero.tagline":"Connecting Malaysian refugees to opportunity","hero.p1":"Jobs","hero.p2":"Housing","hero.p3":"Marketplace","hero.p4":"Carpool","hero.p5":"Community","hero.learn":"Learn more",
+    "problems.eyebrow":"CURRENT SITUATION","problems.title":"The Situation and the Problems",
+    "problems.c1.title":"No Legal Employment","problems.c1.body":"Over 180,000 refugees in Malaysia cannot legally work, and are often exploited below minimum wage.",
+    "problems.c2.title":"Unsafe Housing","problems.c2.body":"Refugees pay inflated rent to unverified landlords, with no legal protection or community support.",
+    "problems.c3.title":"Language Barriers","problems.c3.body":"9 languages are spoken across the refugee community, and critical information doesn't reach everyone.",
+    "problems.c4.title":"No Transportation","problems.c4.body":"Without safe, affordable transport, it's hard to reach jobs, clinics, and community resources.",
+    "solution.eyebrow":"THE SOLUTION","solution.title":"The Solution: The K-BRIDGE App","solution.sub":"One app. Every need. Every language.",
+    "solution.f1":"Jobs","solution.f2":"Housing","solution.f3":"Marketplace","solution.f4":"Carpool","solution.f5":"Community","solution.f6":"9 Languages",
+    "how.eyebrow":"HOW IT WORKS","how.title":"How K-BRIDGE Works",
+    "how.s1.title":"Download & Join","how.s1.body":"Sign up using an invite code from a trusted NGO partner.",
+    "how.s2.title":"Get 500 Points","how.s2.body":"Every new member receives 500 K-BRIDGE points (about RM 50).",
+    "how.s3.title":"Search What You Need","how.s3.body":"Find jobs, housing, marketplace listings, and carpools in your own language.",
+    "how.s4.title":"Meet & Connect","how.s4.body":"Meet in person and pay with points, Touch 'n Go, or cash.",
+    "points.eyebrow":"POINTS SYSTEM","points.title":"The K-BRIDGE Points System",
+    "points.h1":"⭐ How Points Work","points.l1":"1 point = RM 0.10","points.l2":"New members receive 500 free points","points.l3":"Top up via Touch 'n Go","points.l4":"Top up via GrabPay","points.l5":"Cash top-up at NGO offices","points.l6":"Use points for carpools and goods",
+    "points.h2":"💳 Why It Works Without a Bank Account","points.r1":"Refugees legally struggle to open bank accounts","points.r2":"Touch 'n Go & GrabPay work without one","points.r3":"Cash top-ups available at partner NGO offices","points.r4":"Direct peer-to-peer payment, no middlemen","points.r5":"Safe, transparent transaction history in-app",
+    "points.security":"Security: invite codes + verified users + ratings = a safe community",
+    "revenue.eyebrow":"SUSTAINABILITY","revenue.title":"Revenue and Sustainability Model",
+    "revenue.c1.title":"📢 Advertising","revenue.c1.body":"Local businesses advertise to 10,000+ refugees. Banner ads & premium listings. RM 200–500/month.",
+    "revenue.c2.title":"🙏 Donations","revenue.c2.body":"Individual and corporate donors. RM 10 = 100 points for a refugee family. PayPal / TnG / FPX supported.",
+    "revenue.c3.title":"🤝 NGO Partnerships","revenue.c3.body":"NGOs sponsor invite codes for beneficiaries. Co-branded programs with UNHCR and World Vision.",
+    "revenue.c4.title":"💼 Premium Listings","revenue.c4.body":"Employers and landlords post verified listings. Affordable for small businesses at RM 50–200 per listing.",
+    "vision.eyebrow":"👑 OUR VISION","vision.title":"Vision: A Refugee-Led IT Team","vision.sub":"Refugees aren't beneficiaries — they're part of our team.",
+    "vision.c1.title":"App Developers","vision.c1.body":"We train refugees in Flutter & web development to build and maintain the K-BRIDGE app themselves.",
+    "vision.c2.title":"Community Managers","vision.c2.body":"Refugee leaders manage their own communities, moderate content, and ensure safety.",
+    "vision.c3.title":"Translators","vision.c3.body":"Native speakers handle accurate translation across all 9 languages in the app.",
+    "vision.c4.title":"Data Analysts","vision.c4.body":"They track usage and needs, supporting NGO partners' social impact measurement.",
+    "partner.eyebrow":"PARTNERSHIP PROPOSAL","partner.title":"A Partnership Proposal for Your Organization",
+    "partner.need":"What We Need","partner.n1":"Distribute invite codes to beneficiaries","partner.n2":"Verify trustworthy employers and landlords","partner.n3":"Share safety information via community feed","partner.n4":"Co-branding to build trust with refugees","partner.n5":"Cash top-up service for points at your office",
+    "partner.gain":"What Your Organization Gains","partner.g1":"Real-time data on local refugee needs","partner.g2":"A digital platform for distributing aid and information","partner.g3":"Monthly impact reports for donors","partner.g4":"Co-branded exposure to 10,000+ users","partner.g5":"A refugee-run technology team",
+    "partner.strip":"Partner organizations: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope",
+    "roadmap.eyebrow":"LAUNCH ROADMAP","roadmap.title":"Launch Roadmap",
+    "roadmap.p1":"Phase 1 · Months 1–2","roadmap.p1.title":"Foundation","roadmap.p1.l1":"Sign NGO partnership agreements","roadmap.p1.l2":"Distribute invite codes","roadmap.p1.l3":"50–100 beta users in KL","roadmap.p1.l4":"Launch in Burmese + English",
+    "roadmap.p2":"Phase 2 · Months 3–4","roadmap.p2.title":"Growth","roadmap.p2.l1":"Launch marketplace & carpool features","roadmap.p2.l2":"Live payment system","roadmap.p2.l3":"500+ active users","roadmap.p2.l4":"Build refugee IT team",
+    "roadmap.p3":"Phase 3 · Months 5–6","roadmap.p3.title":"Expansion","roadmap.p3.l1":"10,000+ users","roadmap.p3.l2":"Advertising revenue begins","roadmap.p3.l3":"Launch donation campaign","roadmap.p3.l4":"Expand to Penang & Johor Bahru",
+    "closing.title":"Let's Build This Together","closing.sub1":"K-BRIDGE is more than an app — it's a movement.","closing.sub2":"Refugees helping refugees. Technology serving humanity. Built on faith, sustained by community.",
+    "closing.verse":"\"I was a stranger and you welcomed me\" — Matthew 25:35",
+    "footer.copy":"© 2024 K-BRIDGE. All rights reserved.","footer.admin":"Admin",
+    "login.title":"Log In","login.sub":"Log in to your K-BRIDGE account.","login.submit":"Log In","login.noaccount":"Don't have an account?",
+    "signup.title":"Sign Up","signup.sub":"Join the K-BRIDGE community.","signup.submit":"Sign Up","signup.hasaccount":"Already have an account?",
+    "field.email":"Email","field.password":"Password","field.name":"Name",
+    "adminlogin.title":"Admin Login","adminlogin.sub":"Enter the admin password.","adminlogin.submit":"Enter",
+    "adminpanel.title":"Photo Manager","adminpanel.sub":"Choose a section, then upload or delete photos.","adminpanel.select":"Select section","adminpanel.upload":"Upload","adminpanel.current":"Current photos","adminpanel.empty":"No photos yet.",
+    "status.fillall":"Please fill in all fields.","status.exists":"This email is already registered.","status.signupok":"Sign-up complete!","status.badlogin":"Incorrect email or password.","status.loginok":"Logged in!","status.error":"Something went wrong.","status.wrongpw":"Incorrect password.","status.choosefile":"Please choose a file.","status.uploading":"Uploading...","status.uploadok":"Upload complete!"
+  },
+  zh:{
+    "nav.donate":"捐款","donate.regular":"定期捐款","donate.onetime":"单次捐款","donate.goods":"物资捐赠","donate.major":"大额捐赠","donate.super":"特大额捐赠",
+    "nav.campaign":"活动","nav.news":"消息","news.notice":"公告/新闻","news.report":"捐款报告","news.archive":"资料库",
+    "nav.about":"关于我们","about.org":"机构介绍","about.transparency":"透明经营",
+    "search.ph":"搜索","auth.login":"登录","auth.signup":"注册","cta.donate":"立即捐款",
+    "hero.tagline":"连接马来西亚难民与机会","hero.p1":"就业","hero.p2":"住房","hero.p3":"市集","hero.p4":"拼车","hero.p5":"社区","hero.learn":"了解更多",
+    "problems.eyebrow":"现状","problems.title":"现状与问题",
+    "problems.c1.title":"无法合法就业","problems.c1.body":"马来西亚超过18万名难民无法合法就业，常被以低于最低工资的薪水剥削。",
+    "problems.c2.title":"住房不安全","problems.c2.body":"难民向未经核实的房东支付过高租金，缺乏法律保护和社区支持。",
+    "problems.c3.title":"语言障碍","problems.c3.body":"难民社区使用9种语言，重要信息无法传达给每一个人。",
+    "problems.c4.title":"缺乏交通工具","problems.c4.body":"没有安全实惠的交通方式，难以前往工作地点、医院和社区资源。",
+    "solution.eyebrow":"解决方案","solution.title":"解决方案：K-BRIDGE 应用","solution.sub":"一个应用。所有需求。所有语言。",
+    "solution.f1":"就业","solution.f2":"住房","solution.f3":"市集","solution.f4":"拼车","solution.f5":"社区","solution.f6":"9种语言",
+    "how.eyebrow":"运作方式","how.title":"K-BRIDGE 如何运作",
+    "how.s1.title":"下载并加入","how.s1.body":"使用来自可信 NGO 合作伙伴的邀请码注册。",
+    "how.s2.title":"获得500积分","how.s2.body":"所有新会员均可获得500 K-BRIDGE积分（约RM 50）。",
+    "how.s3.title":"搜索所需服务","how.s3.body":"用自己的语言查找工作、住房、市集和拼车。",
+    "how.s4.title":"直接见面并连接","how.s4.body":"当面见面，使用积分、Touch 'n Go 或现金交易。",
+    "points.eyebrow":"积分系统","points.title":"K-BRIDGE 积分系统",
+    "points.h1":"⭐ 积分运作方式","points.l1":"1积分 = RM 0.10","points.l2":"新会员：免费获得500积分","points.l3":"可通过 Touch 'n Go 充值","points.l4":"可通过 GrabPay 充值","points.l5":"可在 NGO 办公室现金充值","points.l6":"用积分购买拼车和商品",
+    "points.h2":"💳 无需银行账户也能使用的原因","points.r1":"难民在法律上难以开设银行账户","points.r2":"Touch 'n Go 和 GrabPay 无需账户即可使用","points.r3":"可在合作 NGO 办公室现金充值","points.r4":"个人之间直接支付，无中间商","points.r5":"应用内提供安全透明的交易记录",
+    "points.security":"安全保障：邀请码系统 + 认证用户 + 评价评分 = 安全的社区",
+    "revenue.eyebrow":"可持续发展","revenue.title":"收入与可持续发展模式",
+    "revenue.c1.title":"📢 广告收入","revenue.c1.body":"本地企业向1万+难民投放广告。横幅广告与置顶帖子。每月RM 200~500。",
+    "revenue.c2.title":"🙏 捐款与赞助","revenue.c2.body":"个人及企业赞助者。RM 10 = 为难民家庭提供100积分。支持PayPal / TnG / FPX。",
+    "revenue.c3.title":"🤝 NGO 合作伙伴关系","revenue.c3.body":"NGO为受益人赞助邀请码。与UNHCR、世界宣明会开展联合品牌项目。",
+    "revenue.c4.title":"💼 置顶帖子","revenue.c4.body":"雇主及房东可发布认证帖子。中小企业也能负担的RM 50~200/条。",
+    "vision.eyebrow":"👑 我们的愿景","vision.title":"愿景：难民 IT 团队","vision.sub":"难民不是受助者——而是我们团队的一员。",
+    "vision.c1.title":"应用开发者","vision.c1.body":"培训难民学习 Flutter 与网页开发，让他们亲自开发和维护 K-BRIDGE 应用。",
+    "vision.c2.title":"社区管理员","vision.c2.body":"难民领袖管理自己的社区，审核内容并保障安全。",
+    "vision.c3.title":"翻译人员","vision.c3.body":"母语使用者负责应用9种语言的准确翻译。",
+    "vision.c4.title":"数据分析员","vision.c4.body":"追踪使用情况并了解需求，支持NGO合作伙伴衡量社会影响力。",
+    "partner.eyebrow":"合作提案","partner.title":"与贵机构的合作提案",
+    "partner.need":"我们需要的支持","partner.n1":"向受益人分发邀请码","partner.n2":"核实可信的雇主和房东","partner.n3":"通过社区动态分享安全信息","partner.n4":"联合品牌以建立与难民的信任","partner.n5":"在办公室提供积分现金充值服务",
+    "partner.gain":"贵机构将获得","partner.g1":"当地难民需求的实时数据","partner.g2":"用于分发援助与信息的数字平台","partner.g3":"面向捐赠者的月度影响力报告","partner.g4":"向1万+用户展示联合品牌","partner.g5":"一支由难民运营的技术团队",
+    "partner.strip":"合作机构：UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope",
+    "roadmap.eyebrow":"启动路线图","roadmap.title":"启动路线图",
+    "roadmap.p1":"第一阶段 · 1~2个月","roadmap.p1.title":"打造基础","roadmap.p1.l1":"签署NGO合作协议","roadmap.p1.l2":"分发邀请码","roadmap.p1.l3":"吉隆坡地区50~100名测试用户","roadmap.p1.l4":"以缅甸语和英语上线",
+    "roadmap.p2":"第二阶段 · 3~4个月","roadmap.p2.title":"成长","roadmap.p2.l1":"开放市集与拼车功能","roadmap.p2.l2":"支付系统正式运行","roadmap.p2.l3":"活跃用户500+","roadmap.p2.l4":"组建难民IT团队",
+    "roadmap.p3":"第三阶段 · 5~6个月","roadmap.p3.title":"扩展","roadmap.p3.l1":"用户1万+","roadmap.p3.l2":"开始广告收入","roadmap.p3.l3":"启动捐款活动","roadmap.p3.l4":"扩展至槟城与新山",
+    "closing.title":"让我们一起打造","closing.sub1":"K-BRIDGE不仅仅是一个应用——更是一场运动。","closing.sub2":"难民帮助难民。科技服务人类。以信念建立，以社区延续。",
+    "closing.verse":"“我作客旅，你们留我住”——马太福音 25:35",
+    "footer.copy":"© 2024 K-BRIDGE. 保留所有权利。","footer.admin":"管理员",
+    "login.title":"登录","login.sub":"登录您的 K-BRIDGE 账户。","login.submit":"登录","login.noaccount":"还没有账户？",
+    "signup.title":"注册","signup.sub":"加入 K-BRIDGE。","signup.submit":"注册","signup.hasaccount":"已经有账户？",
+    "field.email":"邮箱","field.password":"密码","field.name":"姓名",
+    "adminlogin.title":"管理员登录","adminlogin.sub":"请输入管理员密码。","adminlogin.submit":"进入",
+    "adminpanel.title":"照片管理","adminpanel.sub":"选择版块后上传或删除照片。","adminpanel.select":"选择版块","adminpanel.upload":"上传","adminpanel.current":"当前照片","adminpanel.empty":"暂无照片。",
+    "status.fillall":"请填写所有字段。","status.exists":"该邮箱已注册。","status.signupok":"注册成功！","status.badlogin":"邮箱或密码不正确。","status.loginok":"登录成功！","status.error":"发生错误。","status.wrongpw":"密码不正确。","status.choosefile":"请选择文件。","status.uploading":"上传中...","status.uploadok":"上传成功！"
+  },
+  ms:{
+    "nav.donate":"Derma","donate.regular":"Derma Bulanan","donate.onetime":"Derma Sekali","donate.goods":"Derma Barangan","donate.major":"Derma Besar","donate.super":"Derma Warisan",
+    "nav.campaign":"Kempen","nav.news":"Berita","news.notice":"Notis/Berita","news.report":"Laporan Impak","news.archive":"Sumber",
+    "nav.about":"Tentang Kami","about.org":"Profil Kami","about.transparency":"Ketelusan",
+    "search.ph":"Cari","auth.login":"Log Masuk","auth.signup":"Daftar","cta.donate":"Derma Sekarang",
+    "hero.tagline":"Menghubungkan pelarian di Malaysia dengan peluang","hero.p1":"Pekerjaan","hero.p2":"Perumahan","hero.p3":"Pasaran","hero.p4":"Tumpangan","hero.p5":"Komuniti","hero.learn":"Ketahui lebih lanjut",
+    "problems.eyebrow":"KEADAAN SEMASA","problems.title":"Keadaan dan Masalah",
+    "problems.c1.title":"Tidak Boleh Bekerja Secara Sah","problems.c1.body":"Lebih 180,000 pelarian di Malaysia tidak boleh bekerja secara sah dan sering dieksploitasi di bawah gaji minimum.",
+    "problems.c2.title":"Perumahan Tidak Selamat","problems.c2.body":"Pelarian membayar sewa yang tinggi kepada tuan rumah yang tidak disahkan, tanpa perlindungan undang-undang atau sokongan komuniti.",
+    "problems.c3.title":"Halangan Bahasa","problems.c3.body":"9 bahasa dituturkan dalam komuniti pelarian, dan maklumat penting tidak sampai kepada semua orang.",
+    "problems.c4.title":"Tiada Pengangkutan","problems.c4.body":"Tanpa pengangkutan yang selamat dan murah, sukar untuk sampai ke tempat kerja, klinik, dan sumber komuniti.",
+    "solution.eyebrow":"PENYELESAIAN","solution.title":"Penyelesaian: Aplikasi K-BRIDGE","solution.sub":"Satu aplikasi. Semua keperluan. Semua bahasa.",
+    "solution.f1":"Pekerjaan","solution.f2":"Perumahan","solution.f3":"Pasaran","solution.f4":"Tumpangan","solution.f5":"Komuniti","solution.f6":"9 Bahasa",
+    "how.eyebrow":"CARA IA BERFUNGSI","how.title":"Cara K-BRIDGE Berfungsi",
+    "how.s1.title":"Muat Turun & Sertai","how.s1.body":"Daftar menggunakan kod jemputan daripada rakan kongsi NGO yang dipercayai.",
+    "how.s2.title":"Terima 500 Mata","how.s2.body":"Setiap ahli baharu menerima 500 mata K-BRIDGE (kira-kira RM 50).",
+    "how.s3.title":"Cari Apa Yang Diperlukan","how.s3.body":"Cari pekerjaan, perumahan, pasaran dan tumpangan dalam bahasa anda sendiri.",
+    "how.s4.title":"Bertemu & Berhubung","how.s4.body":"Bertemu secara peribadi dan bayar dengan mata, Touch 'n Go, atau tunai.",
+    "points.eyebrow":"SISTEM MATA","points.title":"Sistem Mata K-BRIDGE",
+    "points.h1":"⭐ Cara Mata Berfungsi","points.l1":"1 mata = RM 0.10","points.l2":"Ahli baharu menerima 500 mata percuma","points.l3":"Tambah nilai melalui Touch 'n Go","points.l4":"Tambah nilai melalui GrabPay","points.l5":"Tambah nilai tunai di pejabat NGO","points.l6":"Guna mata untuk tumpangan dan barangan",
+    "points.h2":"💳 Kenapa Ia Berfungsi Tanpa Akaun Bank","points.r1":"Pelarian sukar membuka akaun bank secara sah","points.r2":"Touch 'n Go & GrabPay boleh digunakan tanpa akaun","points.r3":"Tambah nilai tunai tersedia di pejabat rakan NGO","points.r4":"Pembayaran terus antara individu, tiada orang tengah","points.r5":"Sejarah transaksi selamat dan telus dalam aplikasi",
+    "points.security":"Keselamatan: kod jemputan + pengguna disahkan + penilaian = komuniti yang selamat",
+    "revenue.eyebrow":"KEMAMPANAN","revenue.title":"Model Pendapatan dan Kemampanan",
+    "revenue.c1.title":"📢 Pendapatan Iklan","revenue.c1.body":"Perniagaan tempatan mengiklan kepada 10,000+ pelarian. Iklan sepanduk & siaran premium. RM 200–500/bulan.",
+    "revenue.c2.title":"🙏 Derma dan Sumbangan","revenue.c2.body":"Penderma individu dan korporat. RM 10 = 100 mata untuk keluarga pelarian. PayPal / TnG / FPX disokong.",
+    "revenue.c3.title":"🤝 Perkongsian NGO","revenue.c3.body":"NGO menaja kod jemputan untuk penerima. Program jenama bersama dengan UNHCR dan World Vision.",
+    "revenue.c4.title":"💼 Siaran Premium","revenue.c4.body":"Majikan dan tuan rumah menyiarkan iklan disahkan. Mampu milik untuk PKS pada RM 50–200 setiap siaran.",
+    "vision.eyebrow":"👑 VISI KAMI","vision.title":"Visi: Pasukan IT Pelarian","vision.sub":"Pelarian bukan penerima manfaat — mereka sebahagian daripada pasukan kami.",
+    "vision.c1.title":"Pembangun Aplikasi","vision.c1.body":"Kami melatih pelarian dalam Flutter & pembangunan web untuk membina dan menyelenggara aplikasi K-BRIDGE sendiri.",
+    "vision.c2.title":"Pengurus Komuniti","vision.c2.body":"Pemimpin pelarian menguruskan komuniti mereka sendiri, menyederhanakan kandungan, dan memastikan keselamatan.",
+    "vision.c3.title":"Penterjemah","vision.c3.body":"Penutur asli mengendalikan terjemahan tepat merentasi semua 9 bahasa dalam aplikasi.",
+    "vision.c4.title":"Penganalisis Data","vision.c4.body":"Mereka menjejaki penggunaan dan keperluan, menyokong pengukuran impak sosial rakan kongsi NGO.",
+    "partner.eyebrow":"CADANGAN PERKONGSIAN","partner.title":"Cadangan Perkongsian untuk Organisasi Anda",
+    "partner.need":"Apa Yang Kami Perlukan","partner.n1":"Mengedarkan kod jemputan kepada penerima manfaat","partner.n2":"Mengesahkan majikan dan tuan rumah yang dipercayai","partner.n3":"Berkongsi maklumat keselamatan melalui suapan komuniti","partner.n4":"Penjenamaan bersama untuk membina kepercayaan dengan pelarian","partner.n5":"Perkhidmatan tambah nilai tunai untuk mata di pejabat anda",
+    "partner.gain":"Apa Yang Organisasi Anda Perolehi","partner.g1":"Data masa nyata mengenai keperluan pelarian tempatan","partner.g2":"Platform digital untuk mengedarkan bantuan dan maklumat","partner.g3":"Laporan impak bulanan untuk penderma","partner.g4":"Pendedahan jenama bersama kepada 10,000+ pengguna","partner.g5":"Pasukan teknologi yang dikendalikan oleh pelarian",
+    "partner.strip":"Organisasi rakan kongsi: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope",
+    "roadmap.eyebrow":"PELAN PELANCARAN","roadmap.title":"Pelan Pelancaran",
+    "roadmap.p1":"Fasa 1 · Bulan 1–2","roadmap.p1.title":"Asas","roadmap.p1.l1":"Menandatangani perjanjian perkongsian NGO","roadmap.p1.l2":"Mengedarkan kod jemputan","roadmap.p1.l3":"50–100 pengguna beta di KL","roadmap.p1.l4":"Lancar dalam Bahasa Myanmar + Inggeris",
+    "roadmap.p2":"Fasa 2 · Bulan 3–4","roadmap.p2.title":"Pertumbuhan","roadmap.p2.l1":"Lancar ciri pasaran & tumpangan","roadmap.p2.l2":"Sistem pembayaran beroperasi penuh","roadmap.p2.l3":"500+ pengguna aktif","roadmap.p2.l4":"Membina pasukan IT pelarian",
+    "roadmap.p3":"Fasa 3 · Bulan 5–6","roadmap.p3.title":"Pengembangan","roadmap.p3.l1":"10,000+ pengguna","roadmap.p3.l2":"Pendapatan iklan bermula","roadmap.p3.l3":"Lancar kempen derma","roadmap.p3.l4":"Kembang ke Penang & Johor Bahru",
+    "closing.title":"Mari Kita Bina Bersama","closing.sub1":"K-BRIDGE lebih daripada sekadar aplikasi — ia adalah satu gerakan.","closing.sub2":"Pelarian membantu pelarian. Teknologi berkhidmat untuk kemanusiaan. Dibina atas iman, disokong oleh komuniti.",
+    "closing.verse":"\"Aku ini orang asing, dan kamu menyambut Aku\" — Matius 25:35",
+    "footer.copy":"© 2024 K-BRIDGE. Hak cipta terpelihara.","footer.admin":"Admin",
+    "login.title":"Log Masuk","login.sub":"Log masuk ke akaun K-BRIDGE anda.","login.submit":"Log Masuk","login.noaccount":"Tiada akaun?",
+    "signup.title":"Daftar","signup.sub":"Sertai komuniti K-BRIDGE.","signup.submit":"Daftar","signup.hasaccount":"Sudah ada akaun?",
+    "field.email":"Emel","field.password":"Kata Laluan","field.name":"Nama",
+    "adminlogin.title":"Log Masuk Admin","adminlogin.sub":"Masukkan kata laluan admin.","adminlogin.submit":"Masuk",
+    "adminpanel.title":"Pengurus Foto","adminpanel.sub":"Pilih bahagian, kemudian muat naik atau padam foto.","adminpanel.select":"Pilih bahagian","adminpanel.upload":"Muat Naik","adminpanel.current":"Foto Semasa","adminpanel.empty":"Belum ada foto.",
+    "status.fillall":"Sila isi semua ruangan.","status.exists":"Emel ini telah didaftarkan.","status.signupok":"Pendaftaran berjaya!","status.badlogin":"Emel atau kata laluan salah.","status.loginok":"Berjaya log masuk!","status.error":"Ralat berlaku.","status.wrongpw":"Kata laluan salah.","status.choosefile":"Sila pilih fail.","status.uploading":"Memuat naik...","status.uploadok":"Muat naik berjaya!"
+  }
+};
+let currentLang = 'ko';
+function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ko[key] || key; }
+function applyLang(lang){
+  currentLang = lang;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (I18N[lang] && I18N[lang][key] !== undefined) el.textContent = I18N[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    const key = el.dataset.i18nPh;
+    if (I18N[lang] && I18N[lang][key] !== undefined) el.placeholder = I18N[lang][key];
+  });
+}
+document.getElementById('langSelect').addEventListener('change', (e) => applyLang(e.target.value));
 </script>
 </body>
 </html>
