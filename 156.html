@@ -28,6 +28,7 @@
 }
 *{box-sizing:border-box;}
 html{scroll-behavior:smooth;}
+[id]{scroll-margin-top:96px;}
 body{
   margin:0; font-family:var(--sans); color:var(--ink); background:var(--ivory);
   -webkit-font-smoothing:antialiased;
@@ -49,19 +50,25 @@ header{
   position:sticky; top:0; z-index:200; background:rgba(250,247,240,0.94);
   backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
 }
-.nav-row{display:flex; align-items:center; gap:22px; height:76px;}
+.nav-row{display:flex; align-items:center; justify-content:space-between; gap:22px; height:76px; width:100%; max-width:none; margin:0; padding:0 32px; box-sizing:border-box;}
 .logo{
   display:flex; align-items:center; gap:8px; font-family:var(--serif); font-weight:800;
-  font-size:22px; color:var(--forest-deep); white-space:nowrap;
+  font-size:22px; color:var(--forest-deep); white-space:nowrap; background:none; border:none; cursor:pointer;
 }
 .logo span.crown{font-size:20px;}
-nav.main-nav{display:flex; gap:4px; position:relative; flex:1;}
+.nav-left{display:flex; align-items:center; gap:34px;}
+nav.main-nav{display:flex; gap:4px; position:relative;}
 .nav-item{position:relative;}
 .nav-item>button{
-  background:none; border:none; font-size:15.5px; font-weight:700; color:var(--ink);
+  position:relative; background:none; border:none; font-size:15.5px; font-weight:700; color:var(--ink);
   padding:12px 14px; border-radius:8px; display:flex; align-items:center; gap:5px;
 }
 .nav-item>button:hover, .nav-item.open>button{background:#EFEADB; color:var(--forest-deep);}
+.nav-item>button::after{
+  content:''; position:absolute; left:14px; right:14px; bottom:4px; height:2px; background:var(--jade);
+  transform:scaleX(0); transform-origin:left; transition:transform .28s ease;
+}
+.nav-item>button:hover::after, .nav-item.open>button::after{ transform:scaleX(1); }
 .caret{font-size:10px; opacity:0.6; transition:transform .15s;}
 .nav-item.open .caret{transform:rotate(180deg);}
 .dropdown{
@@ -74,25 +81,43 @@ nav.main-nav{display:flex; gap:4px; position:relative; flex:1;}
   padding:10px 12px; border-radius:8px; font-size:14.5px; font-weight:600; color:var(--ink);
 }
 .dropdown a:hover{background:#EFEADB; color:var(--forest-deep);}
-.header-tools{display:flex; align-items:center; gap:10px;}
-.search-box{
-  display:flex; align-items:center; gap:6px; background:#EFEADB; border-radius:20px;
-  padding:8px 12px; width:150px; transition:width .2s;
+.header-tools{display:flex; align-items:center; gap:12px;}
+.search-icon-btn{
+  width:36px; height:36px; border-radius:50%; background:#EAF3EC; border:none;
+  font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--forest-deep);
 }
-.search-box:focus-within{width:210px;}
-.search-box input{
-  border:none; background:none; outline:none; font-size:13.5px; width:100%; font-family:var(--sans);
+.search-icon-btn:hover{background:#DCEAE1;}
+.search-overlay{
+  position:fixed; inset:0; z-index:600; display:flex; align-items:flex-start; justify-content:center;
+  padding-top:14vh; background:rgba(11,40,32,0.42);
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition:opacity .28s ease, background-color .28s ease;
 }
-.icon-btn{background:none; border:none; font-size:16px; color:var(--ink-soft);}
+.search-overlay.active{ opacity:1; visibility:visible; pointer-events:auto; }
+.search-overlay-inner{
+  background:var(--paper); border-radius:20px; padding:22px 26px; width:100%; max-width:600px;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,0.35); display:flex; align-items:center; gap:14px;
+  transform:translateY(-14px); opacity:0; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .28s ease;
+}
+.search-overlay.active .search-overlay-inner{ transform:translateY(0); opacity:1; }
+.search-overlay-ic{font-size:20px;}
+.search-overlay-inner input{
+  flex:1; border:none; outline:none; font-size:23px; font-family:var(--serif); color:var(--forest-deep); background:none;
+}
+.search-overlay-close{background:none; border:none; font-size:18px; color:var(--ink-soft); flex-shrink:0;}
+body.search-open > *:not(.search-overlay){ filter:blur(6px); transition:filter .35s ease; }
+body > *:not(.search-overlay){ transition:filter .35s ease; }
 .text-btn{
   background:none; border:none; font-size:13.5px; font-weight:700; color:var(--ink);
   padding:8px 10px; white-space:nowrap;
 }
 .text-btn:hover{color:var(--forest);}
-.lang-select{
-  border:1px solid var(--line); background:var(--paper); border-radius:20px; padding:7px 12px;
-  font-size:13px; font-weight:700; color:var(--ink-soft); font-family:var(--sans);
+.lang-switch{display:flex; align-items:center; background:#EFEADB; border-radius:20px; padding:4px; gap:2px;}
+.lang-switch button{
+  background:none; border:none; padding:7px 12px; border-radius:16px; font-size:12.5px;
+  font-weight:800; color:var(--ink-soft); white-space:nowrap;
 }
+.lang-switch button.active{background:var(--forest); color:#fff;}
 .donate-btn{
   background:var(--gold); color:var(--forest-deep); font-weight:800; font-size:14px;
   padding:11px 20px; border-radius:24px; border:none; white-space:nowrap; box-shadow:0 6px 14px -6px rgba(224,165,38,0.6);
@@ -275,6 +300,12 @@ section.block.alt{background:#F2EEE1;}
   background:var(--gold); border:none; padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; color:var(--forest-deep);
 }
 
+.admin-tab-btn{background:#EFEADB; border:none; padding:9px 16px; border-radius:20px; font-weight:700; font-size:13px; color:var(--ink-soft);}
+.admin-tab-btn.active{background:var(--forest); color:#fff;}
+.admin-donation-row{display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px;}
+.admin-donation-row .meta{color:var(--ink-soft); font-size:12px;}
+.admin-donation-row button{background:none; border:none; color:var(--terracotta); font-weight:700; font-size:12px;}
+
 footer{background:var(--forest-deep); color:#B9C6BC; padding:30px 0; text-align:center; font-size:13px;}
 footer a{color:#DDE6D9; font-weight:700;}
 </style>
@@ -284,56 +315,67 @@ footer a{color:#DDE6D9; font-weight:700;}
 <!-- ============ HEADER ============ -->
 <header>
   <div class="wrap nav-row">
-    <div class="logo"><span class="crown">👑</span> K-BRIDGE</div>
+    <div class="nav-left">
+      <button class="logo" id="logoHomeBtn"><span class="crown">👑</span> K-BRIDGE</button>
 
-    <nav class="main-nav">
-      <div class="nav-item">
-        <button data-i18n="nav.donate">후원 <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <a href="#donate" data-i18n="donate.regular">정기후원</a>
-          <a href="#donate" data-i18n="donate.onetime">일시후원</a>
-          <a href="#donate" data-i18n="donate.goods">물품후원</a>
-          <a href="#donate" data-i18n="donate.major">고액기부</a>
-          <a href="#donate" data-i18n="donate.super">초고액기부</a>
+      <nav class="main-nav">
+        <div class="nav-item">
+          <button data-i18n="nav.donate">후원 <span class="caret">▾</span></button>
+          <div class="dropdown">
+            <a href="#donate-regular" data-i18n="donate.regular">정기후원</a>
+            <a href="#donate-onetime" data-i18n="donate.onetime">일시후원</a>
+            <a href="#donate-goods" data-i18n="donate.goods">물품후원</a>
+            <a href="#donate-major" data-i18n="donate.major">고액기부</a>
+            <a href="#donate-super" data-i18n="donate.super">초고액기부</a>
+          </div>
         </div>
-      </div>
-      <div class="nav-item">
-        <button data-i18n="nav.campaign">캠페인</button>
-      </div>
-      <div class="nav-item">
-        <button data-i18n="nav.news">소식 <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <a href="#news" data-i18n="news.notice">공지/뉴스</a>
-          <a href="#news" data-i18n="news.report">후원보고</a>
-          <a href="#news" data-i18n="news.archive">자료실</a>
+        <div class="nav-item">
+          <button data-i18n="nav.campaign">캠페인 <span class="caret">▾</span></button>
+          <div class="dropdown">
+            <a href="#campaign" data-i18n="campaign.viewall">캠페인</a>
+          </div>
         </div>
-      </div>
-      <div class="nav-item">
-        <button data-i18n="nav.about">소개 <span class="caret">▾</span></button>
-        <div class="dropdown">
-          <a href="#about" data-i18n="about.org">재단소개</a>
-          <a href="#about" data-i18n="about.transparency">투명경영</a>
+        <div class="nav-item">
+          <button data-i18n="nav.news">소식 <span class="caret">▾</span></button>
+          <div class="dropdown">
+            <a href="#news-notice" data-i18n="news.notice">공지/뉴스</a>
+            <a href="#news-report" data-i18n="news.report">후원보고</a>
+            <a href="#news-archive" data-i18n="news.archive">자료실</a>
+          </div>
         </div>
-      </div>
-    </nav>
+        <div class="nav-item">
+          <button data-i18n="nav.about">소개 <span class="caret">▾</span></button>
+          <div class="dropdown">
+            <a href="#about-org" data-i18n="about.org">재단소개</a>
+            <a href="#about-transparency" data-i18n="about.transparency">투명경영</a>
+          </div>
+        </div>
+      </nav>
+    </div>
 
     <div class="header-tools">
-      <div class="search-box">
-        <span class="icon-btn">🔍</span>
-        <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
-      </div>
-      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
+      <button class="search-icon-btn" id="searchToggle" aria-label="search">🔍</button>
       <button class="text-btn" id="openSignup" data-i18n="auth.signup">회원가입</button>
-      <select class="lang-select" id="langSelect">
-        <option value="ko">한국어</option>
-        <option value="en">English</option>
-        <option value="zh">中文</option>
-        <option value="ms">Bahasa Melayu</option>
-      </select>
+      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="ko" class="active">한국어</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="zh">中文</button>
+        <button data-lang="ms">BM</button>
+      </div>
       <button class="donate-btn" data-i18n="cta.donate">후원하기</button>
     </div>
   </div>
 </header>
+
+<!-- ============ SEARCH OVERLAY ============ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-overlay-inner">
+    <span class="search-overlay-ic">🔍</span>
+    <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
+    <button class="search-overlay-close" id="searchOverlayClose">✕</button>
+  </div>
+</div>
 
 <!-- ============ HERO ============ -->
 <section class="hero" id="hero">
@@ -617,6 +659,106 @@ footer a{color:#DDE6D9; font-weight:700;}
   </div>
 </section>
 
+<!-- ============ 후원 ============ -->
+<section class="block" id="donate">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="donate.eyebrow">DONATE</span>
+      <h2 data-i18n="donate.title">후원하기</h2>
+      <p data-i18n="donate.sub">여러분의 후원은 난민 한 사람의 자립으로 이어집니다.</p>
+    </div>
+    <div class="grid-3">
+      <div class="problem-card" id="donate-regular" style="border-top-color:var(--jade);">
+        <span class="ic">🔁</span><h3 data-i18n="donate.regular">정기후원</h3>
+        <p data-i18n="donate.regular.body">매달 일정 금액을 후원하여 지속적인 지원을 만듭니다.</p>
+      </div>
+      <div class="problem-card" id="donate-onetime" style="border-top-color:#2563A8;">
+        <span class="ic">💛</span><h3 data-i18n="donate.onetime">일시후원</h3>
+        <p data-i18n="donate.onetime.body">원하실 때 한 번, 부담 없이 참여하실 수 있습니다.</p>
+      </div>
+      <div class="problem-card" id="donate-goods" style="border-top-color:var(--gold-deep);">
+        <span class="ic">📦</span><h3 data-i18n="donate.goods">물품후원</h3>
+        <p data-i18n="donate.goods.body">생활필수품, 전자기기 등 필요한 물품을 직접 전달합니다.</p>
+      </div>
+      <div class="problem-card" id="donate-major">
+        <span class="ic">🏵️</span><h3 data-i18n="donate.major">고액기부</h3>
+        <p data-i18n="donate.major.body">지역 확장과 새로운 기능 개발에 큰 힘이 됩니다.</p>
+      </div>
+      <div class="problem-card" id="donate-super" style="border-top-color:var(--forest);">
+        <span class="ic">👑</span><h3 data-i18n="donate.super">초고액기부</h3>
+        <p data-i18n="donate.super.body">K-BRIDGE의 장기 파트너로서 함께해 주세요.</p>
+      </div>
+    </div>
+    <div style="margin-top:30px;"><button class="btn-primary" style="background:var(--gold); color:var(--forest-deep);" data-i18n="cta.donate">후원하기</button></div>
+  </div>
+</section>
+
+<!-- ============ 캠페인 ============ -->
+<section class="block alt" id="campaign">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="campaign.eyebrow">CAMPAIGNS</span>
+      <h2 data-i18n="campaign.title">캠페인</h2>
+      <p data-i18n="campaign.body">현재 준비 중인 캠페인이 곧 이곳에 공개됩니다. 새로운 소식을 기대해 주세요!</p>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="campaign"></div></div>
+  </div>
+</section>
+
+<!-- ============ 소식 ============ -->
+<section class="block" id="news">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="news.eyebrow">NEWS</span>
+      <h2 data-i18n="news.title">소식</h2>
+    </div>
+    <div class="grid-3">
+      <div class="problem-card" id="news-notice">
+        <span class="ic">📰</span><h3 data-i18n="news.notice">공지/뉴스</h3>
+        <p data-i18n="news.notice.body">K-BRIDGE의 새로운 소식과 공지사항을 전해드립니다.</p>
+      </div>
+      <div class="problem-card" id="news-report">
+        <span class="ic">📊</span><h3 data-i18n="news.report">후원보고</h3>
+        <p data-i18n="news.report.body">후원금이 어떻게 쓰였는지 정기적으로 보고합니다.</p>
+      </div>
+      <div class="problem-card" id="news-archive">
+        <span class="ic">🗂️</span><h3 data-i18n="news.archive">자료실</h3>
+        <p data-i18n="news.archive.body">활동 보고서와 자료를 모아두는 공간입니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 소개 & 투명경영 ============ -->
+<section class="block alt" id="about">
+  <div class="wrap">
+    <div class="section-head" id="about-org">
+      <span class="eyebrow" data-i18n="about.eyebrow">ABOUT K-BRIDGE</span>
+      <h2 data-i18n="about.title">재단소개</h2>
+      <p data-i18n="about.body">K-BRIDGE는 말레이시아에 거주하는 난민들이 안전하게 일자리, 주거, 생활필수품을 찾을 수 있도록 돕는 비영리 플랫폼입니다. 난민이 난민을 돕고, 기술이 그 다리를 놓습니다.</p>
+    </div>
+
+    <div style="margin-top:56px;" id="about-transparency">
+      <div class="section-head" style="margin-bottom:26px;">
+        <span class="eyebrow" data-i18n="transparency.eyebrow">TRANSPARENCY</span>
+        <h2 data-i18n="transparency.title">투명경영 — 후원 현황</h2>
+        <p data-i18n="transparency.sub">모금된 후원금 내역을 투명하게 공개합니다.</p>
+      </div>
+      <div class="grid-2" style="align-items:start;">
+        <div class="points-card" style="text-align:center;">
+          <h3 data-i18n="transparency.totalLabel">누적 후원금</h3>
+          <div id="donationTotal" style="font-family:var(--serif); font-size:40px; font-weight:800; color:var(--forest-deep); margin:10px 0;">RM 0</div>
+          <p style="font-size:13px; margin:0;" data-i18n="transparency.totalSub">후원해주신 모든 분들께 감사드립니다.</p>
+        </div>
+        <div class="points-card">
+          <h3 data-i18n="transparency.recentLabel">최근 후원 내역</h3>
+          <div id="donationList" style="font-size:14px; color:var(--ink-soft); margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 마무리 ============ -->
 <section class="closing" id="closing">
   <div class="wrap">
@@ -687,27 +829,48 @@ footer a{color:#DDE6D9; font-weight:700;}
 <div class="modal-overlay" id="adminPanelModal">
   <div class="modal">
     <button class="close-x" data-close="adminPanelModal">✕</button>
-    <h3 data-i18n="adminpanel.title">사진 관리</h3>
-    <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
-    <div class="field">
-      <label data-i18n="adminpanel.select">섹션 선택</label>
-      <select id="adminSectionSelect">
-        <option value="hero">Hero</option>
-        <option value="problems">현황과 문제</option>
-        <option value="solution">해결책</option>
-        <option value="how">작동 방식</option>
-        <option value="revenue">수익 모델</option>
-        <option value="closing">마무리</option>
-      </select>
+    <h3 data-i18n="adminpanel.mainTitle">관리자 패널</h3>
+    <div style="display:flex; gap:8px; margin:14px 0 20px;">
+      <button class="admin-tab-btn active" id="adminTabPhotos" data-i18n="adminpanel.tabPhotos">사진 관리</button>
+      <button class="admin-tab-btn" id="adminTabDonations" data-i18n="adminpanel.tabDonations">후원 관리</button>
     </div>
-    <div class="admin-upload-row">
-      <input type="file" id="adminFileInput" accept="image/*" multiple>
-      <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
+
+    <div id="adminPhotosPanel">
+      <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
+      <div class="field">
+        <label data-i18n="adminpanel.select">섹션 선택</label>
+        <select id="adminSectionSelect">
+          <option value="hero">Hero</option>
+          <option value="problems">현황과 문제</option>
+          <option value="solution">해결책</option>
+          <option value="how">작동 방식</option>
+          <option value="revenue">수익 모델</option>
+          <option value="campaign">캠페인</option>
+          <option value="closing">마무리</option>
+        </select>
+      </div>
+      <div class="admin-upload-row">
+        <input type="file" id="adminFileInput" accept="image/*" multiple>
+        <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
+      </div>
+      <div class="status-msg" id="adminUploadStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="adminpanel.current">현재 사진</h4>
+        <div class="gallery-grid" id="adminGalleryPreview"></div>
+      </div>
     </div>
-    <div class="status-msg" id="adminUploadStatus"></div>
-    <div class="admin-section">
-      <h4 data-i18n="adminpanel.current">현재 사진</h4>
-      <div class="gallery-grid" id="adminGalleryPreview"></div>
+
+    <div id="adminDonationsPanel" style="display:none;">
+      <p class="sub" data-i18n="donationadmin.sub">새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.</p>
+      <div class="field"><label data-i18n="donationadmin.name">후원자 이름</label><input type="text" id="donationName" placeholder="Anonymous"></div>
+      <div class="field"><label data-i18n="donationadmin.amount">금액 (RM)</label><input type="number" id="donationAmount" min="0" step="0.01"></div>
+      <div class="field"><label data-i18n="donationadmin.note">메모 (선택)</label><input type="text" id="donationNote"></div>
+      <button class="btn-primary" id="donationAddBtn" data-i18n="donationadmin.add">후원 내역 추가</button>
+      <div class="status-msg" id="donationAddStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="donationadmin.list">등록된 후원 내역</h4>
+        <div id="adminDonationList"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -720,9 +883,13 @@ footer a{color:#DDE6D9; font-weight:700;}
    값을 비워두면 자동으로 "로컬 데모 모드"로 동작합니다
    (사진/로그인 정보가 이 브라우저에만 저장됩니다).
 ========================================================= */
-const SUPABASE_URL = "";        // 예: "https://xxxx.supabase.co"
-const SUPABASE_ANON_KEY = "";   // 예: "eyJhbGciOi..."
-const ADMIN_PASSWORD = "0000";
+const SUPABASE_URL = "https://yapsgxyqpmppojqtjoeq.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhcHNneHlxcG1wcG9qcXRqb2VxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQyNjYwOTgsImV4cCI6MjA5OTg0MjA5OH0.8O-D8Qmd4tqA__c72_y49FJXVpVzCZW_vnx373icb8Y";
+const ADMIN_PASSWORD = "0000"; // 로컬 데모 모드에서만 사용되는 비밀번호
+// Supabase가 연결된 경우, 관리자 로그인은 아래 이메일 계정으로 실제 인증됩니다.
+// Supabase 대시보드 → Authentication → Users → Add user 에서 이 이메일로 계정을 만들고,
+// 그 계정 비밀번호를 관리자 로그인 창에 입력하는 비밀번호로 사용하세요 (최소 6자 이상).
+const ADMIN_EMAIL = "admin@kbridge.org";
 
 let sb = null;
 const DEMO_MODE = !SUPABASE_URL || !SUPABASE_ANON_KEY;
@@ -739,9 +906,17 @@ if (!DEMO_MODE) {
 --------------------------------------------------------- */
 async function loadImages(section){
   if (!DEMO_MODE){
-    const { data, error } = await sb.from('gallery_images').select('*').eq('section', section).order('created_at');
-    if (error){ console.error(error); return []; }
-    return data.map(r => ({ id:r.id, url:r.url }));
+    try{
+      const { data, error } = await sb.from('gallery_images').select('*').eq('section', section).order('created_at');
+      if (error){
+        console.error(`[K-BRIDGE] "${section}" 갤러리 불러오기 실패:`, error.message || error.details || error.hint || JSON.stringify(error));
+        return [];
+      }
+      return (data || []).map(r => ({ id:r.id, url:r.url }));
+    } catch(err){
+      console.error(`[K-BRIDGE] "${section}" 갤러리 불러오기 중 예외 발생:`, err.message || err);
+      return [];
+    }
   }
   const store = JSON.parse(localStorage.getItem('kbridge_gallery') || '{}');
   return store[section] || [];
@@ -751,10 +926,10 @@ async function addImage(section, file){
   if (!DEMO_MODE){
     const path = `${section}/${Date.now()}_${file.name}`;
     const { error: upErr } = await sb.storage.from('gallery').upload(path, file);
-    if (upErr){ throw upErr; }
+    if (upErr){ throw new Error(upErr.message || '업로드 실패'); }
     const { data: pub } = sb.storage.from('gallery').getPublicUrl(path);
     const { error: dbErr } = await sb.from('gallery_images').insert({ section, url: pub.publicUrl });
-    if (dbErr){ throw dbErr; }
+    if (dbErr){ throw new Error(dbErr.message || '데이터베이스 저장 실패'); }
     return;
   }
   const dataUrl = await compressToDataURL(file);
@@ -766,8 +941,12 @@ async function addImage(section, file){
 
 async function deleteImage(section, id){
   if (!DEMO_MODE){
-    const { error } = await sb.from('gallery_images').delete().eq('id', id);
-    if (error) console.error(error);
+    try{
+      const { error } = await sb.from('gallery_images').delete().eq('id', id);
+      if (error) console.error(`[K-BRIDGE] 사진 삭제 실패:`, error.message || error);
+    } catch(err){
+      console.error(`[K-BRIDGE] 사진 삭제 중 예외 발생:`, err.message || err);
+    }
     return;
   }
   const store = JSON.parse(localStorage.getItem('kbridge_gallery') || '{}');
@@ -848,6 +1027,11 @@ document.querySelectorAll('.nav-item').forEach(item => {
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.nav-item')) document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
 });
+document.querySelectorAll('.dropdown a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
+  });
+});
 
 /* ---------------------------------------------------------
    MODALS
@@ -911,6 +1095,107 @@ document.getElementById('loginSubmit').addEventListener('click', async () => {
 });
 
 /* ---------------------------------------------------------
+   LOGO -> HOME
+--------------------------------------------------------- */
+document.getElementById('logoHomeBtn').addEventListener('click', () => {
+  document.getElementById('hero').scrollIntoView({ behavior:'smooth' });
+});
+
+/* ---------------------------------------------------------
+   DONATIONS DATA LAYER
+   Supabase table expected: donations (id, donor_name, amount, note, created_at)
+--------------------------------------------------------- */
+async function loadDonations(){
+  if (!DEMO_MODE){
+    try{
+      const { data, error } = await sb.from('donations').select('*').order('created_at', { ascending:false });
+      if (error){ console.error('[K-BRIDGE] 후원 내역 불러오기 실패:', error.message || error); return []; }
+      return data || [];
+    } catch(err){
+      console.error('[K-BRIDGE] 후원 내역 불러오기 중 예외:', err.message || err);
+      return [];
+    }
+  }
+  return JSON.parse(localStorage.getItem('kbridge_donations') || '[]').sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+}
+async function addDonation({ name, amount, note }){
+  if (!DEMO_MODE){
+    const { error } = await sb.from('donations').insert({ donor_name: name || 'Anonymous', amount, note });
+    if (error) throw new Error(error.message || '후원 내역 저장 실패');
+    return;
+  }
+  const list = JSON.parse(localStorage.getItem('kbridge_donations') || '[]');
+  list.push({ id:'local_' + Date.now(), donor_name:name || 'Anonymous', amount, note, created_at:new Date().toISOString() });
+  localStorage.setItem('kbridge_donations', JSON.stringify(list));
+}
+async function deleteDonation(id){
+  if (!DEMO_MODE){
+    const { error } = await sb.from('donations').delete().eq('id', id);
+    if (error) console.error('[K-BRIDGE] 후원 내역 삭제 실패:', error.message || error);
+    return;
+  }
+  const list = JSON.parse(localStorage.getItem('kbridge_donations') || '[]').filter(d => d.id !== id);
+  localStorage.setItem('kbridge_donations', JSON.stringify(list));
+}
+async function renderDonationsPublic(){
+  const list = await loadDonations();
+  const total = list.reduce((sum, d) => sum + Number(d.amount || 0), 0);
+  const totalEl = document.getElementById('donationTotal');
+  if (totalEl) totalEl.textContent = 'RM ' + total.toLocaleString();
+  const listEl = document.getElementById('donationList');
+  if (listEl){
+    if (list.length === 0){
+      listEl.innerHTML = `<div class="gallery-empty">${t('transparency.empty')}</div>`;
+    } else {
+      listEl.innerHTML = list.slice(0,6).map(d => `
+        <div class="admin-donation-row">
+          <span>${(d.donor_name || 'Anonymous')}${d.note ? ' · ' + d.note : ''}</span>
+          <strong>RM ${Number(d.amount || 0).toLocaleString()}</strong>
+        </div>`).join('');
+    }
+  }
+}
+async function renderDonationsAdmin(){
+  const list = await loadDonations();
+  const el = document.getElementById('adminDonationList');
+  if (list.length === 0){
+    el.innerHTML = `<div class="gallery-empty">${t('donationadmin.empty')}</div>`;
+    return;
+  }
+  el.innerHTML = '';
+  list.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'admin-donation-row';
+    row.innerHTML = `<span>${(d.donor_name || 'Anonymous')} — RM ${Number(d.amount||0).toLocaleString()}<div class="meta">${d.note || ''}</div></span>`;
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '✕';
+    delBtn.onclick = async () => { await deleteDonation(d.id); renderDonationsAdmin(); renderDonationsPublic(); };
+    row.appendChild(delBtn);
+    el.appendChild(row);
+  });
+}
+renderDonationsPublic();
+
+document.getElementById('donationAddBtn').addEventListener('click', async () => {
+  const name = document.getElementById('donationName').value.trim();
+  const amount = parseFloat(document.getElementById('donationAmount').value);
+  const note = document.getElementById('donationNote').value.trim();
+  const statusEl = document.getElementById('donationAddStatus');
+  if (!amount || amount <= 0){ statusEl.textContent = t('status.fillall'); statusEl.className='status-msg err'; return; }
+  try{
+    await addDonation({ name, amount, note });
+    statusEl.textContent = t('status.uploadok'); statusEl.className='status-msg ok';
+    document.getElementById('donationName').value = '';
+    document.getElementById('donationAmount').value = '';
+    document.getElementById('donationNote').value = '';
+    renderDonationsAdmin();
+    renderDonationsPublic();
+  } catch(err){
+    statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
+  }
+});
+
+/* ---------------------------------------------------------
    ADMIN
 --------------------------------------------------------- */
 let isAdmin = false;
@@ -918,22 +1203,33 @@ document.getElementById('adminLink').addEventListener('click', (e) => {
   e.preventDefault();
   if (isAdmin) openAdminPanel(); else openModal('adminLoginModal');
 });
-document.getElementById('adminLoginSubmit').addEventListener('click', () => {
+// URL 뒤에 #admin 을 붙이면 (예: kbridge.netlify.app/#admin) 관리자 로그인 창이 자동으로 열립니다.
+if (location.hash === '#admin' || location.search.includes('admin')){
+  openModal('adminLoginModal');
+}
+document.getElementById('adminLoginSubmit').addEventListener('click', async () => {
   const pw = document.getElementById('adminPassword').value;
   const statusEl = document.getElementById('adminLoginStatus');
-  if (pw === ADMIN_PASSWORD){
+  try{
+    if (!DEMO_MODE){
+      const { error } = await sb.auth.signInWithPassword({ email: ADMIN_EMAIL, password: pw });
+      if (error) throw new Error(t('status.wrongpw'));
+    } else {
+      if (pw !== ADMIN_PASSWORD) throw new Error(t('status.wrongpw'));
+    }
     isAdmin = true;
     statusEl.textContent = ''; document.getElementById('adminPassword').value = '';
     closeModal('adminLoginModal');
     openAdminPanel();
-  } else {
-    statusEl.textContent = t('status.wrongpw'); statusEl.className='status-msg err';
+  } catch(err){
+    statusEl.textContent = err.message || t('status.wrongpw'); statusEl.className='status-msg err';
   }
 });
 function openAdminPanel(){
   openModal('adminPanelModal');
   const sel = document.getElementById('adminSectionSelect');
   renderGallery(sel.value, document.getElementById('adminGalleryPreview'), true);
+  renderDonationsAdmin();
 }
 document.getElementById('adminSectionSelect').addEventListener('change', (e) => {
   renderGallery(e.target.value, document.getElementById('adminGalleryPreview'), true);
@@ -955,6 +1251,21 @@ document.getElementById('adminUploadBtn').addEventListener('click', async () => 
   }
 });
 
+/* admin panel tab switching */
+const adminTabPhotosBtn = document.getElementById('adminTabPhotos');
+const adminTabDonationsBtn = document.getElementById('adminTabDonations');
+const adminPhotosPanelEl = document.getElementById('adminPhotosPanel');
+const adminDonationsPanelEl = document.getElementById('adminDonationsPanel');
+adminTabPhotosBtn.addEventListener('click', () => {
+  adminTabPhotosBtn.classList.add('active'); adminTabDonationsBtn.classList.remove('active');
+  adminPhotosPanelEl.style.display = ''; adminDonationsPanelEl.style.display = 'none';
+});
+adminTabDonationsBtn.addEventListener('click', () => {
+  adminTabDonationsBtn.classList.add('active'); adminTabPhotosBtn.classList.remove('active');
+  adminDonationsPanelEl.style.display = ''; adminPhotosPanelEl.style.display = 'none';
+  renderDonationsAdmin();
+});
+
 /* ---------------------------------------------------------
    SEARCH — jumps to first matching section heading
 --------------------------------------------------------- */
@@ -965,6 +1276,7 @@ document.getElementById('searchInput').addEventListener('keydown', (e) => {
   const candidates = document.querySelectorAll('section.block h2, section.vision-band h2, section.closing h2, .problem-card h3, .feature-card h3, .step h3');
   for (const el of candidates){
     if (el.textContent.toLowerCase().includes(q)){
+      closeSearchOverlay();
       el.closest('section').scrollIntoView({ behavior:'smooth' });
       el.style.color = 'var(--gold-deep)';
       setTimeout(() => el.style.color = '', 1500);
@@ -979,6 +1291,10 @@ document.getElementById('searchInput').addEventListener('keydown', (e) => {
 const I18N = {
   ko:{
     "nav.donate":"후원","donate.regular":"정기후원","donate.onetime":"일시후원","donate.goods":"물품후원","donate.major":"고액기부","donate.super":"초고액기부",
+    "donate.eyebrow":"후원","donate.title":"후원하기","donate.sub":"여러분의 후원은 난민 한 사람의 자립으로 이어집니다.",
+    "donate.regular.body":"매달 일정 금액을 후원하여 지속적인 지원을 만듭니다.","donate.onetime.body":"원하실 때 한 번, 부담 없이 참여하실 수 있습니다.","donate.goods.body":"생활필수품, 전자기기 등 필요한 물품을 직접 전달합니다.","donate.major.body":"지역 확장과 새로운 기능 개발에 큰 힘이 됩니다.","donate.super.body":"K-BRIDGE의 장기 파트너로서 함께해 주세요.",
+    "campaign.eyebrow":"캠페인","campaign.title":"캠페인","campaign.body":"현재 준비 중인 캠페인이 곧 이곳에 공개됩니다. 새로운 소식을 기대해 주세요!","campaign.viewall":"캠페인",
+    "news.eyebrow":"소식","news.title":"소식","news.notice.body":"K-BRIDGE의 새로운 소식과 공지사항을 전해드립니다.","news.report.body":"후원금이 어떻게 쓰였는지 정기적으로 보고합니다.","news.archive.body":"활동 보고서와 자료를 모아두는 공간입니다.",
     "nav.campaign":"캠페인","nav.news":"소식","news.notice":"공지/뉴스","news.report":"후원보고","news.archive":"자료실",
     "nav.about":"소개","about.org":"재단소개","about.transparency":"투명경영",
     "search.ph":"검색","auth.login":"로그인","auth.signup":"회원가입","cta.donate":"후원하기",
@@ -1025,10 +1341,17 @@ const I18N = {
     "field.email":"이메일","field.password":"비밀번호","field.name":"이름",
     "adminlogin.title":"관리자 로그인","adminlogin.sub":"관리자 비밀번호를 입력하세요.","adminlogin.submit":"접속",
     "adminpanel.title":"사진 관리","adminpanel.sub":"섹션을 선택하고 사진을 업로드 / 삭제하세요.","adminpanel.select":"섹션 선택","adminpanel.upload":"업로드","adminpanel.current":"현재 사진","adminpanel.empty":"등록된 사진이 없습니다.",
+    "adminpanel.mainTitle":"관리자 패널","adminpanel.tabPhotos":"사진 관리","adminpanel.tabDonations":"후원 관리",
+    "donationadmin.sub":"새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.","donationadmin.name":"후원자 이름","donationadmin.amount":"금액 (RM)","donationadmin.note":"메모 (선택)","donationadmin.add":"후원 내역 추가","donationadmin.list":"등록된 후원 내역","donationadmin.empty":"등록된 후원 내역이 없습니다.",
+    "transparency.empty":"아직 등록된 후원 내역이 없습니다.",
     "status.fillall":"모든 항목을 입력해 주세요.","status.exists":"이미 가입된 이메일입니다.","status.signupok":"가입이 완료되었습니다!","status.badlogin":"이메일 또는 비밀번호가 올바르지 않습니다.","status.loginok":"로그인되었습니다!","status.error":"오류가 발생했습니다.","status.wrongpw":"비밀번호가 올바르지 않습니다.","status.choosefile":"파일을 선택해 주세요.","status.uploading":"업로드 중...","status.uploadok":"업로드 완료!"
   },
   en:{
     "nav.donate":"Donate","donate.regular":"Monthly Giving","donate.onetime":"One-time Gift","donate.goods":"In-kind Donation","donate.major":"Major Gift","donate.super":"Legacy Gift",
+    "donate.eyebrow":"DONATE","donate.title":"Support Us","donate.sub":"Your donation helps one refugee become self-reliant.",
+    "donate.regular.body":"Give a set amount every month to provide ongoing support.","donate.onetime.body":"Make a one-time gift whenever you're able.","donate.goods.body":"Donate essentials or electronics directly to those in need.","donate.major.body":"Major gifts power regional expansion and new features.","donate.super.body":"Become a long-term partner of K-BRIDGE.",
+    "campaign.eyebrow":"CAMPAIGNS","campaign.title":"Campaigns","campaign.body":"New campaigns are in the works and will appear here soon. Stay tuned!","campaign.viewall":"Campaigns",
+    "news.eyebrow":"NEWS","news.title":"News","news.notice.body":"The latest news and announcements from K-BRIDGE.","news.report.body":"Regular reports on how donations are being used.","news.archive.body":"A library of activity reports and resources.",
     "nav.campaign":"Campaigns","nav.news":"News","news.notice":"Notices/News","news.report":"Impact Reports","news.archive":"Resources",
     "nav.about":"About","about.org":"About Us","about.transparency":"Transparency",
     "search.ph":"Search","auth.login":"Log in","auth.signup":"Sign up","cta.donate":"Donate Now",
@@ -1075,10 +1398,17 @@ const I18N = {
     "field.email":"Email","field.password":"Password","field.name":"Name",
     "adminlogin.title":"Admin Login","adminlogin.sub":"Enter the admin password.","adminlogin.submit":"Enter",
     "adminpanel.title":"Photo Manager","adminpanel.sub":"Choose a section, then upload or delete photos.","adminpanel.select":"Select section","adminpanel.upload":"Upload","adminpanel.current":"Current photos","adminpanel.empty":"No photos yet.",
+    "adminpanel.mainTitle":"Admin Panel","adminpanel.tabPhotos":"Photos","adminpanel.tabDonations":"Donations",
+    "donationadmin.sub":"New entries appear on the Transparency section right away.","donationadmin.name":"Donor name","donationadmin.amount":"Amount (RM)","donationadmin.note":"Note (optional)","donationadmin.add":"Add donation","donationadmin.list":"Donation records","donationadmin.empty":"No donations recorded yet.",
+    "transparency.empty":"No donations recorded yet.",
     "status.fillall":"Please fill in all fields.","status.exists":"This email is already registered.","status.signupok":"Sign-up complete!","status.badlogin":"Incorrect email or password.","status.loginok":"Logged in!","status.error":"Something went wrong.","status.wrongpw":"Incorrect password.","status.choosefile":"Please choose a file.","status.uploading":"Uploading...","status.uploadok":"Upload complete!"
   },
   zh:{
     "nav.donate":"捐款","donate.regular":"定期捐款","donate.onetime":"单次捐款","donate.goods":"物资捐赠","donate.major":"大额捐赠","donate.super":"特大额捐赠",
+    "donate.eyebrow":"捐款","donate.title":"立即捐款","donate.sub":"您的捐款能帮助一位难民实现自立。",
+    "donate.regular.body":"每月定期捐款，提供持续的支持。","donate.onetime.body":"随时进行一次性捐款，无负担参与。","donate.goods.body":"直接捐赠生活必需品或电子产品给有需要的人。","donate.major.body":"大额捐赠助力地区扩展与新功能开发。","donate.super.body":"成为K-BRIDGE的长期合作伙伴。",
+    "campaign.eyebrow":"活动","campaign.title":"活动","campaign.body":"新的活动正在筹备中，即将在此发布，敬请期待！","campaign.viewall":"活动",
+    "news.eyebrow":"消息","news.title":"消息","news.notice.body":"K-BRIDGE的最新消息与公告。","news.report.body":"定期报告捐款的使用情况。","news.archive.body":"存放活动报告与资料的空间。",
     "nav.campaign":"活动","nav.news":"消息","news.notice":"公告/新闻","news.report":"捐款报告","news.archive":"资料库",
     "nav.about":"关于我们","about.org":"机构介绍","about.transparency":"透明经营",
     "search.ph":"搜索","auth.login":"登录","auth.signup":"注册","cta.donate":"立即捐款",
@@ -1125,10 +1455,17 @@ const I18N = {
     "field.email":"邮箱","field.password":"密码","field.name":"姓名",
     "adminlogin.title":"管理员登录","adminlogin.sub":"请输入管理员密码。","adminlogin.submit":"进入",
     "adminpanel.title":"照片管理","adminpanel.sub":"选择版块后上传或删除照片。","adminpanel.select":"选择版块","adminpanel.upload":"上传","adminpanel.current":"当前照片","adminpanel.empty":"暂无照片。",
+    "adminpanel.mainTitle":"管理员面板","adminpanel.tabPhotos":"照片管理","adminpanel.tabDonations":"捐款管理",
+    "donationadmin.sub":"新增记录会立即显示在透明经营板块。","donationadmin.name":"捐款人姓名","donationadmin.amount":"金额 (RM)","donationadmin.note":"备注（可选）","donationadmin.add":"添加捐款记录","donationadmin.list":"捐款记录","donationadmin.empty":"暂无捐款记录。",
+    "transparency.empty":"暂无捐款记录。",
     "status.fillall":"请填写所有字段。","status.exists":"该邮箱已注册。","status.signupok":"注册成功！","status.badlogin":"邮箱或密码不正确。","status.loginok":"登录成功！","status.error":"发生错误。","status.wrongpw":"密码不正确。","status.choosefile":"请选择文件。","status.uploading":"上传中...","status.uploadok":"上传成功！"
   },
   ms:{
     "nav.donate":"Derma","donate.regular":"Derma Bulanan","donate.onetime":"Derma Sekali","donate.goods":"Derma Barangan","donate.major":"Derma Besar","donate.super":"Derma Warisan",
+    "donate.eyebrow":"DERMA","donate.title":"Derma Sekarang","donate.sub":"Derma anda membantu seorang pelarian mencapai kehidupan berdikari.",
+    "donate.regular.body":"Berikan jumlah tetap setiap bulan untuk sokongan berterusan.","donate.onetime.body":"Buat derma sekali sahaja apabila anda mampu.","donate.goods.body":"Derma barangan keperluan asas atau elektronik terus kepada mereka yang memerlukan.","donate.major.body":"Derma besar menyokong pengembangan wilayah dan ciri baharu.","donate.super.body":"Menjadi rakan kongsi jangka panjang K-BRIDGE.",
+    "campaign.eyebrow":"KEMPEN","campaign.title":"Kempen","campaign.body":"Kempen baharu sedang disediakan dan akan dipaparkan di sini tidak lama lagi. Nantikan!","campaign.viewall":"Kempen",
+    "news.eyebrow":"BERITA","news.title":"Berita","news.notice.body":"Berita dan pengumuman terkini daripada K-BRIDGE.","news.report.body":"Laporan berkala mengenai penggunaan derma.","news.archive.body":"Ruang simpanan laporan aktiviti dan sumber.",
     "nav.campaign":"Kempen","nav.news":"Berita","news.notice":"Notis/Berita","news.report":"Laporan Impak","news.archive":"Sumber",
     "nav.about":"Tentang Kami","about.org":"Profil Kami","about.transparency":"Ketelusan",
     "search.ph":"Cari","auth.login":"Log Masuk","auth.signup":"Daftar","cta.donate":"Derma Sekarang",
@@ -1175,6 +1512,9 @@ const I18N = {
     "field.email":"Emel","field.password":"Kata Laluan","field.name":"Nama",
     "adminlogin.title":"Log Masuk Admin","adminlogin.sub":"Masukkan kata laluan admin.","adminlogin.submit":"Masuk",
     "adminpanel.title":"Pengurus Foto","adminpanel.sub":"Pilih bahagian, kemudian muat naik atau padam foto.","adminpanel.select":"Pilih bahagian","adminpanel.upload":"Muat Naik","adminpanel.current":"Foto Semasa","adminpanel.empty":"Belum ada foto.",
+    "adminpanel.mainTitle":"Panel Admin","adminpanel.tabPhotos":"Foto","adminpanel.tabDonations":"Derma",
+    "donationadmin.sub":"Rekod baharu akan terus dipaparkan di bahagian Ketelusan.","donationadmin.name":"Nama penderma","donationadmin.amount":"Jumlah (RM)","donationadmin.note":"Nota (pilihan)","donationadmin.add":"Tambah rekod derma","donationadmin.list":"Rekod derma","donationadmin.empty":"Belum ada rekod derma.",
+    "transparency.empty":"Belum ada rekod derma.",
     "status.fillall":"Sila isi semua ruangan.","status.exists":"Emel ini telah didaftarkan.","status.signupok":"Pendaftaran berjaya!","status.badlogin":"Emel atau kata laluan salah.","status.loginok":"Berjaya log masuk!","status.error":"Ralat berlaku.","status.wrongpw":"Kata laluan salah.","status.choosefile":"Sila pilih fail.","status.uploading":"Memuat naik...","status.uploadok":"Muat naik berjaya!"
   }
 };
@@ -1192,7 +1532,32 @@ function applyLang(lang){
     if (I18N[lang] && I18N[lang][key] !== undefined) el.placeholder = I18N[lang][key];
   });
 }
-document.getElementById('langSelect').addEventListener('change', (e) => applyLang(e.target.value));
+document.getElementById('langSwitch').addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-lang]');
+  if (!btn) return;
+  document.querySelectorAll('#langSwitch button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyLang(btn.dataset.lang);
+});
+
+/* search overlay */
+const searchOverlayEl = document.getElementById('searchOverlay');
+const searchToggleBtn = document.getElementById('searchToggle');
+const searchInputEl = document.getElementById('searchInput');
+const searchOverlayCloseBtn = document.getElementById('searchOverlayClose');
+function openSearchOverlay(){
+  searchOverlayEl.classList.add('active');
+  document.body.classList.add('search-open');
+  setTimeout(() => searchInputEl.focus(), 60);
+}
+function closeSearchOverlay(){
+  searchOverlayEl.classList.remove('active');
+  document.body.classList.remove('search-open');
+}
+searchToggleBtn.addEventListener('click', openSearchOverlay);
+searchOverlayCloseBtn.addEventListener('click', closeSearchOverlay);
+searchOverlayEl.addEventListener('click', (e) => { if (e.target === searchOverlayEl) closeSearchOverlay(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearchOverlay(); });
 </script>
 </body>
 </html>
