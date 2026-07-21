@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-BRIDGE — 말레이시아 난민을 기회로 연결하다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav-row">
+    <div class="nav-left">
+      <button class="logo" id="logoHomeBtn"><span class="crown">👑</span> K-BRIDGE</button>
+
+      <nav class="main-nav">
+        <div class="nav-item">
+          <button data-i18n="nav.donate" data-target="donate-regular.html">후원 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="donate-regular.html" data-i18n="donate.regular">정기후원</a>
+            <a href="donate-onetime.html" data-i18n="donate.onetime">일시후원</a>
+            <a href="donate-goods.html" data-i18n="donate.goods">물품후원</a>
+            <a href="donate-major.html" data-i18n="donate.major">고액기부</a>
+            <a href="donate-super.html" data-i18n="donate.super">초고액기부</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.campaign" data-target="campaign.html">캠페인 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="campaign.html" data-i18n="campaign.viewall">캠페인</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.news" data-target="news-notice.html">소식 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="news-notice.html" data-i18n="news.notice">공지/뉴스</a>
+            <a href="news-report.html" data-i18n="news.report">후원보고</a>
+            <a href="news-archive.html" data-i18n="news.archive">자료실</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.about" data-target="about-org.html">소개 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="about-org.html" data-i18n="about.org">재단소개</a>
+            <a href="about-transparency.html" data-i18n="about.transparency">투명경영</a>
+          </div></div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="header-tools">
+      <button class="search-icon-btn" id="searchToggle" aria-label="search">🔍</button>
+      <button class="text-btn" id="openSignup" data-i18n="auth.signup">회원가입</button>
+      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="ko" class="active">한국어</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="zh">中文</button>
+        <button data-lang="ms">BM</button>
+      </div>
+      <button class="donate-btn" data-i18n="cta.donate">후원하기</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SEARCH OVERLAY ============ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-overlay-inner">
+    <span class="search-overlay-ic">🔍</span>
+    <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
+    <button class="search-overlay-close" id="searchOverlayClose">✕</button>
+  </div>
+</div>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="ring r1"></div>
+  <div class="ring r2"></div>
+  <div class="hero-carousel" id="heroCarousel"></div>
+  <div class="hero-overlay-tint"></div>
+
+  <button class="hero-arrow left" id="heroPrev" aria-label="previous">‹</button>
+  <button class="hero-arrow right" id="heroNext" aria-label="next">›</button>
+
+  <div class="wrap hero-inner">
+    <div id="heroTextBlock" class="hero-text-block">
+      <span class="crown-big">👑</span>
+      <h1>K-BRIDGE</h1>
+      <p class="tagline" data-i18n="hero.tagline">말레이시아 난민을 기회로 연결하다</p>
+      <div class="pillars">
+        <span data-i18n="hero.p1">일자리</span>
+        <span data-i18n="hero.p2">주거</span>
+        <span data-i18n="hero.p3">마켓</span>
+        <span data-i18n="hero.p4">카풀</span>
+        <span data-i18n="hero.p5">커뮤니티</span>
+      </div>
+      <div class="hero-ctas">
+        <button class="btn-primary" data-i18n="cta.donate">후원하기</button>
+        <button class="btn-ghost" data-i18n="hero.learn">더 알아보기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-dots" id="heroDots"></div>
+
+  <svg class="bridge-arc" viewBox="0 0 1180 90" preserveAspectRatio="none">
+    <path d="M0,90 C 250,10 930,10 1180,90" />
+    <circle cx="230" cy="34" r="4"></circle>
+    <circle cx="590" cy="12" r="5"></circle>
+    <circle cx="950" cy="34" r="4"></circle>
+  </svg>
+</section>
+
+<!-- ============ 현황과 문제 ============ -->
+<section class="block" id="problems">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="problems.eyebrow">CURRENT SITUATION</span>
+      <h2 data-i18n="problems.title">현황과 문제</h2>
+    </div>
+    <div class="grid-2">
+      <div class="problem-card">
+        <span class="ic">🚫</span>
+        <h3 data-i18n="problems.c1.title">취업 불가</h3>
+        <p data-i18n="problems.c1.body">말레이시아 내 18만 명 이상의 난민은 법적으로 취업이 불가합니다. 최저임금 이하로 착취당하는 경우가 많습니다.</p>
+      </div>
+      <div class="problem-card">
+        <span class="ic">🏚️</span>
+        <h3 data-i18n="problems.c2.title">불안전한 주거</h3>
+        <p data-i18n="problems.c2.body">검증되지 않은 집주인에게 과도한 임대료를 내고 있습니다. 법적 보호나 커뮤니티 지원이 없습니다.</p>
+      </div>
+      <div class="problem-card">
+        <span class="ic">💬</span>
+        <h3 data-i18n="problems.c3.title">언어 장벽</h3>
+        <p data-i18n="problems.c3.body">난민 커뮤니티에서는 9개 언어가 사용됩니다. 중요한 정보가 모든 사람에게 전달되지 않습니다.</p>
+      </div>
+      <div class="problem-card">
+        <span class="ic">🚗</span>
+        <h3 data-i18n="problems.c4.title">이동수단 부재</h3>
+        <p data-i18n="problems.c4.body">안전하고 저렴한 이동수단이 없어 일자리, 병원, 커뮤니티 자원에 접근하기 어렵습니다.</p>
+      </div>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="problems"></div></div>
+  </div>
+</section>
+
+<!-- ============ 해결책 ============ -->
+<section class="block alt" id="solution">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="solution.eyebrow">THE SOLUTION</span>
+      <h2 data-i18n="solution.title">해결책: K-BRIDGE 앱</h2>
+      <p data-i18n="solution.sub">하나의 앱. 모든 필요. 모든 언어.</p>
+    </div>
+    <div class="grid-3">
+      <div class="feature-card f1"><span class="ic">💼</span><h3 data-i18n="solution.f1">일자리</h3></div>
+      <div class="feature-card f2"><span class="ic">🏠</span><h3 data-i18n="solution.f2">주거</h3></div>
+      <div class="feature-card f3"><span class="ic">🛍️</span><h3 data-i18n="solution.f3">마켓</h3></div>
+      <div class="feature-card f4"><span class="ic">🚗</span><h3 data-i18n="solution.f4">카풀</h3></div>
+      <div class="feature-card f5"><span class="ic">💬</span><h3 data-i18n="solution.f5">커뮤니티</h3></div>
+      <div class="feature-card f6"><span class="ic">🌐</span><h3 data-i18n="solution.f6">9개 언어</h3></div>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="solution"></div></div>
+  </div>
+</section>
+
+<!-- ============ 작동 방식 ============ -->
+<section class="block" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="how.eyebrow">HOW IT WORKS</span>
+      <h2 data-i18n="how.title">K-BRIDGE 작동 방식</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div><div class="stepline"></div>
+        <span class="ic">📱</span>
+        <h3 data-i18n="how.s1.title">다운로드 &amp; 가입</h3>
+        <p data-i18n="how.s1.body">신뢰할 수 있는 NGO 파트너에서 받은 초대 코드로 가입합니다.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div><div class="stepline"></div>
+        <span class="ic">⭐</span>
+        <h3 data-i18n="how.s2.title">500 포인트 지급</h3>
+        <p data-i18n="how.s2.body">신규 회원 모두에게 500 K-BRIDGE 포인트(약 RM 50)가 지급됩니다.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div><div class="stepline"></div>
+        <span class="ic">🔍</span>
+        <h3 data-i18n="how.s3.title">필요한 것 검색</h3>
+        <p data-i18n="how.s3.body">자신의 언어로 일자리, 주거, 마켓, 카풀을 찾습니다.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <span class="ic">🤝</span>
+        <h3 data-i18n="how.s4.title">직거래 &amp; 연결</h3>
+        <p data-i18n="how.s4.body">직접 만나서 포인트, Touch 'n Go, 또는 현금으로 거래합니다.</p>
+      </div>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="how"></div></div>
+  </div>
+</section>
+
+<!-- ============ 포인트 시스템 ============ -->
+<section class="block alt" id="points">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="points.eyebrow">POINTS SYSTEM</span>
+      <h2 data-i18n="points.title">K-BRIDGE 포인트 시스템</h2>
+    </div>
+    <div class="grid-2">
+      <div class="points-card">
+        <h3 data-i18n="points.h1">⭐ 포인트 작동 방식</h3>
+        <ul>
+          <li data-i18n="points.l1">1 포인트 = RM 0.10</li>
+          <li data-i18n="points.l2">신규 회원: 무료 500 포인트 지급</li>
+          <li data-i18n="points.l3">Touch 'n Go로 충전 가능</li>
+          <li data-i18n="points.l4">GrabPay로 충전 가능</li>
+          <li data-i18n="points.l5">NGO 사무소에서 현금 충전</li>
+          <li data-i18n="points.l6">포인트로 카풀 및 물품 구매</li>
+        </ul>
+      </div>
+      <div class="points-card">
+        <h3 data-i18n="points.h2">💳 은행 계좌 없이도 가능한 이유</h3>
+        <ul>
+          <li data-i18n="points.r1">난민은 법적으로 은행 계좌 개설이 어렵습니다</li>
+          <li data-i18n="points.r2">Touch 'n Go &amp; GrabPay는 계좌 없이 사용 가능</li>
+          <li data-i18n="points.r3">파트너 NGO 사무소에서 현금 충전 가능</li>
+          <li data-i18n="points.r4">중간 거래자 없는 개인 간 직접 결제</li>
+          <li data-i18n="points.r5">앱 내 안전하고 투명한 거래 내역 제공</li>
+        </ul>
+      </div>
+    </div>
+    <div class="security-strip" data-i18n="points.security">보안: 초대 코드 시스템 + 인증된 사용자 + 리뷰 평점 = 안전한 커뮤니티</div>
+  </div>
+</section>
+
+<!-- ============ 수익 모델 ============ -->
+<section class="block" id="revenue">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="revenue.eyebrow">SUSTAINABILITY</span>
+      <h2 data-i18n="revenue.title">수익 및 지속가능성 모델</h2>
+    </div>
+    <div class="grid-2">
+      <div class="revenue-card">
+        <h3 data-i18n="revenue.c1.title">📢 광고 수입</h3>
+        <p data-i18n="revenue.c1.body">현지 기업이 난민 1만 명+에게 광고. 배너 광고 &amp; 프리미엄 게시. 월 RM 200~500.</p>
+      </div>
+      <div class="revenue-card c2">
+        <h3 data-i18n="revenue.c2.title">🙏 후원 및 기부</h3>
+        <p data-i18n="revenue.c2.body">개인 및 기업 후원자. RM 10 = 난민 가족에게 100 포인트 지원. PayPal / TnG / FPX 가능.</p>
+      </div>
+      <div class="revenue-card c3">
+        <h3 data-i18n="revenue.c3.title">🤝 NGO 파트너십</h3>
+        <p data-i18n="revenue.c3.body">NGO가 수혜자를 위해 초대 코드 스폰서. UNHCR, 월드비전과 공동 브랜드 프로그램.</p>
+      </div>
+      <div class="revenue-card c4">
+        <h3 data-i18n="revenue.c4.title">💼 프리미엄 게시</h3>
+        <p data-i18n="revenue.c4.body">고용주 및 집주인이 인증된 게시물 등록. 중소기업도 부담 없는 RM 50~200/건.</p>
+      </div>
+    </div>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="revenue"></div></div>
+  </div>
+</section>
+
+<!-- ============ 비전: 난민 IT 팀 ============ -->
+<section class="vision-band" id="vision">
+  <div class="wrap">
+    <div class="section-head" style="max-width:680px; margin-left:auto; margin-right:auto; text-align:center;">
+      <span class="eyebrow" data-i18n="vision.eyebrow">👑 OUR VISION</span>
+      <h2 data-i18n="vision.title">비전: 난민 IT 팀</h2>
+      <p data-i18n="vision.sub">난민은 수혜자가 아닌 — 우리 팀의 일원입니다.</p>
+    </div>
+    <div class="grid-2">
+      <div class="vision-card"><span class="ic">💻</span><h3 data-i18n="vision.c1.title">앱 개발자</h3><p data-i18n="vision.c1.body">난민에게 Flutter &amp; 웹 개발을 교육하여 K-BRIDGE 앱을 직접 개발·유지합니다.</p></div>
+      <div class="vision-card"><span class="ic">📣</span><h3 data-i18n="vision.c2.title">커뮤니티 매니저</h3><p data-i18n="vision.c2.body">난민 리더가 자신의 커뮤니티를 관리하고 콘텐츠를 모더레이션하며 안전을 보장합니다.</p></div>
+      <div class="vision-card"><span class="ic">🌐</span><h3 data-i18n="vision.c3.title">번역가</h3><p data-i18n="vision.c3.body">모국어 사용자가 앱의 9개 언어 전체에 걸쳐 정확한 번역을 담당합니다.</p></div>
+      <div class="vision-card"><span class="ic">📊</span><h3 data-i18n="vision.c4.title">데이터 분석가</h3><p data-i18n="vision.c4.body">사용 현황을 추적하고 필요를 파악하여 NGO 파트너의 사회적 영향 측정을 지원합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 파트너십 제안 ============ -->
+<section class="block alt" id="partnership">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="partner.eyebrow">PARTNERSHIP PROPOSAL</span>
+      <h2 data-i18n="partner.title">귀 기관과의 파트너십 제안</h2>
+    </div>
+    <div class="partner-cols">
+      <div>
+        <h3 data-i18n="partner.need">저희가 필요로 하는 것</h3>
+        <ul>
+          <li data-i18n="partner.n1">수혜자에게 초대 코드 배포</li>
+          <li data-i18n="partner.n2">신뢰할 수 있는 고용주 및 집주인 검증</li>
+          <li data-i18n="partner.n3">커뮤니티 피드를 통한 안전 정보 공유</li>
+          <li data-i18n="partner.n4">난민과의 신뢰 구축을 위한 공동 브랜딩</li>
+          <li data-i18n="partner.n5">사무소에서 포인트 현금 충전 서비스 제공</li>
+        </ul>
+      </div>
+      <div>
+        <h3 data-i18n="partner.gain">귀 기관이 얻는 것</h3>
+        <ul>
+          <li data-i18n="partner.g1">지역 난민 필요에 대한 실시간 데이터</li>
+          <li data-i18n="partner.g2">지원물자 및 정보 배포를 위한 디지털 플랫폼</li>
+          <li data-i18n="partner.g3">후원자를 위한 월간 임팩트 보고서</li>
+          <li data-i18n="partner.g4">1만 명+ 사용자에게 공동 브랜드 노출</li>
+          <li data-i18n="partner.g5">난민이 직접 운영하는 기술 팀</li>
+        </ul>
+      </div>
+    </div>
+    <div class="partner-strip" data-i18n="partner.strip">파트너 기관: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope</div>
+  </div>
+</section>
+
+<!-- ============ 로드맵 ============ -->
+<section class="block" id="roadmap">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="roadmap.eyebrow">LAUNCH ROADMAP</span>
+      <h2 data-i18n="roadmap.title">런칭 로드맵</h2>
+    </div>
+    <div class="grid-3">
+      <div class="roadmap-card">
+        <div class="roadmap-head p1" data-i18n="roadmap.p1">1단계 · 1~2개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p1.title">기반 구축</h3>
+          <ul>
+            <li data-i18n="roadmap.p1.l1">NGO 파트너십 협약 체결</li>
+            <li data-i18n="roadmap.p1.l2">초대 코드 배포</li>
+            <li data-i18n="roadmap.p1.l3">KL 지역 베타 사용자 50~100명</li>
+            <li data-i18n="roadmap.p1.l4">버마어 + 영어로 런칭</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-head p2" data-i18n="roadmap.p2">2단계 · 3~4개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p2.title">성장</h3>
+          <ul>
+            <li data-i18n="roadmap.p2.l1">마켓 &amp; 카풀 기능 오픈</li>
+            <li data-i18n="roadmap.p2.l2">결제 시스템 실제 운영</li>
+            <li data-i18n="roadmap.p2.l3">활성 사용자 500명+</li>
+            <li data-i18n="roadmap.p2.l4">난민 IT 팀 구성</li>
+          </ul>
+        </div>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-head p3" data-i18n="roadmap.p3">3단계 · 5~6개월</div>
+        <div class="roadmap-body">
+          <h3 data-i18n="roadmap.p3.title">확장</h3>
+          <ul>
+            <li data-i18n="roadmap.p3.l1">사용자 1만 명+</li>
+            <li data-i18n="roadmap.p3.l2">광고 수입 시작</li>
+            <li data-i18n="roadmap.p3.l3">후원 캠페인 런칭</li>
+            <li data-i18n="roadmap.p3.l4">페낭 &amp; 조호르바루 확장</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 마무리 ============ -->
+<section class="closing" id="closing">
+  <div class="wrap">
+    <span class="crown-big">👑</span>
+    <h2 data-i18n="closing.title">함께 만들어 갑시다</h2>
+    <p class="italic" data-i18n="closing.sub1">K-BRIDGE는 앱 그 이상입니다 — 하나의 운동입니다.</p>
+    <p data-i18n="closing.sub2" style="color:#DCE6DF;">난민이 난민을 돕습니다. 기술이 인류를 섬깁니다. 믿음으로 세우고, 공동체로 지속합니다.</p>
+    <div class="contact">
+      <span>📩 kbridge@email.com</span>
+      <span>📱 WhatsApp: +60 12-XXX-XXXX</span>
+      <span>🌐 kbridge.netlify.app</span>
+    </div>
+    <p class="verse" data-i18n="closing.verse">"내가 나그네 되었을 때에 영접하였고" — 마태복음 25:35</p>
+    <div class="gallery-block"><div class="gallery-grid" data-gallery="closing"></div></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span data-i18n="footer.copy">© 2024 K-BRIDGE. All rights reserved.</span>
+    &nbsp;·&nbsp;
+    <a href="#" id="adminLink" data-i18n="footer.admin">관리자</a>
+  </div>
+</footer>
+<!-- ============ LOGIN MODAL ============ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="close-x" data-close="loginModal">✕</button>
+    <h3 data-i18n="login.title">로그인</h3>
+    <p class="sub" data-i18n="login.sub">K-BRIDGE 계정으로 로그인하세요.</p>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="loginPassword"></div>
+    <button class="btn-primary" id="loginSubmit" data-i18n="login.submit">로그인</button>
+    <div class="status-msg" id="loginStatus"></div>
+    <div class="switch-line"><span data-i18n="login.noaccount">계정이 없으신가요?</span> <button data-switch="signupModal" data-i18n="auth.signup">회원가입</button></div>
+  </div>
+</div>
+
+<!-- ============ SIGNUP MODAL ============ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="close-x" data-close="signupModal">✕</button>
+    <h3 data-i18n="signup.title">회원가입</h3>
+    <p class="sub" data-i18n="signup.sub">K-BRIDGE와 함께해 주세요.</p>
+    <div class="field"><label data-i18n="field.name">이름</label><input type="text" id="signupName"></div>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="signupEmail"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="signupPassword"></div>
+    <button class="btn-primary" id="signupSubmit" data-i18n="signup.submit">가입하기</button>
+    <div class="status-msg" id="signupStatus"></div>
+    <div class="switch-line"><span data-i18n="signup.hasaccount">이미 계정이 있으신가요?</span> <button data-switch="loginModal" data-i18n="auth.login">로그인</button></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN MODAL ============ -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminLoginModal">✕</button>
+    <h3 data-i18n="adminlogin.title">관리자 로그인</h3>
+    <p class="sub" data-i18n="adminlogin.sub">관리자 비밀번호를 입력하세요.</p>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="adminPassword"></div>
+    <button class="btn-primary" id="adminLoginSubmit" data-i18n="adminlogin.submit">접속</button>
+    <div class="status-msg" id="adminLoginStatus"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN PANEL MODAL ============ -->
+<div class="modal-overlay" id="adminPanelModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminPanelModal">✕</button>
+    <h3 data-i18n="adminpanel.mainTitle">관리자 패널</h3>
+    <div style="display:flex; gap:8px; margin:14px 0 20px;">
+      <button class="admin-tab-btn active" id="adminTabPhotos" data-i18n="adminpanel.tabPhotos">사진 관리</button>
+      <button class="admin-tab-btn" id="adminTabDonations" data-i18n="adminpanel.tabDonations">후원 관리</button>
+    </div>
+
+    <div id="adminPhotosPanel">
+      <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
+      <div class="field">
+        <label data-i18n="adminpanel.select">섹션 선택</label>
+        <select id="adminSectionSelect">
+          <option value="hero">Hero</option>
+          <option value="problems">현황과 문제</option>
+          <option value="solution">해결책</option>
+          <option value="how">작동 방식</option>
+          <option value="revenue">수익 모델</option>
+          <option value="campaign">캠페인</option>
+          <option value="closing">마무리</option>
+        </select>
+      </div>
+      <div class="admin-upload-row">
+        <input type="file" id="adminFileInput" accept="image/*" multiple>
+        <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
+      </div>
+      <div class="status-msg" id="adminUploadStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="adminpanel.current">현재 사진</h4>
+        <div class="gallery-grid" id="adminGalleryPreview"></div>
+      </div>
+    </div>
+
+    <div id="adminDonationsPanel" style="display:none;">
+      <p class="sub" data-i18n="donationadmin.sub">새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.</p>
+      <div class="field"><label data-i18n="donationadmin.name">후원자 이름</label><input type="text" id="donationName" placeholder="Anonymous"></div>
+      <div class="field"><label data-i18n="donationadmin.amount">금액 (RM)</label><input type="number" id="donationAmount" min="0" step="0.01"></div>
+      <div class="field"><label data-i18n="donationadmin.note">메모 (선택)</label><input type="text" id="donationNote"></div>
+      <button class="btn-primary" id="donationAddBtn" data-i18n="donationadmin.add">후원 내역 추가</button>
+      <div class="status-msg" id="donationAddStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="donationadmin.list">등록된 후원 내역</h4>
+        <div id="adminDonationList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="assets/main.js"></script>
+</body>
+</html>

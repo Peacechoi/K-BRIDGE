@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>투명경영 — K-BRIDGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav-row">
+    <div class="nav-left">
+      <button class="logo" id="logoHomeBtn"><span class="crown">👑</span> K-BRIDGE</button>
+
+      <nav class="main-nav">
+        <div class="nav-item">
+          <button data-i18n="nav.donate" data-target="donate-regular.html">후원 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="donate-regular.html" data-i18n="donate.regular">정기후원</a>
+            <a href="donate-onetime.html" data-i18n="donate.onetime">일시후원</a>
+            <a href="donate-goods.html" data-i18n="donate.goods">물품후원</a>
+            <a href="donate-major.html" data-i18n="donate.major">고액기부</a>
+            <a href="donate-super.html" data-i18n="donate.super">초고액기부</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.campaign" data-target="campaign.html">캠페인 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="campaign.html" data-i18n="campaign.viewall">캠페인</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.news" data-target="news-notice.html">소식 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="news-notice.html" data-i18n="news.notice">공지/뉴스</a>
+            <a href="news-report.html" data-i18n="news.report">후원보고</a>
+            <a href="news-archive.html" data-i18n="news.archive">자료실</a>
+          </div></div>
+        </div>
+        <div class="nav-item">
+          <button data-i18n="nav.about" data-target="about-org.html">소개 <span class="caret">▾</span></button>
+          <div class="dropdown"><div class="dropdown-panel">
+            <a href="about-org.html" data-i18n="about.org">재단소개</a>
+            <a href="about-transparency.html" data-i18n="about.transparency">투명경영</a>
+          </div></div>
+        </div>
+      </nav>
+    </div>
+
+    <div class="header-tools">
+      <button class="search-icon-btn" id="searchToggle" aria-label="search">🔍</button>
+      <button class="text-btn" id="openSignup" data-i18n="auth.signup">회원가입</button>
+      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
+      <div class="lang-switch" id="langSwitch">
+        <button data-lang="ko" class="active">한국어</button>
+        <button data-lang="en">EN</button>
+        <button data-lang="zh">中文</button>
+        <button data-lang="ms">BM</button>
+      </div>
+      <button class="donate-btn" data-i18n="cta.donate">후원하기</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ SEARCH OVERLAY ============ -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-overlay-inner">
+    <span class="search-overlay-ic">🔍</span>
+    <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
+    <button class="search-overlay-close" id="searchOverlayClose">✕</button>
+  </div>
+</div>
+
+
+<section class="block" style="padding-top:150px; min-height:60vh;">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow" data-i18n="transparency.eyebrow">TRANSPARENCY</span>
+      <h2 data-i18n="transparency.title">투명경영 — 후원 현황</h2>
+      <p data-i18n="transparency.sub">모금된 후원금 내역을 투명하게 공개합니다.</p>
+    </div>
+    <div class="grid-2" style="align-items:start;">
+      <div class="points-card" style="text-align:center;">
+        <h3 data-i18n="transparency.totalLabel">누적 후원금</h3>
+        <div id="donationTotal" style="font-family:var(--serif); font-size:40px; font-weight:800; color:var(--forest-deep); margin:10px 0;">RM 0</div>
+        <p style="font-size:13px; margin:0;" data-i18n="transparency.totalSub">후원해주신 모든 분들께 감사드립니다.</p>
+      </div>
+      <div class="points-card">
+        <h3 data-i18n="transparency.recentLabel">최근 후원 내역</h3>
+        <div id="donationList" style="font-size:14px; color:var(--ink-soft); margin-top:12px;"></div>
+      </div>
+    </div>
+    <p style="margin-top:30px;"><a href="index.html" style="color:var(--jade); font-weight:700;">← 홈으로 돌아가기</a></p>
+  </div>
+</section>
+<footer>
+  <div class="wrap">
+    <span data-i18n="footer.copy">© 2024 K-BRIDGE. All rights reserved.</span>
+    &nbsp;·&nbsp;
+    <a href="#" id="adminLink" data-i18n="footer.admin">관리자</a>
+  </div>
+</footer>
+<!-- ============ LOGIN MODAL ============ -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal">
+    <button class="close-x" data-close="loginModal">✕</button>
+    <h3 data-i18n="login.title">로그인</h3>
+    <p class="sub" data-i18n="login.sub">K-BRIDGE 계정으로 로그인하세요.</p>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="loginPassword"></div>
+    <button class="btn-primary" id="loginSubmit" data-i18n="login.submit">로그인</button>
+    <div class="status-msg" id="loginStatus"></div>
+    <div class="switch-line"><span data-i18n="login.noaccount">계정이 없으신가요?</span> <button data-switch="signupModal" data-i18n="auth.signup">회원가입</button></div>
+  </div>
+</div>
+
+<!-- ============ SIGNUP MODAL ============ -->
+<div class="modal-overlay" id="signupModal">
+  <div class="modal">
+    <button class="close-x" data-close="signupModal">✕</button>
+    <h3 data-i18n="signup.title">회원가입</h3>
+    <p class="sub" data-i18n="signup.sub">K-BRIDGE와 함께해 주세요.</p>
+    <div class="field"><label data-i18n="field.name">이름</label><input type="text" id="signupName"></div>
+    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="signupEmail"></div>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="signupPassword"></div>
+    <button class="btn-primary" id="signupSubmit" data-i18n="signup.submit">가입하기</button>
+    <div class="status-msg" id="signupStatus"></div>
+    <div class="switch-line"><span data-i18n="signup.hasaccount">이미 계정이 있으신가요?</span> <button data-switch="loginModal" data-i18n="auth.login">로그인</button></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN LOGIN MODAL ============ -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminLoginModal">✕</button>
+    <h3 data-i18n="adminlogin.title">관리자 로그인</h3>
+    <p class="sub" data-i18n="adminlogin.sub">관리자 비밀번호를 입력하세요.</p>
+    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="adminPassword"></div>
+    <button class="btn-primary" id="adminLoginSubmit" data-i18n="adminlogin.submit">접속</button>
+    <div class="status-msg" id="adminLoginStatus"></div>
+  </div>
+</div>
+
+<!-- ============ ADMIN PANEL MODAL ============ -->
+<div class="modal-overlay" id="adminPanelModal">
+  <div class="modal">
+    <button class="close-x" data-close="adminPanelModal">✕</button>
+    <h3 data-i18n="adminpanel.mainTitle">관리자 패널</h3>
+    <div style="display:flex; gap:8px; margin:14px 0 20px;">
+      <button class="admin-tab-btn active" id="adminTabPhotos" data-i18n="adminpanel.tabPhotos">사진 관리</button>
+      <button class="admin-tab-btn" id="adminTabDonations" data-i18n="adminpanel.tabDonations">후원 관리</button>
+    </div>
+
+    <div id="adminPhotosPanel">
+      <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
+      <div class="field">
+        <label data-i18n="adminpanel.select">섹션 선택</label>
+        <select id="adminSectionSelect">
+          <option value="hero">Hero</option>
+          <option value="problems">현황과 문제</option>
+          <option value="solution">해결책</option>
+          <option value="how">작동 방식</option>
+          <option value="revenue">수익 모델</option>
+          <option value="campaign">캠페인</option>
+          <option value="closing">마무리</option>
+        </select>
+      </div>
+      <div class="admin-upload-row">
+        <input type="file" id="adminFileInput" accept="image/*" multiple>
+        <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
+      </div>
+      <div class="status-msg" id="adminUploadStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="adminpanel.current">현재 사진</h4>
+        <div class="gallery-grid" id="adminGalleryPreview"></div>
+      </div>
+    </div>
+
+    <div id="adminDonationsPanel" style="display:none;">
+      <p class="sub" data-i18n="donationadmin.sub">새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.</p>
+      <div class="field"><label data-i18n="donationadmin.name">후원자 이름</label><input type="text" id="donationName" placeholder="Anonymous"></div>
+      <div class="field"><label data-i18n="donationadmin.amount">금액 (RM)</label><input type="number" id="donationAmount" min="0" step="0.01"></div>
+      <div class="field"><label data-i18n="donationadmin.note">메모 (선택)</label><input type="text" id="donationNote"></div>
+      <button class="btn-primary" id="donationAddBtn" data-i18n="donationadmin.add">후원 내역 추가</button>
+      <div class="status-msg" id="donationAddStatus"></div>
+      <div class="admin-section">
+        <h4 data-i18n="donationadmin.list">등록된 후원 내역</h4>
+        <div id="adminDonationList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script src="assets/main.js"></script>
+</body>
+</html>
