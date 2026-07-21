@@ -1,881 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K-BRIDGE — 말레이시아 난민을 기회로 연결하다</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-/* ============ TOKENS ============ */
-:root{
-  --forest:#12392C;
-  --forest-deep:#0B2820;
-  --jade:#1E7A54;
-  --gold:#E0A526;
-  --gold-deep:#B9840F;
-  --terracotta:#C1502E;
-  --ivory:#FAF7F0;
-  --paper:#FFFFFF;
-  --ink:#1F2421;
-  --ink-soft:#4B564F;
-  --line:#E4DFD2;
-  --radius:14px;
-  --shadow:0 10px 30px -12px rgba(18,57,44,0.18);
-  --serif:'Fraunces', serif;
-  --sans:'Manrope', sans-serif;
-}
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-[id]{scroll-margin-top:96px;}
-body{
-  margin:0; font-family:var(--sans); color:var(--ink); background:var(--ivory);
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3,h4{font-family:var(--serif); margin:0; color:var(--forest-deep); line-height:1.15;}
-p{line-height:1.7; color:var(--ink-soft);}
-a{color:inherit; text-decoration:none;}
-button{font-family:var(--sans); cursor:pointer;}
-img{max-width:100%; display:block;}
-.eyebrow{
-  font-size:12.5px; font-weight:800; letter-spacing:0.14em; text-transform:uppercase;
-  color:var(--gold-deep);
-}
-.wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
-.visually-hidden{position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0 0 0 0);}
-
-/* ============ HEADER ============ */
-header{
-  position:sticky; top:0; z-index:200; background:rgba(250,247,240,0.94);
-  backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
-}
-.nav-row{display:flex; align-items:center; justify-content:space-between; gap:22px; height:76px; width:100%; max-width:none; margin:0; padding:0 32px; box-sizing:border-box;}
-.logo{
-  display:flex; align-items:center; gap:8px; font-family:var(--serif); font-weight:800;
-  font-size:22px; color:var(--forest-deep); white-space:nowrap; background:none; border:none; cursor:pointer;
-}
-.logo span.crown{font-size:20px;}
-.nav-left{display:flex; align-items:center; gap:34px;}
-nav.main-nav{display:flex; gap:4px; position:relative;}
-.nav-item{position:relative;}
-.nav-item>button{
-  position:relative; background:none; border:none; font-size:15.5px; font-weight:700; color:var(--ink);
-  padding:12px 14px; border-radius:8px; display:flex; align-items:center; gap:5px;
-}
-.nav-item>button:hover, .nav-item.open>button{background:#EFEADB; color:var(--forest-deep);}
-.nav-item>button::after{
-  content:''; position:absolute; left:14px; right:14px; bottom:4px; height:2px; background:var(--jade);
-  transform:scaleX(0); transform-origin:left; transition:transform .28s ease;
-}
-.nav-item>button:hover::after, .nav-item.open>button::after{ transform:scaleX(1); }
-.caret{font-size:10px; opacity:0.6; transition:transform .15s;}
-.nav-item.open .caret{transform:rotate(180deg);}
-.dropdown{
-  position:absolute; top:calc(100% + 6px); left:0; min-width:190px; background:var(--paper);
-  border-radius:12px; box-shadow:var(--shadow); border:1px solid var(--line);
-  padding:8px; display:none; flex-direction:column; gap:2px;
-}
-.nav-item.open .dropdown{display:flex;}
-.dropdown a{
-  padding:10px 12px; border-radius:8px; font-size:14.5px; font-weight:600; color:var(--ink);
-}
-.dropdown a:hover{background:#EFEADB; color:var(--forest-deep);}
-.header-tools{display:flex; align-items:center; gap:12px;}
-.search-icon-btn{
-  width:36px; height:36px; border-radius:50%; background:#EAF3EC; border:none;
-  font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--forest-deep);
-}
-.search-icon-btn:hover{background:#DCEAE1;}
-.search-overlay{
-  position:fixed; inset:0; z-index:600; display:flex; align-items:flex-start; justify-content:center;
-  padding-top:14vh; background:rgba(11,40,32,0.42);
-  opacity:0; visibility:hidden; pointer-events:none;
-  transition:opacity .28s ease, background-color .28s ease;
-}
-.search-overlay.active{ opacity:1; visibility:visible; pointer-events:auto; }
-.search-overlay-inner{
-  background:var(--paper); border-radius:20px; padding:22px 26px; width:100%; max-width:600px;
-  box-shadow:0 30px 60px -20px rgba(0,0,0,0.35); display:flex; align-items:center; gap:14px;
-  transform:translateY(-14px); opacity:0; transition:transform .3s cubic-bezier(.2,.8,.2,1), opacity .28s ease;
-}
-.search-overlay.active .search-overlay-inner{ transform:translateY(0); opacity:1; }
-.search-overlay-ic{font-size:20px;}
-.search-overlay-inner input{
-  flex:1; border:none; outline:none; font-size:23px; font-family:var(--serif); color:var(--forest-deep); background:none;
-}
-.search-overlay-close{background:none; border:none; font-size:18px; color:var(--ink-soft); flex-shrink:0;}
-body.search-open > *:not(.search-overlay){ filter:blur(6px); transition:filter .35s ease; }
-body > *:not(.search-overlay){ transition:filter .35s ease; }
-.text-btn{
-  background:none; border:none; font-size:13.5px; font-weight:700; color:var(--ink);
-  padding:8px 10px; white-space:nowrap;
-}
-.text-btn:hover{color:var(--forest);}
-.lang-switch{display:flex; align-items:center; background:#EFEADB; border-radius:20px; padding:4px; gap:2px;}
-.lang-switch button{
-  background:none; border:none; padding:7px 12px; border-radius:16px; font-size:12.5px;
-  font-weight:800; color:var(--ink-soft); white-space:nowrap;
-}
-.lang-switch button.active{background:var(--forest); color:#fff;}
-.donate-btn{
-  background:var(--gold); color:var(--forest-deep); font-weight:800; font-size:14px;
-  padding:11px 20px; border-radius:24px; border:none; white-space:nowrap; box-shadow:0 6px 14px -6px rgba(224,165,38,0.6);
-}
-.donate-btn:hover{background:var(--gold-deep); color:#fff;}
-@media(max-width:980px){
-  .search-box, .lang-select-label{display:none;}
-  nav.main-nav{display:none;}
-}
-
-/* ============ HERO ============ */
-.hero{
-  position:relative; overflow:hidden; background:radial-gradient(circle at 82% 20%, #1a4a38 0%, var(--forest) 45%, var(--forest-deep) 100%);
-  color:#fff; padding:100px 0 0;
-}
-.hero .ring{position:absolute; border-radius:50%; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.03);}
-.hero .ring.r1{width:520px; height:520px; top:-180px; right:-140px;}
-.hero .ring.r2{width:340px; height:340px; bottom:-120px; right:60px;}
-.hero-inner{position:relative; z-index:2; max-width:680px;}
-.hero .crown-big{font-size:38px; display:block; margin-bottom:18px;}
-.hero h1{font-size:56px; font-weight:900; color:#fff; letter-spacing:-0.01em;}
-.hero .tagline{font-size:20px; margin:18px 0 26px; color:#EDE9DC; font-family:var(--serif); font-style:italic; font-weight:500;}
-.hero .pillars{
-  display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.18);
-}
-.pillars span{
-  font-size:13.5px; font-weight:700; background:rgba(255,255,255,0.09); padding:7px 14px; border-radius:20px;
-}
-.hero-ctas{display:flex; gap:12px; margin:30px 0 60px;}
-.btn-primary{background:var(--gold); color:var(--forest-deep); font-weight:800; padding:14px 26px; border-radius:26px; border:none; font-size:15px;}
-.btn-primary:hover{background:#fff;}
-.btn-ghost{background:transparent; border:1.5px solid rgba(255,255,255,0.5); color:#fff; padding:14px 26px; border-radius:26px; font-weight:700; font-size:15px;}
-.btn-ghost:hover{border-color:#fff;}
-/* signature bridge arc */
-.bridge-arc{position:relative; z-index:2; width:100%; height:90px; display:block;}
-.bridge-arc path{fill:none; stroke:rgba(255,255,255,0.35); stroke-width:2;}
-.bridge-arc circle{fill:var(--gold);}
-
-/* ============ SECTIONS ============ */
-section.block{padding:86px 0;}
-section.block.alt{background:#F2EEE1;}
-.section-head{max-width:640px; margin-bottom:44px;}
-.section-head h2{font-size:34px; font-weight:800; margin-top:8px;}
-.section-head p{margin-top:12px; font-size:16px;}
-
-.grid-2{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
-.grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-.grid-4{display:grid; grid-template-columns:repeat(4,1fr); gap:18px;}
-@media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;}}
-@media(max-width:640px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr;}}
-
-.problem-card{
-  background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); padding:26px;
-  border-top:4px solid var(--terracotta);
-}
-.problem-card .ic{font-size:24px; margin-bottom:12px; display:block;}
-.problem-card h3{font-size:17px; margin-bottom:8px;}
-.problem-card p{font-size:14px; margin:0;}
-
-.feature-card{
-  border-radius:var(--radius); padding:22px; color:#fff; min-height:100px; display:flex; flex-direction:column; justify-content:center; gap:6px;
-}
-.feature-card .ic{font-size:20px;}
-.feature-card h3{color:#fff; font-size:16px; font-weight:700;}
-.f1{background:#2563A8;} .f2{background:#7B3FE4;} .f3{background:var(--gold-deep);}
-.f4{background:var(--terracotta);} .f5{background:var(--jade);} .f6{background:var(--forest-deep);}
-
-.steps{display:flex; gap:0; align-items:flex-start; position:relative;}
-.step{flex:1; text-align:center; padding:0 12px; position:relative;}
-.step .num{
-  width:56px; height:56px; border-radius:50%; background:var(--forest); color:#fff; font-weight:800; font-size:19px;
-  display:flex; align-items:center; justify-content:center; margin:0 auto 14px;
-}
-.step .stepline{
-  position:absolute; top:28px; left:calc(50% + 40px); width:calc(100% - 80px); height:2px; background:var(--line);
-}
-.step:last-child .stepline{display:none;}
-.step .ic{font-size:22px; margin-bottom:8px;}
-.step h3{font-size:15.5px; margin-bottom:6px;}
-.step p{font-size:13px;}
-@media(max-width:800px){.steps{flex-direction:column; gap:26px;} .stepline{display:none;}}
-
-.points-card{background:var(--paper); border-radius:var(--radius); padding:28px; border:1px solid var(--line);}
-.points-card h3{font-size:16px; margin-bottom:14px;}
-.points-card ul{margin:0; padding-left:18px; font-size:14.5px; color:var(--ink-soft);}
-.points-card li{margin-bottom:8px;}
-.security-strip{
-  margin-top:22px; background:#E7F3EC; border:1px solid #CFE7DA; border-radius:12px; padding:16px 20px;
-  text-align:center; font-weight:700; color:var(--forest-deep); font-size:14px;
-}
-
-.revenue-card{background:var(--paper); border-radius:var(--radius); padding:24px; border-left:5px solid var(--jade);}
-.revenue-card.c2{border-left-color:var(--terracotta);}
-.revenue-card.c3{border-left-color:var(--gold-deep);}
-.revenue-card.c4{border-left-color:#2563A8;}
-.revenue-card h3{font-size:16px; margin-bottom:8px;}
-.revenue-card p{font-size:14px;}
-
-.vision-band{background:var(--forest-deep); color:#fff; padding:90px 0;}
-.vision-band .section-head h2, .vision-band .section-head .eyebrow{color:#fff;}
-.vision-band .section-head p{color:#DCE6DF;}
-.vision-card{background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); border-radius:var(--radius); padding:24px;}
-.vision-card .ic{font-size:22px;}
-.vision-card h3{color:#fff; font-size:16px; margin:10px 0 8px;}
-.vision-card p{color:#D8E2DA; font-size:14px;}
-
-.partner-cols{display:grid; grid-template-columns:1fr 1fr; gap:40px;}
-.partner-cols h3{font-size:15px; letter-spacing:0.03em; margin-bottom:16px;}
-.partner-cols ul{margin:0; padding-left:18px; color:var(--ink-soft); font-size:14.5px;}
-.partner-cols li{margin-bottom:10px;}
-.partner-strip{
-  margin-top:30px; background:#E7F3EC; border-radius:12px; padding:16px; text-align:center;
-  font-weight:700; color:var(--forest-deep); font-size:14px;
-}
-@media(max-width:800px){.partner-cols{grid-template-columns:1fr;}}
-
-.roadmap-card{border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:var(--paper);}
-.roadmap-head{padding:14px 18px; font-weight:800; font-size:13.5px; color:#fff;}
-.roadmap-head.p1{background:var(--forest);}
-.roadmap-head.p2{background:var(--jade);}
-.roadmap-head.p3{background:var(--gold-deep);}
-.roadmap-body{padding:20px;}
-.roadmap-body h3{font-size:16px; margin-bottom:12px;}
-.roadmap-body ul{margin:0; padding-left:16px; color:var(--ink-soft); font-size:13.5px;}
-.roadmap-body li{margin-bottom:8px;}
-
-.closing{
-  background:radial-gradient(circle at 85% 15%, #1a4a38 0%, var(--forest) 40%, var(--forest-deep) 100%);
-  color:#fff; padding:90px 0; text-align:left;
-}
-.closing .crown-big{font-size:30px;}
-.closing h2{color:#fff; font-size:34px; margin:14px 0 12px;}
-.closing .italic{font-family:var(--serif); font-style:italic; font-size:17px; color:#EDE9DC;}
-.closing .contact{margin-top:26px; display:flex; flex-direction:column; gap:8px; font-size:14.5px;}
-.closing .verse{margin-top:34px; font-family:var(--serif); font-style:italic; color:#C9D6CD; font-size:14px;}
-
-/* ============ GALLERY ============ */
-.gallery-block{margin-top:30px;}
-.gallery-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
-.gallery-grid img{width:100%; height:130px; object-fit:cover; border-radius:10px; border:1px solid var(--line);}
-.gallery-empty{
-  font-size:13px; color:var(--ink-soft); padding:18px; border:1px dashed var(--line); border-radius:10px; text-align:center;
-}
-.gallery-admin-item{position:relative;}
-.gallery-admin-item button{
-  position:absolute; top:6px; right:6px; background:rgba(20,20,20,0.65); color:#fff; border:none;
-  border-radius:6px; font-size:11px; padding:4px 7px;
-}
-
-/* ============ MODALS ============ */
-.modal-overlay{
-  position:fixed; inset:0; background:rgba(15,30,24,0.55); display:none; align-items:center; justify-content:center; z-index:500; padding:20px;
-}
-.modal-overlay.active{display:flex;}
-.modal{background:var(--paper); border-radius:16px; padding:32px; width:100%; max-width:400px; box-shadow:var(--shadow); position:relative; max-height:88vh; overflow-y:auto;}
-.modal h3{font-size:20px; margin-bottom:6px;}
-.modal p.sub{font-size:13.5px; margin-bottom:20px;}
-.modal .close-x{position:absolute; top:16px; right:18px; background:none; border:none; font-size:18px; color:var(--ink-soft);}
-.field{margin-bottom:14px;}
-.field label{font-size:13px; font-weight:700; display:block; margin-bottom:6px; color:var(--ink);}
-.field input, .field select{
-  width:100%; padding:11px 12px; border-radius:8px; border:1px solid var(--line); font-size:14px; font-family:var(--sans); outline:none;
-}
-.field input:focus{border-color:var(--jade);}
-.modal .btn-primary{width:100%; margin-top:6px; padding:13px; background:var(--forest); color:#fff;}
-.modal .btn-primary:hover{background:var(--forest-deep);}
-.switch-line{margin-top:16px; font-size:13px; text-align:center; color:var(--ink-soft);}
-.switch-line button{background:none; border:none; color:var(--jade); font-weight:800; font-size:13px;}
-.status-msg{font-size:13px; margin-top:10px; text-align:center;}
-.status-msg.ok{color:var(--jade);}
-.status-msg.err{color:var(--terracotta);}
-
-/* admin panel */
-#adminPanelModal .modal{max-width:760px;}
-.admin-section{border-top:1px solid var(--line); padding:16px 0;}
-.admin-section h4{font-size:14.5px; margin-bottom:10px;}
-.admin-upload-row{display:flex; gap:8px; align-items:center; margin-bottom:12px;}
-.admin-upload-row input[type=file]{font-size:12.5px;}
-.admin-upload-row button{
-  background:var(--gold); border:none; padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; color:var(--forest-deep);
-}
-
-.admin-tab-btn{background:#EFEADB; border:none; padding:9px 16px; border-radius:20px; font-weight:700; font-size:13px; color:var(--ink-soft);}
-.admin-tab-btn.active{background:var(--forest); color:#fff;}
-.admin-donation-row{display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line); font-size:13.5px;}
-.admin-donation-row .meta{color:var(--ink-soft); font-size:12px;}
-.admin-donation-row button{background:none; border:none; color:var(--terracotta); font-weight:700; font-size:12px;}
-
-footer{background:var(--forest-deep); color:#B9C6BC; padding:30px 0; text-align:center; font-size:13px;}
-footer a{color:#DDE6D9; font-weight:700;}
-</style>
-</head>
-<body>
-
-<!-- ============ HEADER ============ -->
-<header>
-  <div class="wrap nav-row">
-    <div class="nav-left">
-      <button class="logo" id="logoHomeBtn"><span class="crown">👑</span> K-BRIDGE</button>
-
-      <nav class="main-nav">
-        <div class="nav-item">
-          <button data-i18n="nav.donate">후원 <span class="caret">▾</span></button>
-          <div class="dropdown">
-            <a href="#donate-regular" data-i18n="donate.regular">정기후원</a>
-            <a href="#donate-onetime" data-i18n="donate.onetime">일시후원</a>
-            <a href="#donate-goods" data-i18n="donate.goods">물품후원</a>
-            <a href="#donate-major" data-i18n="donate.major">고액기부</a>
-            <a href="#donate-super" data-i18n="donate.super">초고액기부</a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <button data-i18n="nav.campaign">캠페인 <span class="caret">▾</span></button>
-          <div class="dropdown">
-            <a href="#campaign" data-i18n="campaign.viewall">캠페인</a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <button data-i18n="nav.news">소식 <span class="caret">▾</span></button>
-          <div class="dropdown">
-            <a href="#news-notice" data-i18n="news.notice">공지/뉴스</a>
-            <a href="#news-report" data-i18n="news.report">후원보고</a>
-            <a href="#news-archive" data-i18n="news.archive">자료실</a>
-          </div>
-        </div>
-        <div class="nav-item">
-          <button data-i18n="nav.about">소개 <span class="caret">▾</span></button>
-          <div class="dropdown">
-            <a href="#about-org" data-i18n="about.org">재단소개</a>
-            <a href="#about-transparency" data-i18n="about.transparency">투명경영</a>
-          </div>
-        </div>
-      </nav>
-    </div>
-
-    <div class="header-tools">
-      <button class="search-icon-btn" id="searchToggle" aria-label="search">🔍</button>
-      <button class="text-btn" id="openSignup" data-i18n="auth.signup">회원가입</button>
-      <button class="text-btn" id="openLogin" data-i18n="auth.login">로그인</button>
-      <div class="lang-switch" id="langSwitch">
-        <button data-lang="ko" class="active">한국어</button>
-        <button data-lang="en">EN</button>
-        <button data-lang="zh">中文</button>
-        <button data-lang="ms">BM</button>
-      </div>
-      <button class="donate-btn" data-i18n="cta.donate">후원하기</button>
-    </div>
-  </div>
-</header>
-
-<!-- ============ SEARCH OVERLAY ============ -->
-<div class="search-overlay" id="searchOverlay">
-  <div class="search-overlay-inner">
-    <span class="search-overlay-ic">🔍</span>
-    <input type="text" id="searchInput" data-i18n-ph="search.ph" placeholder="검색">
-    <button class="search-overlay-close" id="searchOverlayClose">✕</button>
-  </div>
-</div>
-
-<!-- ============ HERO ============ -->
-<section class="hero" id="hero">
-  <div class="ring r1"></div>
-  <div class="ring r2"></div>
-  <div class="wrap hero-inner">
-    <span class="crown-big">👑</span>
-    <h1>K-BRIDGE</h1>
-    <p class="tagline" data-i18n="hero.tagline">말레이시아 난민을 기회로 연결하다</p>
-    <div class="pillars">
-      <span data-i18n="hero.p1">일자리</span>
-      <span data-i18n="hero.p2">주거</span>
-      <span data-i18n="hero.p3">마켓</span>
-      <span data-i18n="hero.p4">카풀</span>
-      <span data-i18n="hero.p5">커뮤니티</span>
-    </div>
-    <div class="hero-ctas">
-      <button class="btn-primary" data-i18n="cta.donate">후원하기</button>
-      <button class="btn-ghost" data-i18n="hero.learn">더 알아보기</button>
-    </div>
-  </div>
-  <svg class="bridge-arc" viewBox="0 0 1180 90" preserveAspectRatio="none">
-    <path d="M0,90 C 250,10 930,10 1180,90" />
-    <circle cx="230" cy="34" r="4"></circle>
-    <circle cx="590" cy="12" r="5"></circle>
-    <circle cx="950" cy="34" r="4"></circle>
-  </svg>
-  <div class="gallery-block wrap" style="padding-bottom:40px;">
-    <div class="gallery-grid" data-gallery="hero"></div>
-  </div>
-</section>
-
-<!-- ============ 현황과 문제 ============ -->
-<section class="block" id="problems">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="problems.eyebrow">CURRENT SITUATION</span>
-      <h2 data-i18n="problems.title">현황과 문제</h2>
-    </div>
-    <div class="grid-2">
-      <div class="problem-card">
-        <span class="ic">🚫</span>
-        <h3 data-i18n="problems.c1.title">취업 불가</h3>
-        <p data-i18n="problems.c1.body">말레이시아 내 18만 명 이상의 난민은 법적으로 취업이 불가합니다. 최저임금 이하로 착취당하는 경우가 많습니다.</p>
-      </div>
-      <div class="problem-card">
-        <span class="ic">🏚️</span>
-        <h3 data-i18n="problems.c2.title">불안전한 주거</h3>
-        <p data-i18n="problems.c2.body">검증되지 않은 집주인에게 과도한 임대료를 내고 있습니다. 법적 보호나 커뮤니티 지원이 없습니다.</p>
-      </div>
-      <div class="problem-card">
-        <span class="ic">💬</span>
-        <h3 data-i18n="problems.c3.title">언어 장벽</h3>
-        <p data-i18n="problems.c3.body">난민 커뮤니티에서는 9개 언어가 사용됩니다. 중요한 정보가 모든 사람에게 전달되지 않습니다.</p>
-      </div>
-      <div class="problem-card">
-        <span class="ic">🚗</span>
-        <h3 data-i18n="problems.c4.title">이동수단 부재</h3>
-        <p data-i18n="problems.c4.body">안전하고 저렴한 이동수단이 없어 일자리, 병원, 커뮤니티 자원에 접근하기 어렵습니다.</p>
-      </div>
-    </div>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="problems"></div></div>
-  </div>
-</section>
-
-<!-- ============ 해결책 ============ -->
-<section class="block alt" id="solution">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="solution.eyebrow">THE SOLUTION</span>
-      <h2 data-i18n="solution.title">해결책: K-BRIDGE 앱</h2>
-      <p data-i18n="solution.sub">하나의 앱. 모든 필요. 모든 언어.</p>
-    </div>
-    <div class="grid-3">
-      <div class="feature-card f1"><span class="ic">💼</span><h3 data-i18n="solution.f1">일자리</h3></div>
-      <div class="feature-card f2"><span class="ic">🏠</span><h3 data-i18n="solution.f2">주거</h3></div>
-      <div class="feature-card f3"><span class="ic">🛍️</span><h3 data-i18n="solution.f3">마켓</h3></div>
-      <div class="feature-card f4"><span class="ic">🚗</span><h3 data-i18n="solution.f4">카풀</h3></div>
-      <div class="feature-card f5"><span class="ic">💬</span><h3 data-i18n="solution.f5">커뮤니티</h3></div>
-      <div class="feature-card f6"><span class="ic">🌐</span><h3 data-i18n="solution.f6">9개 언어</h3></div>
-    </div>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="solution"></div></div>
-  </div>
-</section>
-
-<!-- ============ 작동 방식 ============ -->
-<section class="block" id="how">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="how.eyebrow">HOW IT WORKS</span>
-      <h2 data-i18n="how.title">K-BRIDGE 작동 방식</h2>
-    </div>
-    <div class="steps">
-      <div class="step">
-        <div class="num">1</div><div class="stepline"></div>
-        <span class="ic">📱</span>
-        <h3 data-i18n="how.s1.title">다운로드 &amp; 가입</h3>
-        <p data-i18n="how.s1.body">신뢰할 수 있는 NGO 파트너에서 받은 초대 코드로 가입합니다.</p>
-      </div>
-      <div class="step">
-        <div class="num">2</div><div class="stepline"></div>
-        <span class="ic">⭐</span>
-        <h3 data-i18n="how.s2.title">500 포인트 지급</h3>
-        <p data-i18n="how.s2.body">신규 회원 모두에게 500 K-BRIDGE 포인트(약 RM 50)가 지급됩니다.</p>
-      </div>
-      <div class="step">
-        <div class="num">3</div><div class="stepline"></div>
-        <span class="ic">🔍</span>
-        <h3 data-i18n="how.s3.title">필요한 것 검색</h3>
-        <p data-i18n="how.s3.body">자신의 언어로 일자리, 주거, 마켓, 카풀을 찾습니다.</p>
-      </div>
-      <div class="step">
-        <div class="num">4</div>
-        <span class="ic">🤝</span>
-        <h3 data-i18n="how.s4.title">직거래 &amp; 연결</h3>
-        <p data-i18n="how.s4.body">직접 만나서 포인트, Touch 'n Go, 또는 현금으로 거래합니다.</p>
-      </div>
-    </div>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="how"></div></div>
-  </div>
-</section>
-
-<!-- ============ 포인트 시스템 ============ -->
-<section class="block alt" id="points">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="points.eyebrow">POINTS SYSTEM</span>
-      <h2 data-i18n="points.title">K-BRIDGE 포인트 시스템</h2>
-    </div>
-    <div class="grid-2">
-      <div class="points-card">
-        <h3 data-i18n="points.h1">⭐ 포인트 작동 방식</h3>
-        <ul>
-          <li data-i18n="points.l1">1 포인트 = RM 0.10</li>
-          <li data-i18n="points.l2">신규 회원: 무료 500 포인트 지급</li>
-          <li data-i18n="points.l3">Touch 'n Go로 충전 가능</li>
-          <li data-i18n="points.l4">GrabPay로 충전 가능</li>
-          <li data-i18n="points.l5">NGO 사무소에서 현금 충전</li>
-          <li data-i18n="points.l6">포인트로 카풀 및 물품 구매</li>
-        </ul>
-      </div>
-      <div class="points-card">
-        <h3 data-i18n="points.h2">💳 은행 계좌 없이도 가능한 이유</h3>
-        <ul>
-          <li data-i18n="points.r1">난민은 법적으로 은행 계좌 개설이 어렵습니다</li>
-          <li data-i18n="points.r2">Touch 'n Go &amp; GrabPay는 계좌 없이 사용 가능</li>
-          <li data-i18n="points.r3">파트너 NGO 사무소에서 현금 충전 가능</li>
-          <li data-i18n="points.r4">중간 거래자 없는 개인 간 직접 결제</li>
-          <li data-i18n="points.r5">앱 내 안전하고 투명한 거래 내역 제공</li>
-        </ul>
-      </div>
-    </div>
-    <div class="security-strip" data-i18n="points.security">보안: 초대 코드 시스템 + 인증된 사용자 + 리뷰 평점 = 안전한 커뮤니티</div>
-  </div>
-</section>
-
-<!-- ============ 수익 모델 ============ -->
-<section class="block" id="revenue">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="revenue.eyebrow">SUSTAINABILITY</span>
-      <h2 data-i18n="revenue.title">수익 및 지속가능성 모델</h2>
-    </div>
-    <div class="grid-2">
-      <div class="revenue-card">
-        <h3 data-i18n="revenue.c1.title">📢 광고 수입</h3>
-        <p data-i18n="revenue.c1.body">현지 기업이 난민 1만 명+에게 광고. 배너 광고 &amp; 프리미엄 게시. 월 RM 200~500.</p>
-      </div>
-      <div class="revenue-card c2">
-        <h3 data-i18n="revenue.c2.title">🙏 후원 및 기부</h3>
-        <p data-i18n="revenue.c2.body">개인 및 기업 후원자. RM 10 = 난민 가족에게 100 포인트 지원. PayPal / TnG / FPX 가능.</p>
-      </div>
-      <div class="revenue-card c3">
-        <h3 data-i18n="revenue.c3.title">🤝 NGO 파트너십</h3>
-        <p data-i18n="revenue.c3.body">NGO가 수혜자를 위해 초대 코드 스폰서. UNHCR, 월드비전과 공동 브랜드 프로그램.</p>
-      </div>
-      <div class="revenue-card c4">
-        <h3 data-i18n="revenue.c4.title">💼 프리미엄 게시</h3>
-        <p data-i18n="revenue.c4.body">고용주 및 집주인이 인증된 게시물 등록. 중소기업도 부담 없는 RM 50~200/건.</p>
-      </div>
-    </div>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="revenue"></div></div>
-  </div>
-</section>
-
-<!-- ============ 비전: 난민 IT 팀 ============ -->
-<section class="vision-band" id="vision">
-  <div class="wrap">
-    <div class="section-head" style="max-width:680px; margin-left:auto; margin-right:auto; text-align:center;">
-      <span class="eyebrow" data-i18n="vision.eyebrow">👑 OUR VISION</span>
-      <h2 data-i18n="vision.title">비전: 난민 IT 팀</h2>
-      <p data-i18n="vision.sub">난민은 수혜자가 아닌 — 우리 팀의 일원입니다.</p>
-    </div>
-    <div class="grid-2">
-      <div class="vision-card"><span class="ic">💻</span><h3 data-i18n="vision.c1.title">앱 개발자</h3><p data-i18n="vision.c1.body">난민에게 Flutter &amp; 웹 개발을 교육하여 K-BRIDGE 앱을 직접 개발·유지합니다.</p></div>
-      <div class="vision-card"><span class="ic">📣</span><h3 data-i18n="vision.c2.title">커뮤니티 매니저</h3><p data-i18n="vision.c2.body">난민 리더가 자신의 커뮤니티를 관리하고 콘텐츠를 모더레이션하며 안전을 보장합니다.</p></div>
-      <div class="vision-card"><span class="ic">🌐</span><h3 data-i18n="vision.c3.title">번역가</h3><p data-i18n="vision.c3.body">모국어 사용자가 앱의 9개 언어 전체에 걸쳐 정확한 번역을 담당합니다.</p></div>
-      <div class="vision-card"><span class="ic">📊</span><h3 data-i18n="vision.c4.title">데이터 분석가</h3><p data-i18n="vision.c4.body">사용 현황을 추적하고 필요를 파악하여 NGO 파트너의 사회적 영향 측정을 지원합니다.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 파트너십 제안 ============ -->
-<section class="block alt" id="partnership">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="partner.eyebrow">PARTNERSHIP PROPOSAL</span>
-      <h2 data-i18n="partner.title">귀 기관과의 파트너십 제안</h2>
-    </div>
-    <div class="partner-cols">
-      <div>
-        <h3 data-i18n="partner.need">저희가 필요로 하는 것</h3>
-        <ul>
-          <li data-i18n="partner.n1">수혜자에게 초대 코드 배포</li>
-          <li data-i18n="partner.n2">신뢰할 수 있는 고용주 및 집주인 검증</li>
-          <li data-i18n="partner.n3">커뮤니티 피드를 통한 안전 정보 공유</li>
-          <li data-i18n="partner.n4">난민과의 신뢰 구축을 위한 공동 브랜딩</li>
-          <li data-i18n="partner.n5">사무소에서 포인트 현금 충전 서비스 제공</li>
-        </ul>
-      </div>
-      <div>
-        <h3 data-i18n="partner.gain">귀 기관이 얻는 것</h3>
-        <ul>
-          <li data-i18n="partner.g1">지역 난민 필요에 대한 실시간 데이터</li>
-          <li data-i18n="partner.g2">지원물자 및 정보 배포를 위한 디지털 플랫폼</li>
-          <li data-i18n="partner.g3">후원자를 위한 월간 임팩트 보고서</li>
-          <li data-i18n="partner.g4">1만 명+ 사용자에게 공동 브랜드 노출</li>
-          <li data-i18n="partner.g5">난민이 직접 운영하는 기술 팀</li>
-        </ul>
-      </div>
-    </div>
-    <div class="partner-strip" data-i18n="partner.strip">파트너 기관: UNHCR Malaysia · World Vision · Pusat Kebajikan GoodHope</div>
-  </div>
-</section>
-
-<!-- ============ 로드맵 ============ -->
-<section class="block" id="roadmap">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="roadmap.eyebrow">LAUNCH ROADMAP</span>
-      <h2 data-i18n="roadmap.title">런칭 로드맵</h2>
-    </div>
-    <div class="grid-3">
-      <div class="roadmap-card">
-        <div class="roadmap-head p1" data-i18n="roadmap.p1">1단계 · 1~2개월</div>
-        <div class="roadmap-body">
-          <h3 data-i18n="roadmap.p1.title">기반 구축</h3>
-          <ul>
-            <li data-i18n="roadmap.p1.l1">NGO 파트너십 협약 체결</li>
-            <li data-i18n="roadmap.p1.l2">초대 코드 배포</li>
-            <li data-i18n="roadmap.p1.l3">KL 지역 베타 사용자 50~100명</li>
-            <li data-i18n="roadmap.p1.l4">버마어 + 영어로 런칭</li>
-          </ul>
-        </div>
-      </div>
-      <div class="roadmap-card">
-        <div class="roadmap-head p2" data-i18n="roadmap.p2">2단계 · 3~4개월</div>
-        <div class="roadmap-body">
-          <h3 data-i18n="roadmap.p2.title">성장</h3>
-          <ul>
-            <li data-i18n="roadmap.p2.l1">마켓 &amp; 카풀 기능 오픈</li>
-            <li data-i18n="roadmap.p2.l2">결제 시스템 실제 운영</li>
-            <li data-i18n="roadmap.p2.l3">활성 사용자 500명+</li>
-            <li data-i18n="roadmap.p2.l4">난민 IT 팀 구성</li>
-          </ul>
-        </div>
-      </div>
-      <div class="roadmap-card">
-        <div class="roadmap-head p3" data-i18n="roadmap.p3">3단계 · 5~6개월</div>
-        <div class="roadmap-body">
-          <h3 data-i18n="roadmap.p3.title">확장</h3>
-          <ul>
-            <li data-i18n="roadmap.p3.l1">사용자 1만 명+</li>
-            <li data-i18n="roadmap.p3.l2">광고 수입 시작</li>
-            <li data-i18n="roadmap.p3.l3">후원 캠페인 런칭</li>
-            <li data-i18n="roadmap.p3.l4">페낭 &amp; 조호르바루 확장</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 후원 ============ -->
-<section class="block" id="donate">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="donate.eyebrow">DONATE</span>
-      <h2 data-i18n="donate.title">후원하기</h2>
-      <p data-i18n="donate.sub">여러분의 후원은 난민 한 사람의 자립으로 이어집니다.</p>
-    </div>
-    <div class="grid-3">
-      <div class="problem-card" id="donate-regular" style="border-top-color:var(--jade);">
-        <span class="ic">🔁</span><h3 data-i18n="donate.regular">정기후원</h3>
-        <p data-i18n="donate.regular.body">매달 일정 금액을 후원하여 지속적인 지원을 만듭니다.</p>
-      </div>
-      <div class="problem-card" id="donate-onetime" style="border-top-color:#2563A8;">
-        <span class="ic">💛</span><h3 data-i18n="donate.onetime">일시후원</h3>
-        <p data-i18n="donate.onetime.body">원하실 때 한 번, 부담 없이 참여하실 수 있습니다.</p>
-      </div>
-      <div class="problem-card" id="donate-goods" style="border-top-color:var(--gold-deep);">
-        <span class="ic">📦</span><h3 data-i18n="donate.goods">물품후원</h3>
-        <p data-i18n="donate.goods.body">생활필수품, 전자기기 등 필요한 물품을 직접 전달합니다.</p>
-      </div>
-      <div class="problem-card" id="donate-major">
-        <span class="ic">🏵️</span><h3 data-i18n="donate.major">고액기부</h3>
-        <p data-i18n="donate.major.body">지역 확장과 새로운 기능 개발에 큰 힘이 됩니다.</p>
-      </div>
-      <div class="problem-card" id="donate-super" style="border-top-color:var(--forest);">
-        <span class="ic">👑</span><h3 data-i18n="donate.super">초고액기부</h3>
-        <p data-i18n="donate.super.body">K-BRIDGE의 장기 파트너로서 함께해 주세요.</p>
-      </div>
-    </div>
-    <div style="margin-top:30px;"><button class="btn-primary" style="background:var(--gold); color:var(--forest-deep);" data-i18n="cta.donate">후원하기</button></div>
-  </div>
-</section>
-
-<!-- ============ 캠페인 ============ -->
-<section class="block alt" id="campaign">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="campaign.eyebrow">CAMPAIGNS</span>
-      <h2 data-i18n="campaign.title">캠페인</h2>
-      <p data-i18n="campaign.body">현재 준비 중인 캠페인이 곧 이곳에 공개됩니다. 새로운 소식을 기대해 주세요!</p>
-    </div>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="campaign"></div></div>
-  </div>
-</section>
-
-<!-- ============ 소식 ============ -->
-<section class="block" id="news">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow" data-i18n="news.eyebrow">NEWS</span>
-      <h2 data-i18n="news.title">소식</h2>
-    </div>
-    <div class="grid-3">
-      <div class="problem-card" id="news-notice">
-        <span class="ic">📰</span><h3 data-i18n="news.notice">공지/뉴스</h3>
-        <p data-i18n="news.notice.body">K-BRIDGE의 새로운 소식과 공지사항을 전해드립니다.</p>
-      </div>
-      <div class="problem-card" id="news-report">
-        <span class="ic">📊</span><h3 data-i18n="news.report">후원보고</h3>
-        <p data-i18n="news.report.body">후원금이 어떻게 쓰였는지 정기적으로 보고합니다.</p>
-      </div>
-      <div class="problem-card" id="news-archive">
-        <span class="ic">🗂️</span><h3 data-i18n="news.archive">자료실</h3>
-        <p data-i18n="news.archive.body">활동 보고서와 자료를 모아두는 공간입니다.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 소개 & 투명경영 ============ -->
-<section class="block alt" id="about">
-  <div class="wrap">
-    <div class="section-head" id="about-org">
-      <span class="eyebrow" data-i18n="about.eyebrow">ABOUT K-BRIDGE</span>
-      <h2 data-i18n="about.title">재단소개</h2>
-      <p data-i18n="about.body">K-BRIDGE는 말레이시아에 거주하는 난민들이 안전하게 일자리, 주거, 생활필수품을 찾을 수 있도록 돕는 비영리 플랫폼입니다. 난민이 난민을 돕고, 기술이 그 다리를 놓습니다.</p>
-    </div>
-
-    <div style="margin-top:56px;" id="about-transparency">
-      <div class="section-head" style="margin-bottom:26px;">
-        <span class="eyebrow" data-i18n="transparency.eyebrow">TRANSPARENCY</span>
-        <h2 data-i18n="transparency.title">투명경영 — 후원 현황</h2>
-        <p data-i18n="transparency.sub">모금된 후원금 내역을 투명하게 공개합니다.</p>
-      </div>
-      <div class="grid-2" style="align-items:start;">
-        <div class="points-card" style="text-align:center;">
-          <h3 data-i18n="transparency.totalLabel">누적 후원금</h3>
-          <div id="donationTotal" style="font-family:var(--serif); font-size:40px; font-weight:800; color:var(--forest-deep); margin:10px 0;">RM 0</div>
-          <p style="font-size:13px; margin:0;" data-i18n="transparency.totalSub">후원해주신 모든 분들께 감사드립니다.</p>
-        </div>
-        <div class="points-card">
-          <h3 data-i18n="transparency.recentLabel">최근 후원 내역</h3>
-          <div id="donationList" style="font-size:14px; color:var(--ink-soft); margin-top:12px;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 마무리 ============ -->
-<section class="closing" id="closing">
-  <div class="wrap">
-    <span class="crown-big">👑</span>
-    <h2 data-i18n="closing.title">함께 만들어 갑시다</h2>
-    <p class="italic" data-i18n="closing.sub1">K-BRIDGE는 앱 그 이상입니다 — 하나의 운동입니다.</p>
-    <p data-i18n="closing.sub2" style="color:#DCE6DF;">난민이 난민을 돕습니다. 기술이 인류를 섬깁니다. 믿음으로 세우고, 공동체로 지속합니다.</p>
-    <div class="contact">
-      <span>📩 kbridge@email.com</span>
-      <span>📱 WhatsApp: +60 12-XXX-XXXX</span>
-      <span>🌐 kbridge.netlify.app</span>
-    </div>
-    <p class="verse" data-i18n="closing.verse">"내가 나그네 되었을 때에 영접하였고" — 마태복음 25:35</p>
-    <div class="gallery-block"><div class="gallery-grid" data-gallery="closing"></div></div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <span data-i18n="footer.copy">© 2024 K-BRIDGE. All rights reserved.</span>
-    &nbsp;·&nbsp;
-    <a href="#" id="adminLink" data-i18n="footer.admin">관리자</a>
-  </div>
-</footer>
-
-<!-- ============ LOGIN MODAL ============ -->
-<div class="modal-overlay" id="loginModal">
-  <div class="modal">
-    <button class="close-x" data-close="loginModal">✕</button>
-    <h3 data-i18n="login.title">로그인</h3>
-    <p class="sub" data-i18n="login.sub">K-BRIDGE 계정으로 로그인하세요.</p>
-    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
-    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="loginPassword"></div>
-    <button class="btn-primary" id="loginSubmit" data-i18n="login.submit">로그인</button>
-    <div class="status-msg" id="loginStatus"></div>
-    <div class="switch-line"><span data-i18n="login.noaccount">계정이 없으신가요?</span> <button data-switch="signupModal" data-i18n="auth.signup">회원가입</button></div>
-  </div>
-</div>
-
-<!-- ============ SIGNUP MODAL ============ -->
-<div class="modal-overlay" id="signupModal">
-  <div class="modal">
-    <button class="close-x" data-close="signupModal">✕</button>
-    <h3 data-i18n="signup.title">회원가입</h3>
-    <p class="sub" data-i18n="signup.sub">K-BRIDGE와 함께해 주세요.</p>
-    <div class="field"><label data-i18n="field.name">이름</label><input type="text" id="signupName"></div>
-    <div class="field"><label data-i18n="field.email">이메일</label><input type="email" id="signupEmail"></div>
-    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="signupPassword"></div>
-    <button class="btn-primary" id="signupSubmit" data-i18n="signup.submit">가입하기</button>
-    <div class="status-msg" id="signupStatus"></div>
-    <div class="switch-line"><span data-i18n="signup.hasaccount">이미 계정이 있으신가요?</span> <button data-switch="loginModal" data-i18n="auth.login">로그인</button></div>
-  </div>
-</div>
-
-<!-- ============ ADMIN LOGIN MODAL ============ -->
-<div class="modal-overlay" id="adminLoginModal">
-  <div class="modal">
-    <button class="close-x" data-close="adminLoginModal">✕</button>
-    <h3 data-i18n="adminlogin.title">관리자 로그인</h3>
-    <p class="sub" data-i18n="adminlogin.sub">관리자 비밀번호를 입력하세요.</p>
-    <div class="field"><label data-i18n="field.password">비밀번호</label><input type="password" id="adminPassword"></div>
-    <button class="btn-primary" id="adminLoginSubmit" data-i18n="adminlogin.submit">접속</button>
-    <div class="status-msg" id="adminLoginStatus"></div>
-  </div>
-</div>
-
-<!-- ============ ADMIN PANEL MODAL ============ -->
-<div class="modal-overlay" id="adminPanelModal">
-  <div class="modal">
-    <button class="close-x" data-close="adminPanelModal">✕</button>
-    <h3 data-i18n="adminpanel.mainTitle">관리자 패널</h3>
-    <div style="display:flex; gap:8px; margin:14px 0 20px;">
-      <button class="admin-tab-btn active" id="adminTabPhotos" data-i18n="adminpanel.tabPhotos">사진 관리</button>
-      <button class="admin-tab-btn" id="adminTabDonations" data-i18n="adminpanel.tabDonations">후원 관리</button>
-    </div>
-
-    <div id="adminPhotosPanel">
-      <p class="sub" data-i18n="adminpanel.sub">섹션을 선택하고 사진을 업로드 / 삭제하세요.</p>
-      <div class="field">
-        <label data-i18n="adminpanel.select">섹션 선택</label>
-        <select id="adminSectionSelect">
-          <option value="hero">Hero</option>
-          <option value="problems">현황과 문제</option>
-          <option value="solution">해결책</option>
-          <option value="how">작동 방식</option>
-          <option value="revenue">수익 모델</option>
-          <option value="campaign">캠페인</option>
-          <option value="closing">마무리</option>
-        </select>
-      </div>
-      <div class="admin-upload-row">
-        <input type="file" id="adminFileInput" accept="image/*" multiple>
-        <button id="adminUploadBtn" data-i18n="adminpanel.upload">업로드</button>
-      </div>
-      <div class="status-msg" id="adminUploadStatus"></div>
-      <div class="admin-section">
-        <h4 data-i18n="adminpanel.current">현재 사진</h4>
-        <div class="gallery-grid" id="adminGalleryPreview"></div>
-      </div>
-    </div>
-
-    <div id="adminDonationsPanel" style="display:none;">
-      <p class="sub" data-i18n="donationadmin.sub">새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.</p>
-      <div class="field"><label data-i18n="donationadmin.name">후원자 이름</label><input type="text" id="donationName" placeholder="Anonymous"></div>
-      <div class="field"><label data-i18n="donationadmin.amount">금액 (RM)</label><input type="number" id="donationAmount" min="0" step="0.01"></div>
-      <div class="field"><label data-i18n="donationadmin.note">메모 (선택)</label><input type="text" id="donationNote"></div>
-      <button class="btn-primary" id="donationAddBtn" data-i18n="donationadmin.add">후원 내역 추가</button>
-      <div class="status-msg" id="donationAddStatus"></div>
-      <div class="admin-section">
-        <h4 data-i18n="donationadmin.list">등록된 후원 내역</h4>
-        <div id="adminDonationList"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
 /* =========================================================
    K-BRIDGE — CONFIG
    Supabase를 연결하려면 아래 두 값을 채우세요.
@@ -999,6 +121,7 @@ async function renderGallery(section, targetEl, adminMode=false){
         await deleteImage(section, img.id);
         renderGallery(section, targetEl, true);
         renderAllPublicGalleries();
+        if (section === 'hero') renderHeroCarousel();
       };
       wrap.appendChild(delBtn);
     }
@@ -1014,6 +137,96 @@ function renderAllPublicGalleries(){
 renderAllPublicGalleries();
 
 /* ---------------------------------------------------------
+   HERO CAROUSEL — images come from the same admin-managed
+   "hero" gallery (upload/delete already handled in the Admin
+   Panel). Public visitors only ever see the slideshow.
+--------------------------------------------------------- */
+let heroSlideUrls = [];
+let heroCurrentIndex = 0;
+let heroAutoplayTimer = null;
+const HERO_AUTOPLAY_MS = 5200;
+
+async function renderHeroCarousel(){
+  const carouselEl = document.getElementById('heroCarousel');
+  if (!carouselEl) return; // this page has no hero carousel (not the homepage)
+  heroSlideUrls = (await loadImages('hero')).map(img => img.url);
+  const dotsEl = document.getElementById('heroDots');
+  const prevBtn = document.getElementById('heroPrev');
+  const nextBtn = document.getElementById('heroNext');
+  carouselEl.innerHTML = '';
+  dotsEl.innerHTML = '';
+
+  if (heroSlideUrls.length === 0){
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    if (heroAutoplayTimer) clearInterval(heroAutoplayTimer);
+    return;
+  }
+
+  prevBtn.style.display = heroSlideUrls.length > 1 ? '' : 'none';
+  nextBtn.style.display = heroSlideUrls.length > 1 ? '' : 'none';
+
+  heroSlideUrls.forEach((url, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'hero-slide' + (i === 0 ? ' active' : '');
+    slide.style.backgroundImage = `url("${url}")`;
+    carouselEl.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    if (i === 0){
+      const fill = document.createElement('span');
+      fill.className = 'hero-dot-fill';
+      dot.appendChild(fill);
+    }
+    dot.addEventListener('click', () => goToHeroSlide(i));
+    dotsEl.appendChild(dot);
+  });
+
+  heroCurrentIndex = 0;
+  restartHeroAutoplay();
+}
+
+function goToHeroSlide(index){
+  if (heroSlideUrls.length === 0) return;
+  heroCurrentIndex = (index + heroSlideUrls.length) % heroSlideUrls.length;
+  document.querySelectorAll('.hero-slide').forEach((s, i) => s.classList.toggle('active', i === heroCurrentIndex));
+  document.querySelectorAll('.hero-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === heroCurrentIndex);
+    d.innerHTML = '';
+    if (i === heroCurrentIndex){
+      const fill = document.createElement('span');
+      fill.className = 'hero-dot-fill';
+      d.appendChild(fill);
+    }
+  });
+  // replay the bottom-to-top text reveal each time the slide changes
+  const textBlock = document.getElementById('heroTextBlock');
+  if (textBlock){
+    textBlock.style.animation = 'none';
+    void textBlock.offsetWidth; // force reflow so the animation restarts
+    textBlock.style.animation = '';
+    textBlock.classList.remove('replay');
+    void textBlock.offsetWidth;
+    textBlock.classList.add('replay');
+  }
+  restartHeroAutoplay();
+}
+function nextHeroSlide(){ goToHeroSlide(heroCurrentIndex + 1); }
+function prevHeroSlide(){ goToHeroSlide(heroCurrentIndex - 1); }
+function restartHeroAutoplay(){
+  if (heroAutoplayTimer) clearInterval(heroAutoplayTimer);
+  if (heroSlideUrls.length > 1){
+    heroAutoplayTimer = setInterval(nextHeroSlide, HERO_AUTOPLAY_MS);
+  }
+}
+const heroNextBtnEl = document.getElementById('heroNext');
+const heroPrevBtnEl = document.getElementById('heroPrev');
+if (heroNextBtnEl) heroNextBtnEl.addEventListener('click', nextHeroSlide);
+if (heroPrevBtnEl) heroPrevBtnEl.addEventListener('click', prevHeroSlide);
+renderHeroCarousel();
+
+/* ---------------------------------------------------------
    NAV DROPDOWNS
 --------------------------------------------------------- */
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -1022,6 +235,16 @@ document.querySelectorAll('.nav-item').forEach(item => {
     const wasOpen = item.classList.contains('open');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
     if (!wasOpen) item.classList.add('open');
+    const targetSel = btn.dataset.target;
+    if (targetSel){
+      item.classList.remove('open');
+      if (targetSel.startsWith('#')){
+        const targetEl = document.querySelector(targetSel);
+        if (targetEl) targetEl.scrollIntoView({ behavior:'smooth' });
+      } else {
+        window.location.href = targetSel;
+      }
+    }
   });
 });
 document.addEventListener('click', (e) => {
@@ -1031,6 +254,9 @@ document.querySelectorAll('.dropdown a').forEach(a => {
   a.addEventListener('click', () => {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('open'));
   });
+});
+document.querySelectorAll('[data-i18n="cta.donate"]').forEach(btn => {
+  btn.addEventListener('click', () => { window.location.href = 'donate-regular.html'; });
 });
 
 /* ---------------------------------------------------------
@@ -1098,7 +324,9 @@ document.getElementById('loginSubmit').addEventListener('click', async () => {
    LOGO -> HOME
 --------------------------------------------------------- */
 document.getElementById('logoHomeBtn').addEventListener('click', () => {
-  document.getElementById('hero').scrollIntoView({ behavior:'smooth' });
+  const heroEl = document.getElementById('hero');
+  if (heroEl){ heroEl.scrollIntoView({ behavior:'smooth' }); }
+  else { window.location.href = 'index.html'; }
 });
 
 /* ---------------------------------------------------------
@@ -1246,6 +474,7 @@ document.getElementById('adminUploadBtn').addEventListener('click', async () => 
     document.getElementById('adminFileInput').value = '';
     renderGallery(section, document.getElementById('adminGalleryPreview'), true);
     renderAllPublicGalleries();
+    if (section === 'hero') renderHeroCarousel();
   } catch(err){
     statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
   }
@@ -1353,7 +582,7 @@ const I18N = {
     "campaign.eyebrow":"CAMPAIGNS","campaign.title":"Campaigns","campaign.body":"New campaigns are in the works and will appear here soon. Stay tuned!","campaign.viewall":"Campaigns",
     "news.eyebrow":"NEWS","news.title":"News","news.notice.body":"The latest news and announcements from K-BRIDGE.","news.report.body":"Regular reports on how donations are being used.","news.archive.body":"A library of activity reports and resources.",
     "nav.campaign":"Campaigns","nav.news":"News","news.notice":"Notices/News","news.report":"Impact Reports","news.archive":"Resources",
-    "nav.about":"About","about.org":"About Us","about.transparency":"Transparency",
+    "nav.about":"About Us","about.org":"About Us","about.transparency":"Transparency",
     "search.ph":"Search","auth.login":"Log in","auth.signup":"Sign up","cta.donate":"Donate Now",
     "hero.tagline":"Connecting Malaysian refugees to opportunity","hero.p1":"Jobs","hero.p2":"Housing","hero.p3":"Marketplace","hero.p4":"Carpool","hero.p5":"Community","hero.learn":"Learn more",
     "problems.eyebrow":"CURRENT SITUATION","problems.title":"The Situation and the Problems",
@@ -1558,6 +787,3 @@ searchToggleBtn.addEventListener('click', openSearchOverlay);
 searchOverlayCloseBtn.addEventListener('click', closeSearchOverlay);
 searchOverlayEl.addEventListener('click', (e) => { if (e.target === searchOverlayEl) closeSearchOverlay(); });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeSearchOverlay(); });
-</script>
-</body>
-</html>
