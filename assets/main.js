@@ -277,7 +277,8 @@ document.getElementById('openSignup').addEventListener('click', () => openModal(
 /* ---------------------------------------------------------
    AUTH (Supabase if configured, else demo localStorage)
 --------------------------------------------------------- */
-document.getElementById('signupSubmit').addEventListener('click', async () => {
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
   const name = document.getElementById('signupName').value.trim();
   const email = document.getElementById('signupEmail').value.trim();
   const password = document.getElementById('signupPassword').value;
@@ -300,24 +301,37 @@ document.getElementById('signupSubmit').addEventListener('click', async () => {
   }
 });
 
-document.getElementById('loginSubmit').addEventListener('click', async () => {
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const statusEl = document.getElementById('loginStatus');
+  if (!email || !password){ statusEl.textContent = t('status.fillall'); statusEl.className='status-msg err'; return; }
   try{
     if (!DEMO_MODE){
       const { error } = await sb.auth.signInWithPassword({ email, password });
-      if (error) throw error;
+      if (error) throw new Error(t('status.needsignup'));
     } else {
       const users = JSON.parse(localStorage.getItem('kbridge_users') || '[]');
-      const found = users.find(u => u.email === email && u.password === password);
-      if (!found) throw new Error(t('status.badlogin'));
+      const account = users.find(u => u.email === email);
+      if (!account) throw new Error(t('status.needsignup'));
+      if (account.password !== password) throw new Error(t('status.wrongpw'));
     }
     statusEl.textContent = t('status.loginok'); statusEl.className='status-msg ok';
     setTimeout(() => closeModal('loginModal'), 1000);
   } catch(err){
     statusEl.textContent = err.message || t('status.error'); statusEl.className='status-msg err';
   }
+});
+
+/* password show/hide toggle */
+document.querySelectorAll('.pw-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = document.getElementById(btn.dataset.target);
+    if (!input) return;
+    if (input.type === 'password'){ input.type = 'text'; btn.textContent = '🙈'; }
+    else { input.type = 'password'; btn.textContent = '👁'; }
+  });
 });
 
 /* ---------------------------------------------------------
@@ -567,13 +581,13 @@ const I18N = {
     "footer.copy":"© 2024 K-BRIDGE. All rights reserved.","footer.admin":"관리자",
     "login.title":"로그인","login.sub":"K-BRIDGE 계정으로 로그인하세요.","login.submit":"로그인","login.noaccount":"계정이 없으신가요?",
     "signup.title":"회원가입","signup.sub":"K-BRIDGE와 함께해 주세요.","signup.submit":"가입하기","signup.hasaccount":"이미 계정이 있으신가요?",
-    "field.email":"이메일","field.password":"비밀번호","field.name":"이름",
+    "field.email":"이메일 (아이디)","field.password":"비밀번호","field.name":"이름",
     "adminlogin.title":"관리자 로그인","adminlogin.sub":"관리자 비밀번호를 입력하세요.","adminlogin.submit":"접속",
     "adminpanel.title":"사진 관리","adminpanel.sub":"섹션을 선택하고 사진을 업로드 / 삭제하세요.","adminpanel.select":"섹션 선택","adminpanel.upload":"업로드","adminpanel.current":"현재 사진","adminpanel.empty":"등록된 사진이 없습니다.",
     "adminpanel.mainTitle":"관리자 패널","adminpanel.tabPhotos":"사진 관리","adminpanel.tabDonations":"후원 관리",
     "donationadmin.sub":"새 후원 내역을 등록하면 홈페이지 투명경영 섹션에 바로 반영됩니다.","donationadmin.name":"후원자 이름","donationadmin.amount":"금액 (RM)","donationadmin.note":"메모 (선택)","donationadmin.add":"후원 내역 추가","donationadmin.list":"등록된 후원 내역","donationadmin.empty":"등록된 후원 내역이 없습니다.",
     "transparency.empty":"아직 등록된 후원 내역이 없습니다.",
-    "status.fillall":"모든 항목을 입력해 주세요.","status.exists":"이미 가입된 이메일입니다.","status.signupok":"가입이 완료되었습니다!","status.badlogin":"이메일 또는 비밀번호가 올바르지 않습니다.","status.loginok":"로그인되었습니다!","status.error":"오류가 발생했습니다.","status.wrongpw":"비밀번호가 올바르지 않습니다.","status.choosefile":"파일을 선택해 주세요.","status.uploading":"업로드 중...","status.uploadok":"업로드 완료!"
+    "status.fillall":"모든 항목을 입력해 주세요.","status.exists":"이미 가입된 이메일입니다.","status.signupok":"가입이 완료되었습니다!","status.badlogin":"이메일 또는 비밀번호가 올바르지 않습니다.","status.needsignup":"가입되지 않은 계정입니다. 회원가입을 먼저 해주세요.","status.loginok":"로그인되었습니다!","status.error":"오류가 발생했습니다.","status.wrongpw":"비밀번호가 올바르지 않습니다.","status.choosefile":"파일을 선택해 주세요.","status.uploading":"업로드 중...","status.uploadok":"업로드 완료!"
   },
   en:{
     "nav.donate":"Donate","donate.regular":"Monthly Giving","donate.onetime":"One-time Gift","donate.goods":"In-kind Donation","donate.major":"Major Gift","donate.super":"Legacy Gift",
@@ -624,13 +638,13 @@ const I18N = {
     "footer.copy":"© 2024 K-BRIDGE. All rights reserved.","footer.admin":"Admin",
     "login.title":"Log In","login.sub":"Log in to your K-BRIDGE account.","login.submit":"Log In","login.noaccount":"Don't have an account?",
     "signup.title":"Sign Up","signup.sub":"Join the K-BRIDGE community.","signup.submit":"Sign Up","signup.hasaccount":"Already have an account?",
-    "field.email":"Email","field.password":"Password","field.name":"Name",
+    "field.email":"Email (ID)","field.password":"Password","field.name":"Name",
     "adminlogin.title":"Admin Login","adminlogin.sub":"Enter the admin password.","adminlogin.submit":"Enter",
     "adminpanel.title":"Photo Manager","adminpanel.sub":"Choose a section, then upload or delete photos.","adminpanel.select":"Select section","adminpanel.upload":"Upload","adminpanel.current":"Current photos","adminpanel.empty":"No photos yet.",
     "adminpanel.mainTitle":"Admin Panel","adminpanel.tabPhotos":"Photos","adminpanel.tabDonations":"Donations",
     "donationadmin.sub":"New entries appear on the Transparency section right away.","donationadmin.name":"Donor name","donationadmin.amount":"Amount (RM)","donationadmin.note":"Note (optional)","donationadmin.add":"Add donation","donationadmin.list":"Donation records","donationadmin.empty":"No donations recorded yet.",
     "transparency.empty":"No donations recorded yet.",
-    "status.fillall":"Please fill in all fields.","status.exists":"This email is already registered.","status.signupok":"Sign-up complete!","status.badlogin":"Incorrect email or password.","status.loginok":"Logged in!","status.error":"Something went wrong.","status.wrongpw":"Incorrect password.","status.choosefile":"Please choose a file.","status.uploading":"Uploading...","status.uploadok":"Upload complete!"
+    "status.fillall":"Please fill in all fields.","status.exists":"This email is already registered.","status.signupok":"Sign-up complete!","status.badlogin":"Incorrect email or password.","status.needsignup":"No account found. Please sign up first.","status.loginok":"Logged in!","status.error":"Something went wrong.","status.wrongpw":"Incorrect password.","status.choosefile":"Please choose a file.","status.uploading":"Uploading...","status.uploadok":"Upload complete!"
   },
   zh:{
     "nav.donate":"捐款","donate.regular":"定期捐款","donate.onetime":"单次捐款","donate.goods":"物资捐赠","donate.major":"大额捐赠","donate.super":"特大额捐赠",
@@ -681,13 +695,13 @@ const I18N = {
     "footer.copy":"© 2024 K-BRIDGE. 保留所有权利。","footer.admin":"管理员",
     "login.title":"登录","login.sub":"登录您的 K-BRIDGE 账户。","login.submit":"登录","login.noaccount":"还没有账户？",
     "signup.title":"注册","signup.sub":"加入 K-BRIDGE。","signup.submit":"注册","signup.hasaccount":"已经有账户？",
-    "field.email":"邮箱","field.password":"密码","field.name":"姓名",
+    "field.email":"邮箱（账号）","field.password":"密码","field.name":"姓名",
     "adminlogin.title":"管理员登录","adminlogin.sub":"请输入管理员密码。","adminlogin.submit":"进入",
     "adminpanel.title":"照片管理","adminpanel.sub":"选择版块后上传或删除照片。","adminpanel.select":"选择版块","adminpanel.upload":"上传","adminpanel.current":"当前照片","adminpanel.empty":"暂无照片。",
     "adminpanel.mainTitle":"管理员面板","adminpanel.tabPhotos":"照片管理","adminpanel.tabDonations":"捐款管理",
     "donationadmin.sub":"新增记录会立即显示在透明经营板块。","donationadmin.name":"捐款人姓名","donationadmin.amount":"金额 (RM)","donationadmin.note":"备注（可选）","donationadmin.add":"添加捐款记录","donationadmin.list":"捐款记录","donationadmin.empty":"暂无捐款记录。",
     "transparency.empty":"暂无捐款记录。",
-    "status.fillall":"请填写所有字段。","status.exists":"该邮箱已注册。","status.signupok":"注册成功！","status.badlogin":"邮箱或密码不正确。","status.loginok":"登录成功！","status.error":"发生错误。","status.wrongpw":"密码不正确。","status.choosefile":"请选择文件。","status.uploading":"上传中...","status.uploadok":"上传成功！"
+    "status.fillall":"请填写所有字段。","status.exists":"该邮箱已注册。","status.signupok":"注册成功！","status.badlogin":"邮箱或密码不正确。","status.needsignup":"尚未注册该账号，请先注册。","status.loginok":"登录成功！","status.error":"发生错误。","status.wrongpw":"密码不正确。","status.choosefile":"请选择文件。","status.uploading":"上传中...","status.uploadok":"上传成功！"
   },
   ms:{
     "nav.donate":"Derma","donate.regular":"Derma Bulanan","donate.onetime":"Derma Sekali","donate.goods":"Derma Barangan","donate.major":"Derma Besar","donate.super":"Derma Warisan",
@@ -738,13 +752,13 @@ const I18N = {
     "footer.copy":"© 2024 K-BRIDGE. Hak cipta terpelihara.","footer.admin":"Admin",
     "login.title":"Log Masuk","login.sub":"Log masuk ke akaun K-BRIDGE anda.","login.submit":"Log Masuk","login.noaccount":"Tiada akaun?",
     "signup.title":"Daftar","signup.sub":"Sertai komuniti K-BRIDGE.","signup.submit":"Daftar","signup.hasaccount":"Sudah ada akaun?",
-    "field.email":"Emel","field.password":"Kata Laluan","field.name":"Nama",
+    "field.email":"Emel (ID)","field.password":"Kata Laluan","field.name":"Nama",
     "adminlogin.title":"Log Masuk Admin","adminlogin.sub":"Masukkan kata laluan admin.","adminlogin.submit":"Masuk",
     "adminpanel.title":"Pengurus Foto","adminpanel.sub":"Pilih bahagian, kemudian muat naik atau padam foto.","adminpanel.select":"Pilih bahagian","adminpanel.upload":"Muat Naik","adminpanel.current":"Foto Semasa","adminpanel.empty":"Belum ada foto.",
     "adminpanel.mainTitle":"Panel Admin","adminpanel.tabPhotos":"Foto","adminpanel.tabDonations":"Derma",
     "donationadmin.sub":"Rekod baharu akan terus dipaparkan di bahagian Ketelusan.","donationadmin.name":"Nama penderma","donationadmin.amount":"Jumlah (RM)","donationadmin.note":"Nota (pilihan)","donationadmin.add":"Tambah rekod derma","donationadmin.list":"Rekod derma","donationadmin.empty":"Belum ada rekod derma.",
     "transparency.empty":"Belum ada rekod derma.",
-    "status.fillall":"Sila isi semua ruangan.","status.exists":"Emel ini telah didaftarkan.","status.signupok":"Pendaftaran berjaya!","status.badlogin":"Emel atau kata laluan salah.","status.loginok":"Berjaya log masuk!","status.error":"Ralat berlaku.","status.wrongpw":"Kata laluan salah.","status.choosefile":"Sila pilih fail.","status.uploading":"Memuat naik...","status.uploadok":"Muat naik berjaya!"
+    "status.fillall":"Sila isi semua ruangan.","status.exists":"Emel ini telah didaftarkan.","status.signupok":"Pendaftaran berjaya!","status.badlogin":"Emel atau kata laluan salah.","status.needsignup":"Akaun tidak dijumpai. Sila daftar dahulu.","status.loginok":"Berjaya log masuk!","status.error":"Ralat berlaku.","status.wrongpw":"Kata laluan salah.","status.choosefile":"Sila pilih fail.","status.uploading":"Memuat naik...","status.uploadok":"Muat naik berjaya!"
   }
 };
 let currentLang = 'ko';
@@ -752,6 +766,7 @@ function t(key){ return (I18N[currentLang] && I18N[currentLang][key]) || I18N.ko
 function applyLang(lang){
   currentLang = lang;
   document.documentElement.lang = lang;
+  localStorage.setItem('kbridge_lang', lang);
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.dataset.i18n;
     if (I18N[lang] && I18N[lang][key] !== undefined) el.textContent = I18N[lang][key];
@@ -768,6 +783,16 @@ document.getElementById('langSwitch').addEventListener('click', (e) => {
   btn.classList.add('active');
   applyLang(btn.dataset.lang);
 });
+// 다른 페이지로 이동해도 마지막에 선택한 언어가 그대로 유지되도록 복원
+(function restoreSavedLanguage(){
+  const savedLang = localStorage.getItem('kbridge_lang');
+  if (savedLang && I18N[savedLang] && savedLang !== 'ko'){
+    document.querySelectorAll('#langSwitch button').forEach(b => {
+      b.classList.toggle('active', b.dataset.lang === savedLang);
+    });
+    applyLang(savedLang);
+  }
+})();
 
 /* search overlay */
 const searchOverlayEl = document.getElementById('searchOverlay');
